@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,26 +62,41 @@ public class ChoosingAPresenterMain {
         });
         frame.add(homeBtn);
 
-        JLabel resultFrame = new JLabel();
+        JPanel resultFrame = new JPanel();
         resultFrame.setBounds(215, 140, 851, 390);
-        resultFrame.setIcon(new ImageIcon("img/presenterResultFrame.png"));
+        Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+        resultFrame.setBorder(roundedBorder);
+        resultFrame.setLayout(null);
+        resultFrame.setOpaque(false);
         frame.getContentPane().add(resultFrame);
 
         JLabel resultLabel = new JLabel();
-        resultLabel.setBounds(0, 134, 851, 123);
+        Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
+        resultLabel.setBorder(InnerRoundedBorder);
+        resultLabel.setBounds(10, 10, 831, 370);
         resultLabel.setFont(new Font("Noto Sans", Font.PLAIN, 80)); // 폰트 및 글자 크기 설정
         resultLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트를 가운데에 정렬
+        resultLabel.setVerticalAlignment(JLabel.CENTER);
         resultFrame.add(resultLabel);
 
-        ImageIcon makePresenterBtnImg = new ImageIcon("img/makePresenterBtn.png");
-        JButton makePresenterBtn = new JButton(makePresenterBtnImg);
+        JButton makePresenterBtn = new JButton();
+        makePresenterBtn.setBorder(roundedBorder);
+        makePresenterBtn.setLayout(null);
         makePresenterBtn.setBounds(397, 606, 485, 92);
-        makePresenterBtn.setIcon(new ImageIcon("img/makePresenterBtn.png"));
+
+        JLabel InnerBtn = new JLabel("발표자 뽑기");
+        InnerBtn.setBounds(10, 10, 465, 72);
+        InnerBtn.setOpaque(true);
+        InnerBtn.setBackground(SettingClass.mainColor);
+        InnerBtn.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerBtn.setVerticalAlignment(SwingConstants.CENTER);
+        InnerBtn.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        InnerBtn.setForeground(Color.WHITE); // 글자 색상 설정
+        makePresenterBtn.add(InnerBtn);
 
         // 버튼의 배경을 없애기
         makePresenterBtn.setOpaque(false);
         makePresenterBtn.setContentAreaFilled(false);
-        makePresenterBtn.setBorderPainted(false);
         makePresenterBtn.setFocusPainted(false);
 
         makePresenterBtn.addActionListener(new ActionListener() {

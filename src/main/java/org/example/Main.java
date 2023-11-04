@@ -326,13 +326,11 @@ public class Main extends Frame {
         connection.close();
     }
     static public void setSchedule(int id, String content, JTextArea contentArea) throws SQLException{
-//        index, contentLabel.getText(), contentArea
         Connection connection = Util.getConnection();
 
         PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE id = ?");
         preparedStatement2.setString(1, content);
         preparedStatement2.setInt(2, id+1);
-        // UPDATE person SET age = 40 WHERE name = 'John';
         int rowsAffected = preparedStatement2.executeUpdate();
         System.out.println(rowsAffected);
         contentArea.setText(content);

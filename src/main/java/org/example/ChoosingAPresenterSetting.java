@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicCheckBoxUI;
@@ -28,65 +29,101 @@ public class ChoosingAPresenterSetting {
         frame.getContentPane().setBackground(backgroud);
         frame.setLayout(null);
 
-        JLabel backgroundImg = new JLabel();
-        backgroundImg.setBounds(344, 155, 591, 482);
-        backgroundImg.setIcon(new ImageIcon("img/choosingAPresenter_backImg.png"));
-        frame.getContentPane().add(backgroundImg);
+        ImageIcon home = new ImageIcon("img/homeBtn.png");
+        JButton homeBtn = new JButton(home);
+        homeBtn.setBounds(1190, 24, 45, 45);
+
+        // 버튼의 배경을 없애기
+        homeBtn.setOpaque(false);
+        homeBtn.setContentAreaFilled(false);
+        homeBtn.setBorderPainted(false);
+        homeBtn.setFocusPainted(false);
+        homeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new Main();
+            }
+        });
+        frame.add(homeBtn);
+
+        JPanel backtheme = new JPanel();
+        backtheme.setLayout(null);
+        backtheme.setBounds(344, 155, 591, 482);
+        Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+        backtheme.setBorder(roundedBorder);
+        backtheme.setOpaque(false);
+        frame.getContentPane().add(backtheme);
+
+        JPanel backwhite = new JPanel();
+        backwhite.setLayout(null);
+        backwhite.setBounds(10, 10, 571, 462);
+        Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
+        backwhite.setBorder(InnerRoundedBorder);
+        backwhite.setOpaque(false);
+        backtheme.add(backwhite);
+
+        JPanel backgroundImg = new JPanel();
+        backgroundImg.setLayout(null);
+        backgroundImg.setBounds(10, 10, 551, 442);
+        backgroundImg.setOpaque(true);
+        backgroundImg.setBackground(Color.WHITE);
+        backwhite.add(backgroundImg);
 
         JLabel person = new JLabel("학생 수");
-        person.setBounds(88, 90, 80, 34);
+        person.setBounds(68, 70, 80, 34);
         person.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         person.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(person);
 
         JTextField inputPerson = new JTextField(3);
         setNumberOnlyFilter(inputPerson); // 텍스트 필드에 숫자만 입력되도록 필터 설정
-        inputPerson.setBounds(88, 142, 119, 29);
+        inputPerson.setBounds(68, 122, 119, 29);
         inputPerson.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputPerson);
 
         JLabel myung = new JLabel("명");
-        myung.setBounds(219, 142, 25, 29);
+        myung.setBounds(199, 122, 25, 29);
         myung.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         myung.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung);
 
         JLabel presenterCnt = new JLabel("발표 인원");
-        presenterCnt.setBounds(296, 90, 105, 33);
+        presenterCnt.setBounds(276, 70, 105, 33);
         presenterCnt.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         backgroundImg.add(presenterCnt);
 
         JTextField inputPresenterCnt = new JTextField(3);
         setNumberOnlyFilter(inputPresenterCnt); // 텍스트 필드에 숫자만 입력되도록 필터 설정
-        inputPresenterCnt.setBounds(296, 142, 119, 29);
+        inputPresenterCnt.setBounds(276, 122, 119, 29);
         inputPresenterCnt.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputPresenterCnt);
 
         JLabel myung2 = new JLabel("명");
-        myung2.setBounds(427, 142, 25, 29);
+        myung2.setBounds(407, 122, 25, 29);
         myung2.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         myung2.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung2);
 
         JLabel line = new JLabel();
-        line.setBounds(88, 209, 400, 1);
+        line.setBounds(68, 189, 400, 1);
         line.setBackground(Color.GRAY);
         line.setOpaque(true);
         backgroundImg.add(line);
 
         JLabel exceptPerson = new JLabel("제외할 번호");
-        exceptPerson.setBounds(88, 241, 135, 31);
+        exceptPerson.setBounds(68, 221, 135, 31);
         exceptPerson.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         exceptPerson.setForeground(backgroud);
         backgroundImg.add(exceptPerson);
 
         JCheckBox exceptCheck = new JCheckBox();
-        exceptCheck.setBounds(219, 248, 20, 20);
+        exceptCheck.setBounds(199, 228, 20, 20);
         exceptCheck.setUI(new CustomCheckboxUI());
         backgroundImg.add(exceptCheck);
 
         JTextField inputExcept = new JTextField(3);
-        inputExcept.setBounds(88, 290, 119, 29);
+        inputExcept.setBounds(68, 270, 119, 29);
         inputExcept.setBorder(new LineBorder(backgroud));
         inputExcept.setEnabled(false);
         PlainDocument doc = (PlainDocument) inputExcept.getDocument();
@@ -96,7 +133,7 @@ public class ChoosingAPresenterSetting {
         backgroundImg.add(inputExcept);
 
         JLabel bun = new JLabel("번");
-        bun.setBounds(219, 290, 25, 29);
+        bun.setBounds(199, 270, 25, 29);
         bun.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         bun.setForeground(backgroud); // 글자 색상 설정
         backgroundImg.add(bun);
@@ -120,18 +157,27 @@ public class ChoosingAPresenterSetting {
             }
         });
 
-        ImageIcon checkBtnImg = new ImageIcon("img/choosingPresenterCheck.png");
-
-        JButton checkBtn = new JButton(checkBtnImg);
+        JButton checkBtn = new JButton();
 
         // 버튼의 배경을 없애기
-        checkBtn.setOpaque(false);
         checkBtn.setContentAreaFilled(false);
-        checkBtn.setBorderPainted(false);
+        Border buttonroundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 20, true);
+        checkBtn.setBorder(buttonroundedBorder);
+        checkBtn.setLayout(null);
+        checkBtn.setBounds(199, 364, 152, 46);
 
-        checkBtn.setBounds(219, 384, 152, 46);
+        JLabel InnerBtn = new JLabel("확인");
+        InnerBtn.setLayout(null);
+        InnerBtn.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerBtn.setVerticalAlignment(SwingConstants.CENTER);
+        InnerBtn.setBounds(10, 10, 132, 26);
+        InnerBtn.setOpaque(true);
+        InnerBtn.setBackground(SettingClass.mainColor);
+        InnerBtn.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        InnerBtn.setForeground(Color.WHITE);
+        checkBtn.add(InnerBtn);
+
         backgroundImg.add(checkBtn);
-
         checkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

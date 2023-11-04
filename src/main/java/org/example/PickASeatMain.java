@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,14 +17,13 @@ public class PickASeatMain {
         new PickASeatMain(15, 3);
     }
     PickASeatMain(int people, int division){
+
         Color setting = new Color(0x474747);
-        Color fontColor = new Color(0x47815E);
 
         // JFrame 생성
         JFrame frame = new JFrame("자리 뽑기");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 종료 버튼 동작 설정
-        frame.setBackground(Color.WHITE);
         frame.setLayout(null);
 
         JButton settingBtn = new JButton("설정");
@@ -64,9 +64,21 @@ public class PickASeatMain {
         });
         frame.add(homeBtn);
 
-        ImageIcon teachingDeskImg = new ImageIcon("img/teachingDesk.png");
-        JLabel teachingDeskLabel = new JLabel(teachingDeskImg);
+        JLabel teachingDeskLabel = new JLabel();
+        Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+        teachingDeskLabel.setBorder(roundedBorder);
         teachingDeskLabel.setBounds(463, 104, 355,95);
+
+        JLabel InnerTeachingDest = new JLabel("교탁");
+        InnerTeachingDest.setFont(new Font("Noto Sans", Font.BOLD, 40)); // 폰트 및 글자 크기 설정
+        InnerTeachingDest.setBounds(10, 10, 335, 75);
+        InnerTeachingDest.setForeground(Color.WHITE);
+        InnerTeachingDest.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerTeachingDest.setVerticalAlignment(SwingConstants.CENTER);
+        InnerTeachingDest.setOpaque(true);
+        InnerTeachingDest.setBackground(SettingClass.mainColor);
+        teachingDeskLabel.add(InnerTeachingDest);
+
         frame.add(teachingDeskLabel);
 
         int seatHeight = (int)(Math.ceil(people / (division * 2.0)));
@@ -90,14 +102,18 @@ public class PickASeatMain {
             divisionCnt[i] = repeat;
         }
 
+        for(int i = 0; i<divisionCnt.length; i++){
+            System.out.println(divisionCnt[i]);
+        }
+
         // 고정할 숫자의 위치를 ArrayList로 지정
         ArrayList<Integer> fixedNumbers = new ArrayList<>();
 
 
         JLabel[] tables = new JLabel[people];
         CustomToggleButton[] customToggleButtons = new CustomToggleButton[people];
+        JLabel[] InnerLabel = new JLabel[people];
         for(int i = 0; i<divisionCnt.length; i++){
-
             int cnt = 0;
             int repeat = divisionCnt[i];
             int height = (int)(Math.ceil(repeat / 2.0));
@@ -119,23 +135,44 @@ public class PickASeatMain {
                 for(int k = index; k<=index + 1; k++){
                     cnt++;
                     if(cnt > repeat) break;
-                    String tableNumber = (k + (j * 6))+"";
-                    tables[Integer.parseInt(tableNumber) - 1] = new JLabel(tableNumber);
-                    tables[Integer.parseInt(tableNumber) - 1].setIcon(new ImageIcon("img/sm_table.png"));
-                    tables[Integer.parseInt(tableNumber) - 1].setHorizontalTextPosition(JLabel.CENTER);
-                    tables[Integer.parseInt(tableNumber) - 1].setVerticalTextPosition(JLabel.CENTER);
-                    tables[Integer.parseInt(tableNumber) - 1].setForeground(fontColor);
-                    tables[Integer.parseInt(tableNumber) - 1].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                    String tableNumber = (k + (j * (2 * division)))+"";
+                    tables[Integer.parseInt(tableNumber) - 1] = new JLabel();
+                    tables[Integer.parseInt(tableNumber) - 1].setOpaque(true);
+                    tables[Integer.parseInt(tableNumber) - 1].setLayout(null);
+
+                    JLabel InnerTable = new JLabel();
+                    InnerTable.setBounds(3, 3, 120, 69);
+                    InnerTable.setBorder(roundedBorder);
+                    tables[Integer.parseInt(tableNumber) - 1].add(InnerTable);
+
+                    JLabel InnerTextTable = new JLabel();
+                    InnerTextTable.setLayout(null);
+                    InnerTextTable.setBounds(3,3, 114, 63);
+                    Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
+                    InnerTextTable.setBorder(InnerRoundedBorder);
+
+                    InnerLabel[Integer.parseInt(tableNumber) - 1] = new JLabel(tableNumber);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBounds(5,5, 104, 53);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setOpaque(true);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBackground(Color.WHITE);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setHorizontalAlignment(SwingConstants.CENTER);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setVerticalAlignment(SwingConstants.CENTER);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setForeground(SettingClass.mainColor);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+
+                    InnerTextTable.add(InnerLabel[Integer.parseInt(tableNumber) - 1]);
+
+                    InnerTable.add(InnerTextTable);
 
                     customToggleButtons[Integer.parseInt(tableNumber) - 1] = new CustomToggleButton("",  tableNumber, fixedNumbers);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBounds(11, 13, 20, 20);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBounds(2, 2, 20, 20);
                     customToggleButtons[Integer.parseInt(tableNumber) - 1].setOpaque(false);
                     customToggleButtons[Integer.parseInt(tableNumber) - 1].setContentAreaFilled(false);
                     customToggleButtons[Integer.parseInt(tableNumber) - 1].setBorderPainted(false);
                     customToggleButtons[Integer.parseInt(tableNumber) - 1].setFocusPainted(false);
                     customToggleButtons[Integer.parseInt(tableNumber) - 1].setForeground(new Color(0, 0, 0, 0));
 
-                    tables[Integer.parseInt(tableNumber) - 1].add(customToggleButtons[Integer.parseInt(tableNumber) - 1]);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].add(customToggleButtons[Integer.parseInt(tableNumber) - 1]);
                     divisions.add(tables[Integer.parseInt(tableNumber) - 1]);
                 }
             }
@@ -144,13 +181,25 @@ public class PickASeatMain {
         }
         frame.add(seat);
 
-        ImageIcon seatChangeImg = new ImageIcon("img/seatChangeBtn.png");
-        JButton seatChangeBtn = new JButton(seatChangeImg);
+        JButton seatChangeBtn = new JButton();
+        Border RoundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 15, true);
+        seatChangeBtn.setBorder(RoundedBorder);
+        seatChangeBtn.setLayout(null);
         seatChangeBtn.setBounds(942, 710, 193, 53);
         seatChangeBtn.setOpaque(false);
         seatChangeBtn.setContentAreaFilled(false);
-        seatChangeBtn.setBorderPainted(false);
         seatChangeBtn.setFocusPainted(false);
+
+        JLabel InnerSeatChangeBtn = new JLabel("자리 바꾸기");
+        InnerSeatChangeBtn.setBounds(10, 10, 173, 33);
+        InnerSeatChangeBtn.setOpaque(true);
+        InnerSeatChangeBtn.setBackground(SettingClass.mainColor);
+        InnerSeatChangeBtn.setFont(new Font("Noto Sans", Font.BOLD, 25));
+        InnerSeatChangeBtn.setForeground(Color.WHITE);
+        InnerSeatChangeBtn.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerSeatChangeBtn.setVerticalAlignment(SwingConstants.CENTER);
+        seatChangeBtn.add(InnerSeatChangeBtn);
+
         frame.add(seatChangeBtn);
 
 
@@ -159,7 +208,8 @@ public class PickASeatMain {
             public void actionPerformed(ActionEvent e) {
                 int[] numbers = new int[people]; // 원하는 숫자 범위
                 for(int i = 0; i<people; i++){
-                    numbers[i] = Integer.parseInt(tables[i].getText());
+//                    System.out.println(Integer.parseInt(InnerLabel[i].getText()));
+                    numbers[i] = Integer.parseInt(InnerLabel[i].getText());
                 }
 
                 // 숫자를 섞는 함수 호출
@@ -167,19 +217,30 @@ public class PickASeatMain {
 
                 // 섞인 숫자 출력
                 for (int i = 0; i<shuffledNumbers.size(); i++) {
-                    tables[i].setText(shuffledNumbers.get(i).toString());
+                    InnerLabel[i].setText(shuffledNumbers.get(i).toString());
                     customToggleButtons[i].setText(shuffledNumbers.get(i).toString());
                 }
             }
         });
 
-        ImageIcon seatSaveImg = new ImageIcon("img/seatSaveBtn.png");
-        JButton seatSaveBtn = new JButton(seatSaveImg);
+        JButton seatSaveBtn = new JButton();
         seatSaveBtn.setBounds(1145, 710,93, 53);
+        seatSaveBtn.setLayout(null);
+        seatSaveBtn.setBorder(RoundedBorder);
         seatSaveBtn.setOpaque(false);
         seatSaveBtn.setContentAreaFilled(false);
-        seatSaveBtn.setBorderPainted(false);
         seatSaveBtn.setFocusPainted(false);
+
+        JLabel InnerSeatSaveBtn = new JLabel("저장");
+        InnerSeatSaveBtn.setBounds(10, 10, 73, 33);
+        InnerSeatSaveBtn.setOpaque(true);
+        InnerSeatSaveBtn.setBackground(SettingClass.mainColor);
+        InnerSeatSaveBtn.setFont(new Font("Noto Sans", Font.BOLD, 25));
+        InnerSeatSaveBtn.setForeground(Color.WHITE);
+        InnerSeatSaveBtn.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerSeatSaveBtn.setVerticalAlignment(SwingConstants.CENTER);
+        seatSaveBtn.add(InnerSeatSaveBtn);
+
         frame.add(seatSaveBtn);
 
         frame.setLocationRelativeTo(null);
@@ -235,7 +296,6 @@ public class PickASeatMain {
             int index = 0;
 
             for(int i = 0; i<numberRange.length; i++){
-                System.out.println(i + " " + exceptIndex.get(Eindex));
                 if(i == exceptIndex.get(Eindex)){
                     shuffledNumbers.add(excludeNumbers.get(Eindex));
                     if(Eindex < exceptIndex.size() - 1) Eindex++;
@@ -253,7 +313,6 @@ public class PickASeatMain {
 }
 class CustomToggleButton extends JButton {
     private boolean filled = false;
-    Color fontColor = new Color(0x47815E);
 
     public CustomToggleButton(String text, String innerText, ArrayList<Integer> fixedNumber) {
         super(text);
@@ -303,11 +362,11 @@ class CustomToggleButton extends JButton {
         int x = (getWidth() - diameter) / 2;
         int y = (getHeight() - diameter) / 2;
 
-        g.setColor(fontColor);
+        g.setColor(SettingClass.mainColor);
         g.drawOval(x, y, diameter, diameter);
 
         if (filled) {
-            g.setColor(fontColor);
+            g.setColor(SettingClass.mainColor);
             g.fillOval(x, y, diameter, diameter);
         }
     }
