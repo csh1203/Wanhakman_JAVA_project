@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,24 +18,14 @@ import java.util.Objects;
 
 public class Main extends Frame {
 
-    SettingClass setting = new SettingClass();
-    Color mainColor = setting.mainColor;
-    public static void main(String[] args) {
+    static String contents[] = new String[7];
+
+    public static void main(String[] args) throws SQLException{
+        getSchedule();
         new Main();
-//        서현
-//        - 메인 (0)
-//        - 자리뽑기
-//        - 발표자정하기
-//
-//        가윤
-//        - 1인1역
-//        - 회장선거
     }
 
     public Main() {
-        SettingClass setting = new SettingClass();
-        Color mainColor = setting.mainColor;
-
         // JFrame 생성
         JFrame frame = new JFrame("완벽한 학급 만들기");
         frame.setBounds(100, 100, 1280, 832);
@@ -68,14 +59,14 @@ public class Main extends Frame {
         JLabel weekLabel[] = new JLabel[7];
         for(int i = 0; i<7; i++){
             weekLabel[i] = new JLabel(weekDay[i]);
-            Border border = BorderFactory.createLineBorder(mainColor, 3);
+            Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 3);
             weekLabel[i].setBorder(border);
             if(i == todayWeekday){
                 weekLabel[i].setForeground(Color.white); // 글자 색상 설정
                 weekLabel[i].setOpaque(true);
-                weekLabel[i].setBackground(mainColor);
+                weekLabel[i].setBackground(SettingClass.mainColor);
             }else{
-                weekLabel[i].setForeground(mainColor); // 글자 색상 설정
+                weekLabel[i].setForeground(SettingClass.mainColor); // 글자 색상 설정
                 weekLabel[i].setOpaque(true);
                 weekLabel[i].setBackground(Color.WHITE);
             }
@@ -94,7 +85,7 @@ public class Main extends Frame {
             String date = dateFormat.format(calendar.getTime());
 
             dateButton[i] = new JButton();
-            Border border = BorderFactory.createLineBorder(mainColor, 3);
+            Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 3);
             dateButton[i].setBorder(border);
             dateButton[i].setLayout(null);
             dateButton[i].setContentAreaFilled(false);
@@ -104,12 +95,12 @@ public class Main extends Frame {
             JLabel dateLabel = new JLabel(date);
             dateLabel.setBounds(5, 5, 150, 25);
             dateLabel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
-            dateLabel.setForeground(mainColor); // 글자 색상 설정
+            dateLabel.setForeground(SettingClass.mainColor); // 글자 색상 설정
             dateLabel.setOpaque(true);
             dateLabel.setBackground(Color.WHITE);
             dateButton[i].add(dateLabel);
 
-            scheduleArea[i] = new JTextArea((i + 1) + "");
+            scheduleArea[i] = new JTextArea(contents[i]);
             scheduleArea[i].setBounds(5, 30, 150, 150);
             scheduleArea[i].setOpaque(true);
             scheduleArea[i].setPreferredSize(new Dimension(150, 150));
@@ -124,16 +115,24 @@ public class Main extends Frame {
 
             final int index = i;
 
-            scheduleArea[i].addMouseListener(new MouseAdapter() {
+            scheduleArea[i].addMouseListener (new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    editSchedule(scheduleArea[index], date, scheduleArea[index].getText());
+                    try {
+                        editSchedule(index, date, scheduleArea[index].getText(), scheduleArea[index]);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             });
             dateButton[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    editSchedule(scheduleArea[index], date, scheduleArea[index].getText());
+                    try {
+                        editSchedule(index, date, scheduleArea[index].getText(), scheduleArea[index]);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             });
         }
@@ -233,7 +232,7 @@ public class Main extends Frame {
 
     }
 
-    public void editSchedule(JTextArea scheduleArea, String date, String content){
+    public void editSchedule(int index, String date, String content, JTextArea contentArea) throws SQLException{
 //        System.out.println(index + " " + content);
         JFrame editFrame = new JFrame("일정 편집");
         editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -267,13 +266,13 @@ public class Main extends Frame {
         panel.add(contentLabel);
         editFrame.add(panel);
 
-        Border borderBtn = BorderFactory.createLineBorder(mainColor, 1);
+        Border borderBtn = BorderFactory.createLineBorder(SettingClass.mainColor, 1);
 
         JButton check = new JButton("확인");
         check.setBounds(10, 295, 140, 40);
         check.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
         check.setForeground(Color.WHITE);
-        check.setBackground(mainColor);
+        check.setBackground(SettingClass.mainColor);
         check.setBorder(borderBtn);
         check.setFocusPainted(false);
         editFrame.add(check);
@@ -281,7 +280,7 @@ public class Main extends Frame {
         JButton cancel = new JButton("취소");
         cancel.setBounds(150, 295, 140, 40);
         cancel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
-        cancel.setForeground(mainColor);
+        cancel.setForeground(SettingClass.mainColor);
         cancel.setBackground(Color.WHITE);
         cancel.setBorder(borderBtn);
         cancel.setFocusPainted(false);
@@ -290,7 +289,11 @@ public class Main extends Frame {
         check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scheduleArea.setText(contentLabel.getText());
+                try {
+                    setSchedule(index, contentLabel.getText(), contentArea);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 editFrame.dispose();
             }
         });
@@ -304,6 +307,40 @@ public class Main extends Frame {
         editFrame.setLocationRelativeTo(null);
         editFrame.setVisible(true);
     }
+    static public void getSchedule() throws SQLException{
+        String url = "jdbc:mysql://localhost:3306/wanhakman";
+        Connection connection = DriverManager.getConnection(url, "root", "tjgus1013*");
+
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM scheduler";
+        ResultSet result = statement.executeQuery(sql);
+
+        int index = 0;
+        while(result.next()){
+            contents[index] = result.getString(2)+"";
+            index++;
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+    }
+    static public void setSchedule(int id, String content, JTextArea contentArea) throws SQLException{
+//        index, contentLabel.getText(), contentArea
+        Connection connection = Util.getConnection();
+
+        PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE id = ?");
+        preparedStatement2.setString(1, content);
+        preparedStatement2.setInt(2, id+1);
+        // UPDATE person SET age = 40 WHERE name = 'John';
+        int rowsAffected = preparedStatement2.executeUpdate();
+        System.out.println(rowsAffected);
+        contentArea.setText(content);
+        contents[id] = content;
+
+        preparedStatement2.close();
+        connection.close();
+    }
 }
 class RoundedButton extends JButton {
     private int arcWidth = 20;
@@ -316,7 +353,7 @@ class RoundedButton extends JButton {
         super(text);
         setContentAreaFilled(false);
         setFocusPainted(false);
-        setBackground(mainColor); // JButton의 배경색을 초록색으로 설정
+        setBackground(SettingClass.mainColor); // JButton의 배경색을 초록색으로 설정
         setBorderPainted(false);
     }
 
@@ -324,10 +361,10 @@ class RoundedButton extends JButton {
     protected void paintComponent(Graphics g) {
         if (getModel().isArmed()) {
             g.setColor(getBackground());
-            setForeground(mainColor);
+            setForeground(SettingClass.mainColor);
         } else {
             g.setColor(getBackground());
-            setForeground(mainColor);
+            setForeground(SettingClass.mainColor);
         }
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
