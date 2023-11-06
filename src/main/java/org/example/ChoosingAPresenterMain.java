@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
@@ -57,7 +58,11 @@ public class ChoosingAPresenterMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new Main();
+                try {
+                    new Main();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         frame.add(homeBtn);

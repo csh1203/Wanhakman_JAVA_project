@@ -17,15 +17,18 @@ import java.util.Objects;
 
 
 public class Main extends Frame {
+    private Date currentDate;
+    JLabel[] dateLabel;
+    JLabel[] weekLabel;
 
-    static String contents[] = new String[7];
+    JTextArea scheduleArea[];
 
     public static void main(String[] args) throws SQLException{
-        getSchedule();
         new Main();
     }
 
-    public Main() {
+    public Main() throws SQLException {
+        currentDate = getStartOfThisWeek(); // 이번주 월요일 날짜를 사용
         // JFrame 생성
         JFrame frame = new JFrame("완벽한 학급 만들기");
         frame.setBounds(100, 100, 1280, 832);
@@ -51,38 +54,20 @@ public class Main extends Frame {
         });
 
         Calendar calendar = Calendar.getInstance();
-        int todayWeekday = calendar.get(Calendar.DAY_OF_WEEK);
-        if(todayWeekday == 1) todayWeekday = 6;
-        else todayWeekday = todayWeekday - 2;
-
-        // 현재 날짜로부터 이번 주의 시작 날짜 계산
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
-
 
         //학급 일정표 JPanel 생성
         JPanel schedulePanel = new JPanel();
-        schedulePanel.setBounds(80, 259, 1120, 220);
-        schedulePanel.setBackground(Color.pink);
+        schedulePanel.setBounds(75, 259, 1120, 220);
         schedulePanel.setLayout(null);
         JPanel weekPanel = new JPanel(new GridLayout(1, 7));
         weekPanel.setBounds(0, 0, 1120, 36);
 
         String weekDay[] = {"월", "화", "수", "목", "금", "토", "일"};
-        JLabel weekLabel[] = new JLabel[7];
+        weekLabel = new JLabel[7];
         for(int i = 0; i<7; i++){
             weekLabel[i] = new JLabel(weekDay[i]);
             Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 3);
             weekLabel[i].setBorder(border);
-            if(i == todayWeekday){
-                weekLabel[i].setForeground(Color.white); // 글자 색상 설정
-                weekLabel[i].setOpaque(true);
-                weekLabel[i].setBackground(SettingClass.mainColor);
-            }else{
-                weekLabel[i].setForeground(SettingClass.mainColor); // 글자 색상 설정
-                weekLabel[i].setOpaque(true);
-                weekLabel[i].setBackground(Color.WHITE);
-            }
             weekLabel[i].setFont(new Font("Noto Sans", Font.PLAIN, 18)); // 폰트 및 글자 크기 설정
             weekLabel[i].setHorizontalAlignment(JLabel.CENTER);
             weekLabel[i].setVerticalAlignment(JLabel.CENTER);
@@ -93,10 +78,10 @@ public class Main extends Frame {
         JPanel datePanel = new JPanel(new GridLayout(1, 7));
         datePanel.setBounds(0, 33, 1120, 187);
         JButton dateButton[] = new JButton[7];
-        JTextArea scheduleArea[] = new JTextArea[7];
-        for(int i = 0; i<7; i++){
-            String date = dateFormat.format(calendar.getTime());
+        scheduleArea = new JTextArea[7];
+        dateLabel = new JLabel[7];
 
+        for(int i = 0; i<7; i++){
             dateButton[i] = new JButton();
             Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 3);
             dateButton[i].setBorder(border);
@@ -105,15 +90,15 @@ public class Main extends Frame {
             dateButton[i].setFocusPainted(false);
             dateButton[i].setBackground(Color.white); // JButton의 배경색을 초록색으로 설정
 
-            JLabel dateLabel = new JLabel(date);
-            dateLabel.setBounds(5, 5, 150, 25);
-            dateLabel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
-            dateLabel.setForeground(SettingClass.mainColor); // 글자 색상 설정
-            dateLabel.setOpaque(true);
-            dateLabel.setBackground(Color.WHITE);
-            dateButton[i].add(dateLabel);
+            dateLabel[i] = new JLabel();
+            dateLabel[i].setBounds(5, 5, 150, 25);
+            dateLabel[i].setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+            dateLabel[i].setForeground(SettingClass.mainColor); // 글자 색상 설정
+            dateLabel[i].setOpaque(true);
+            dateLabel[i].setBackground(Color.WHITE);
+            dateButton[i].add(dateLabel[i]);
 
-            scheduleArea[i] = new JTextArea(contents[i]);
+            scheduleArea[i] = new JTextArea();
             scheduleArea[i].setBounds(5, 30, 150, 150);
             scheduleArea[i].setOpaque(true);
             scheduleArea[i].setPreferredSize(new Dimension(150, 150));
@@ -132,7 +117,7 @@ public class Main extends Frame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     try {
-                        editSchedule(index, date, scheduleArea[index].getText(), scheduleArea[index]);
+                        editSchedule(dateLabel[index].getText(), scheduleArea[index].getText(), scheduleArea[index]);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -142,15 +127,65 @@ public class Main extends Frame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        editSchedule(index, date, scheduleArea[index].getText(), scheduleArea[index]);
+                        editSchedule(dateLabel[index].getText(), scheduleArea[index].getText(), scheduleArea[index]);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
             });
         }
+        updateCalendar(currentDate);
+
         schedulePanel.add(datePanel);
         frame.add(schedulePanel);
+
+        JButton prevWeek = new JButton();
+        prevWeek.setIcon(new ImageIcon("img/schedulerPrevWeek.png"));
+        prevWeek.setBounds(16, 344, 50,50);
+        prevWeek.setBorderPainted(false);
+        prevWeek.setContentAreaFilled(false);
+        prevWeek.setFocusPainted(false);
+        prevWeek.setOpaque(false);
+        frame.add(prevWeek);
+
+        JButton nextWeek = new JButton();
+        nextWeek.setIcon(new ImageIcon("img/schedulerNextWeek.png"));
+        nextWeek.setBounds(1210, 344, 50,50);
+        nextWeek.setBorderPainted(false);
+        nextWeek.setContentAreaFilled(false);
+        nextWeek.setFocusPainted(false);
+        nextWeek.setOpaque(false);
+        frame.add(nextWeek);
+
+        prevWeek.addActionListener(new ActionListener()  {
+            @Override
+            public void actionPerformed(ActionEvent e)  {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentDate);
+                calendar.add(Calendar.WEEK_OF_YEAR, -1); // 이전 주로 이동
+                currentDate = calendar.getTime();
+                try {
+                    updateCalendar(currentDate);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        nextWeek.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentDate);
+                calendar.add(Calendar.WEEK_OF_YEAR, 1); // 이전 주로 이동
+                currentDate = calendar.getTime();
+                try {
+                    updateCalendar(currentDate);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
 
 //      버튼 JPanel 생성
         JPanel panel = new JPanel();
@@ -244,9 +279,65 @@ public class Main extends Frame {
         frame.setVisible(true);
 
     }
+    private void updateCalendar(Date date) throws SQLException{
 
-    public void editSchedule(int index, String date, String content, JTextArea contentArea) throws SQLException{
-//        System.out.println(index + " " + content);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
+
+        Calendar today = Calendar.getInstance();
+        String getToday = dateFormat.format(today.getTime());
+        // 이번 주 월요일부터 일요일까지의 날짜를 표시
+        for (int i = 0; i < 7; i++) {
+            String getDate = dateFormat.format(calendar.getTime());
+            String text = getCurrectText(getDate);
+            scheduleArea[i].setText(text);
+            dateLabel[i].setText(getDate);
+            calendar.add(Calendar.DAY_OF_YEAR, 1); // 다음 날짜로 이동
+            if(getDate.equals(getToday)){
+                weekLabel[i].setForeground(Color.white); // 글자 색상 설정
+                weekLabel[i].setOpaque(true);
+                weekLabel[i].setBackground(SettingClass.mainColor);
+            }else{
+                weekLabel[i].setForeground(SettingClass.mainColor); // 글자 색상 설정
+                weekLabel[i].setOpaque(true);
+                weekLabel[i].setBackground(Color.WHITE);
+            }
+        }
+    }
+
+    public String getCurrectText(String date) throws SQLException{
+        Connection connection = Util.getConnection();
+
+        Statement statement1 = connection.createStatement();
+
+        String text = "";
+        String sql1 = "select EXISTS (SELECT date, content from scheduler WHERE date Like \""+date+"\" limit 1) as success";
+
+        ResultSet result2 = statement1.executeQuery(sql1);
+        result2.next();
+
+        if(result2.getString(1).equals("1")){
+            PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT * FROM scheduler WHERE date = ?");
+            preparedStatement1.setString(1, date);
+            ResultSet result = preparedStatement1.executeQuery();
+            result.next();
+            text = result.getString(2);
+            preparedStatement1.close();
+        }
+        result2.close();
+        statement1.close();
+        connection.close();
+
+        return text;
+    }
+    private Date getStartOfThisWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // 이번 주 월요일
+        return calendar.getTime();
+    }
+    public void editSchedule(String date, String content, JTextArea contentArea) throws SQLException{
+
         JFrame editFrame = new JFrame("일정 편집");
         editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         editFrame.setSize(325, 400);
@@ -303,7 +394,7 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    setSchedule(index, contentLabel.getText(), contentArea);
+                    setSchedule(date, contentLabel.getText(), contentArea);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -320,36 +411,52 @@ public class Main extends Frame {
         editFrame.setLocationRelativeTo(null);
         editFrame.setVisible(true);
     }
-    static public void getSchedule() throws SQLException{
-        String url = "jdbc:mysql://localhost:3306/wanhakman";
-        Connection connection = DriverManager.getConnection(url, "root", "tjgus1013*");
-
-        Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM scheduler";
-        ResultSet result = statement.executeQuery(sql);
-
-        int index = 0;
-        while(result.next()){
-            contents[index] = result.getString(2)+"";
-            index++;
-        }
-
-        result.close();
-        statement.close();
-        connection.close();
-    }
-    static public void setSchedule(int id, String content, JTextArea contentArea) throws SQLException{
+//    static public void getSchedule() throws SQLException{
+//        String url = "jdbc:mysql://localhost:3306/wanhakman";
+//        Connection connection = DriverManager.getConnection(url, "root", "tjgus1013*");
+//
+//        Statement statement = connection.createStatement();
+//        String sql = "SELECT * FROM scheduler";
+//        ResultSet result = statement.executeQuery(sql);
+//
+//        int index = 0;
+//        while(result.next()){
+////            contents[index] = result.getString(2)+"";
+////            index++;
+//        }
+//        String date = "11/07";
+//
+//
+//
+//        result.close();
+//        statement.close();
+//        connection.close();
+//    }
+    static public void setSchedule(String date, String content, JTextArea contentArea) throws SQLException{
         Connection connection = Util.getConnection();
 
-        PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE id = ?");
-        preparedStatement2.setString(1, content);
-        preparedStatement2.setInt(2, id+1);
-        int rowsAffected = preparedStatement2.executeUpdate();
-        System.out.println(rowsAffected);
-        contentArea.setText(content);
-        contents[id] = content;
+        Statement statement1 = connection.createStatement();
+        String sql1 = "select EXISTS (SELECT date, content from scheduler WHERE date Like \""+date+"\" limit 1) as success";
 
-        preparedStatement2.close();
+        ResultSet result2 = statement1.executeQuery(sql1);
+        result2.next();
+        if(result2.getString(1).equals("1")){ // 이미 존재 한다.
+            PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE date = ?");
+            preparedStatement2.setString(1, content);
+            preparedStatement2.setString(2, date);
+            int rowsAffected = preparedStatement2.executeUpdate();
+
+            contentArea.setText(content);
+            preparedStatement2.close();
+        }else{// 존재하지 않는다.
+            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO scheduler (date, content) VALUES(\""+ date+"\", \""+content+"\")");
+            int rowsAffected = preparedStatement2.executeUpdate();
+            contentArea.setText(content);
+            preparedStatement2.close();
+        }
+        result2.close();
+        statement1.close();
+
         connection.close();
     }
 }
@@ -390,4 +497,5 @@ class RoundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
     }
+
 }

@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class Setting {
     public static void main(String args[]){
@@ -37,7 +38,11 @@ public class Setting {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new Main();
+                try {
+                    new Main();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         directPanel.add(backBtn);
@@ -92,7 +97,6 @@ public class Setting {
         rightPanel.setBounds(235, 0, 1045, 832);
 
         JPanel basePanel = new JPanel();
-        basePanel.add(new JLabel("This is base Panel"));
 
         SettingClassInfo panel1 = new SettingClassInfo();
         SettingThemeColor panel2 = new SettingThemeColor();

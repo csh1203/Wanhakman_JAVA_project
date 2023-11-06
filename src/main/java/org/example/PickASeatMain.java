@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Array;
 import java.nio.channels.FileLock;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
@@ -59,7 +60,11 @@ public class PickASeatMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new Main();
+                try {
+                    new Main();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         frame.add(homeBtn);
