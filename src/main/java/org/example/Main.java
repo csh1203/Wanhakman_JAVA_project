@@ -37,6 +37,19 @@ public class Main extends Frame {
         titleImg.setIcon(new ImageIcon("img/title.png"));
         frame.getContentPane().add(titleImg);
 
+        JLabel userProfile = new JLabel();
+        userProfile.setBounds(1150, 35, 70, 70);
+        userProfile.setIcon(new ImageIcon("img/userProfile.png"));
+        frame.getContentPane().add(userProfile);
+
+        userProfile.addMouseListener (new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                frame.dispose();
+                new Setting();
+            }
+        });
+
         Calendar calendar = Calendar.getInstance();
         int todayWeekday = calendar.get(Calendar.DAY_OF_WEEK);
         if(todayWeekday == 1) todayWeekday = 6;

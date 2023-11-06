@@ -85,6 +85,7 @@ public class PickASeatMain {
         seatHeight = seatHeight * 75 + (seatHeight - 1) * 16;
         JPanel seat = new JPanel();
         seat.setLayout(new GridLayout(1, division));
+
         seat.setBounds(0, 259, 1280, seatHeight);
 
         int[] divisionCnt = new int[division];
