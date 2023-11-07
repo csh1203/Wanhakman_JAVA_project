@@ -49,7 +49,11 @@ public class Main extends Frame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 frame.dispose();
-                new Setting();
+                try {
+                    new Setting();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -411,27 +415,6 @@ public class Main extends Frame {
         editFrame.setLocationRelativeTo(null);
         editFrame.setVisible(true);
     }
-//    static public void getSchedule() throws SQLException{
-//        String url = "jdbc:mysql://localhost:3306/wanhakman";
-//        Connection connection = DriverManager.getConnection(url, "root", "tjgus1013*");
-//
-//        Statement statement = connection.createStatement();
-//        String sql = "SELECT * FROM scheduler";
-//        ResultSet result = statement.executeQuery(sql);
-//
-//        int index = 0;
-//        while(result.next()){
-////            contents[index] = result.getString(2)+"";
-////            index++;
-//        }
-//        String date = "11/07";
-//
-//
-//
-//        result.close();
-//        statement.close();
-//        connection.close();
-//    }
     static public void setSchedule(String date, String content, JTextArea contentArea) throws SQLException{
         Connection connection = Util.getConnection();
 
@@ -444,13 +427,13 @@ public class Main extends Frame {
             PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE date = ?");
             preparedStatement2.setString(1, content);
             preparedStatement2.setString(2, date);
-            int rowsAffected = preparedStatement2.executeUpdate();
+            preparedStatement2.executeUpdate();
 
             contentArea.setText(content);
             preparedStatement2.close();
         }else{// 존재하지 않는다.
             PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO scheduler (date, content) VALUES(\""+ date+"\", \""+content+"\")");
-            int rowsAffected = preparedStatement2.executeUpdate();
+            preparedStatement2.executeUpdate();
             contentArea.setText(content);
             preparedStatement2.close();
         }

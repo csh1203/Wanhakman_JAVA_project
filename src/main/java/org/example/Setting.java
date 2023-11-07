@@ -8,11 +8,11 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class Setting {
-    public static void main(String args[]){
+    public static void main(String args[]) throws SQLException {
 
         new Setting();
     }
-    public Setting(){
+    public Setting() throws SQLException {
         // JFrame 생성
         JFrame frame = new JFrame("설정");
         frame.setBounds(100, 100, 1280, 832);
