@@ -2,6 +2,7 @@ package org.example;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.metal.MetalComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,15 +10,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Array;
 import java.nio.channels.FileLock;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.List;
 
 public class PickASeatMain {
-    public static void main(String args[]){
-        new PickASeatMain(15, 3);
+    JComboBox<String> jComboBox;
+    int people;
+    int division;
+    String firstSelect;
+    public static void main(String args[]) throws SQLException {
+
+        new PickASeatMain();
     }
-    PickASeatMain(int people, int division){
+    PickASeatMain() throws SQLException {
+        String[] classOption = getClassOption();
 
         Color setting = new Color(0x474747);
 
@@ -26,6 +33,28 @@ public class PickASeatMain {
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 종료 버튼 동작 설정
         frame.setLayout(null);
+
+        jComboBox = new JComboBox<>(classOption);
+        jComboBox.setBounds(47, 36, 200, 40);
+        jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 24));
+        jComboBox.setUI(new CustomComboBoxUI());
+        jComboBox.setOpaque(false);
+        frame.add(jComboBox);
+
+        jComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected item from the JComboBox
+                String selectedItem = jComboBox.getSelectedItem().toString();
+                try {
+                    getClassInfo(selectedItem);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        getClassInfo(classOption[0]);
 
         JButton settingBtn = new JButton("설정");
         settingBtn.setBounds(1100, 31, 100, 33);
@@ -106,10 +135,6 @@ public class PickASeatMain {
             }
             int repeat = (people / (division * 2)) * 2 + plus;
             divisionCnt[i] = repeat;
-        }
-
-        for(int i = 0; i<divisionCnt.length; i++){
-            System.out.println(divisionCnt[i]);
         }
 
         // 고정할 숫자의 위치를 ArrayList로 지정
@@ -252,7 +277,6 @@ public class PickASeatMain {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
     public static List<Integer> shuffleNumbers(int[] numberRange, List<Integer> excludeNumbers) {
         List<Integer> availableNumbers = new ArrayList<>();
 
@@ -315,6 +339,39 @@ public class PickASeatMain {
 
         return shuffledNumbers;
     }
+    public void getClassInfo(String className) throws SQLException {
+        people = 16;
+
+        Connection connection = Util.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT division FROM my_class WHERE class_name = ?");
+        preparedStatement.setString(1, className);
+        ResultSet result = preparedStatement.executeQuery();
+        while(result.next()) {
+            division = result.getInt("division");
+        }
+        preparedStatement.close();
+        connection.close();
+    }
+    public String[] getClassOption() throws SQLException{
+        ArrayList<String> classOptionsList = new ArrayList<>();
+        Connection connection = Util.getConnection();
+        // Statement 객체 생성 및 질의문 실행
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM my_class");
+
+        // 결과 조회
+        while(result.next()) {
+            classOptionsList.add(result.getString("class_name"));
+        }
+        // 리소스 해제
+        result.close();
+        statement.close();
+        connection.close();
+
+        String[] classOptions = classOptionsList.toArray(new String[classOptionsList.size()]);
+
+        return classOptions;
+    }
 
 }
 class CustomToggleButton extends JButton {
@@ -375,5 +432,28 @@ class CustomToggleButton extends JButton {
             g.setColor(SettingClass.mainColor);
             g.fillOval(x, y, diameter, diameter);
         }
+    }
+}
+class CustomComboBoxUI extends MetalComboBoxUI {
+    @Override
+    public void installUI(JComponent c) {
+        super.installUI(c);
+        comboBox.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, SettingClass.mainColor)); // Set the border color to blue
+    }
+
+    @Override
+    protected JButton createArrowButton() {
+        JButton button = super.createArrowButton();
+        button.setBackground(SettingClass.mainColor); // Set the button background color to blue
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        return button;
+    }
+
+    @Override
+    public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
+        // Do nothing to remove the background
     }
 }

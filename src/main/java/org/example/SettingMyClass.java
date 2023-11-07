@@ -228,7 +228,7 @@ public class SettingMyClass extends JPanel {
     public void addCurrentClass(String class_name) throws SQLException{
 
         Connection connection = Util.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO my_class (class_name, class_type) VALUES (?, 1)");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO my_class (class_name, class_type, division) VALUES (?, 1, 3)");
         preparedStatement.setString(1, class_name);
         // 다음의 질의문이 실행됨
         // 수정, 삭제 관련 작업은 Statement와 마찬가지로 executeUpdate 메서드 실행

@@ -9,6 +9,7 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PickASeatSetting {
@@ -123,7 +124,12 @@ public class PickASeatSetting {
                     JOptionPane.showMessageDialog(frame, "분단 수를 입력해주세요!");
                 }else{
                     frame.dispose();
-                    new PickASeatMain(Integer.parseInt(people), Integer.parseInt(division));
+//                    new PickASeatMain(Integer.parseInt(people), Integer.parseInt(division));
+                    try {
+                        new PickASeatMain();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
             }

@@ -248,7 +248,11 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PickASeatSetting();
+                try {
+                    new PickASeatMain();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
