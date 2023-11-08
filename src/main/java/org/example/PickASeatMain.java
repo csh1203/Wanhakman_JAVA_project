@@ -29,9 +29,9 @@ public class PickASeatMain {
     ArrayList<Integer> seatOrder;
     public static void main(String args[]) throws SQLException {
 
-        new PickASeatMain();
+        new PickASeatMain(0);
     }
-    PickASeatMain() throws SQLException {
+    PickASeatMain(int index) throws SQLException {
         String[] classOption = getClassOption();
 
         Color setting = new Color(0x474747);
@@ -47,6 +47,7 @@ public class PickASeatMain {
         jComboBox.setBounds(47, 36, 200, 40);
         jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 24));
         jComboBox.setUI(new CustomComboBoxUI());
+        jComboBox.setSelectedItem(classOption[index]);
         jComboBox.setOpaque(false);
         frame.add(jComboBox);
 
@@ -62,7 +63,7 @@ public class PickASeatMain {
             }
         });
 
-        getClassInfo(classOption[0]);
+        getClassInfo(classOption[index]);
 
         int seatHeight = (int)(Math.ceil(people / (division * 2.0)));
         seatHeight = seatHeight * 75 + (seatHeight - 1) * 16;
@@ -219,9 +220,6 @@ public class PickASeatMain {
     }
 
     public void setTable(int[] numbers, String className) throws SQLException {
-//        for(int i = 0; i<numbers.length; i++){
-//            System.out.print(numbers[i] + " ");
-//        }
         Connection connection = Util.getConnection();
 
         for(int i = 0; i<numbers.length; i++){
@@ -234,9 +232,17 @@ public class PickASeatMain {
         }
 
         connection.close();
+
+        JOptionPane.showMessageDialog(frame,"저장되었습니다.");
     }
     public void mainTables() {
         removeAllComponents(seat);
+
+        int seatHeight = (int)(Math.ceil(people / (division * 2.0)));
+        seatHeight = seatHeight * 75 + (seatHeight - 1) * 16;
+//        seat = new JPanel();
+        seat.setLayout(new GridLayout(1, division));
+        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         customToggleButtons = new CustomToggleButton[people];
@@ -418,9 +424,6 @@ public class PickASeatMain {
 
         connection.close();
 
-//        for(int i = 0; i<seatOrder.size(); i++){
-//            System.out.print(seatOrder.get(i) + " ");
-//        }
         mainTables();
     }
     public String[] getClassOption() throws SQLException{

@@ -249,7 +249,7 @@ public class Main extends Frame {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 try {
-                    new PickASeatMain();
+                    new PickASeatMain(0);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

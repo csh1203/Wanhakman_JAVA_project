@@ -19,6 +19,8 @@ public class PickASeatSetting {
     JLabel inputPerson;
     JTextField inputDivision;
     int firstDivision;
+    JLabel inputClassName;
+    int index;
     public static void main(String args[]){
 //        new PickASeatSetting("나의학급");
     }
@@ -73,6 +75,16 @@ public class PickASeatSetting {
         myung.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         myung.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung);
+
+        JLabel classNameTitle = new JLabel("교실");
+        classNameTitle.setBounds(319, 70, 50, 35);
+        classNameTitle.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        backgroundImg.add(classNameTitle);
+
+        inputClassName = new JLabel();
+        inputClassName.setBounds(319, 122, 220, 29);
+        inputClassName.setFont(new Font("Noto Sans", Font.BOLD, 24));
+        backgroundImg.add(inputClassName);
 
         JLabel line = new JLabel();
         line.setBounds(68, 189, 400, 1);
@@ -142,7 +154,7 @@ public class PickASeatSetting {
                     }
 
                     try {
-                        new PickASeatMain();
+                        new PickASeatMain(index);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -187,6 +199,24 @@ public class PickASeatSetting {
         inputDivision.setText(result.getInt("division")+"");
         firstDivision = result.getInt("division");
         inputPerson.setText("16");
+        inputClassName.setText(className);
+
+        PreparedStatement preparedStatement1 =
+                connection.prepareStatement(
+                        "select my_class from(" +
+                                "SELECT @rownum := @rownum + 1 AS my_class," +
+                                "t.*" +
+                                "FROM my_class t," +
+                                "(SELECT @rownum := 0) r" +
+                                ")b where class_name = ?");
+        preparedStatement1.setString(1, className);
+        ResultSet result2 = preparedStatement1.executeQuery();
+        result2.next();
+        System.out.println((result2.getInt(1) - 1) + " dd");
+        index = result2.getInt(1) - 1;
+
+        result2.close();
+        preparedStatement1.close();
 
         preparedStatement.close();
         connection.close();

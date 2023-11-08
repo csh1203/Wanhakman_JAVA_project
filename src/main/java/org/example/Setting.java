@@ -8,13 +8,14 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class Setting {
+    static JFrame frame;
     public static void main(String args[]) throws SQLException {
 
         new Setting();
     }
     public Setting() throws SQLException {
         // JFrame 생성
-        JFrame frame = new JFrame("설정");
+        frame = new JFrame("설정");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 종료 버튼 동작 설정
         frame.setBackground(Color.WHITE);
