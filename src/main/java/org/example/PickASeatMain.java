@@ -19,6 +19,14 @@ public class PickASeatMain {
     int people;
     int division;
     String firstSelect;
+    JFrame frame;
+    JLabel[] tables;
+    CustomToggleButton[] customToggleButtons;
+    JLabel[] InnerLabel;
+    ArrayList<Integer> fixedNumbers;
+    Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+    JPanel seat = new JPanel();
+    ArrayList<Integer> seatOrder;
     public static void main(String args[]) throws SQLException {
 
         new PickASeatMain();
@@ -29,10 +37,11 @@ public class PickASeatMain {
         Color setting = new Color(0x474747);
 
         // JFrame 생성
-        JFrame frame = new JFrame("자리 뽑기");
+        frame = new JFrame("자리 뽑기");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 종료 버튼 동작 설정
         frame.setLayout(null);
+
 
         jComboBox = new JComboBox<>(classOption);
         jComboBox.setBounds(47, 36, 200, 40);
@@ -44,7 +53,6 @@ public class PickASeatMain {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Get the selected item from the JComboBox
                 String selectedItem = jComboBox.getSelectedItem().toString();
                 try {
                     getClassInfo(selectedItem);
@@ -55,6 +63,13 @@ public class PickASeatMain {
         });
 
         getClassInfo(classOption[0]);
+
+        int seatHeight = (int)(Math.ceil(people / (division * 2.0)));
+        seatHeight = seatHeight * 75 + (seatHeight - 1) * 16;
+//        seat = new JPanel();
+        seat.setLayout(new GridLayout(1, division));
+        seat.setBounds(0, 259, 1280, seatHeight);
+        frame.add(seat);
 
         JButton settingBtn = new JButton("설정");
         settingBtn.setBounds(1100, 31, 100, 33);
@@ -71,7 +86,11 @@ public class PickASeatMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PickASeatSetting();
+                try {
+                    new PickASeatSetting(jComboBox.getSelectedItem().toString());
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         frame.add(settingBtn);
@@ -99,7 +118,7 @@ public class PickASeatMain {
         frame.add(homeBtn);
 
         JLabel teachingDeskLabel = new JLabel();
-        Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+
         teachingDeskLabel.setBorder(roundedBorder);
         teachingDeskLabel.setBounds(463, 104, 355,95);
 
@@ -115,102 +134,8 @@ public class PickASeatMain {
 
         frame.add(teachingDeskLabel);
 
-        int seatHeight = (int)(Math.ceil(people / (division * 2.0)));
-        seatHeight = seatHeight * 75 + (seatHeight - 1) * 16;
-        JPanel seat = new JPanel();
-        seat.setLayout(new GridLayout(1, division));
-
-        seat.setBounds(0, 259, 1280, seatHeight);
-
-        int[] divisionCnt = new int[division];
-        int Remain = people % (division * 2);
-        for(int i = 0; i<division; i++){
-            int plus = 0;
-            if(Remain - 2 >= 0) {
-                plus = 2;
-                Remain -= 2;
-            }else if(Remain - 1 >= 0){
-                plus = 1;
-                Remain -= 1;
-            }
-            int repeat = (people / (division * 2)) * 2 + plus;
-            divisionCnt[i] = repeat;
-        }
-
         // 고정할 숫자의 위치를 ArrayList로 지정
-        ArrayList<Integer> fixedNumbers = new ArrayList<>();
-
-
-        JLabel[] tables = new JLabel[people];
-        CustomToggleButton[] customToggleButtons = new CustomToggleButton[people];
-        JLabel[] InnerLabel = new JLabel[people];
-        for(int i = 0; i<divisionCnt.length; i++){
-            int cnt = 0;
-            int repeat = divisionCnt[i];
-            int height = (int)(Math.ceil(repeat / 2.0));
-            height = height * 75 + (height - 1) + 16;
-
-            int margin = (1200 / division - 259) / 2;
-
-            JPanel divisions = new JPanel();
-            divisions.setLayout(new GridLayout((int)(Math.ceil(repeat / 2.0)),2));
-            divisions.setBounds(margin, 0, 259, height);
-
-            JLabel l = new JLabel();
-            l.setSize(259, height);
-            l.setHorizontalAlignment(SwingConstants.CENTER);
-            l.setOpaque(true);
-
-            for(int j = 0; j<(int)(Math.ceil(repeat / 2.0)); j++){ // 0 1 2
-                int index = (i + 1) * 2 - 1;
-                for(int k = index; k<=index + 1; k++){
-                    cnt++;
-                    if(cnt > repeat) break;
-                    String tableNumber = (k + (j * (2 * division)))+"";
-                    tables[Integer.parseInt(tableNumber) - 1] = new JLabel();
-                    tables[Integer.parseInt(tableNumber) - 1].setOpaque(true);
-                    tables[Integer.parseInt(tableNumber) - 1].setLayout(null);
-
-                    JLabel InnerTable = new JLabel();
-                    InnerTable.setBounds(3, 3, 120, 69);
-                    InnerTable.setBorder(roundedBorder);
-                    tables[Integer.parseInt(tableNumber) - 1].add(InnerTable);
-
-                    JLabel InnerTextTable = new JLabel();
-                    InnerTextTable.setLayout(null);
-                    InnerTextTable.setBounds(3,3, 114, 63);
-                    Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
-                    InnerTextTable.setBorder(InnerRoundedBorder);
-
-                    InnerLabel[Integer.parseInt(tableNumber) - 1] = new JLabel(tableNumber);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBounds(5,5, 104, 53);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setOpaque(true);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBackground(Color.WHITE);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setHorizontalAlignment(SwingConstants.CENTER);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setVerticalAlignment(SwingConstants.CENTER);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setForeground(SettingClass.mainColor);
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
-
-                    InnerTextTable.add(InnerLabel[Integer.parseInt(tableNumber) - 1]);
-
-                    InnerTable.add(InnerTextTable);
-
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1] = new CustomToggleButton("",  tableNumber, fixedNumbers);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBounds(2, 2, 20, 20);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setOpaque(false);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setContentAreaFilled(false);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBorderPainted(false);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setFocusPainted(false);
-                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setForeground(new Color(0, 0, 0, 0));
-
-                    InnerLabel[Integer.parseInt(tableNumber) - 1].add(customToggleButtons[Integer.parseInt(tableNumber) - 1]);
-                    divisions.add(tables[Integer.parseInt(tableNumber) - 1]);
-                }
-            }
-            l.add(divisions);
-            seat.add(l);
-        }
-        frame.add(seat);
+        fixedNumbers = new ArrayList<>();
 
         JButton seatChangeBtn = new JButton();
         Border RoundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 15, true);
@@ -272,10 +197,138 @@ public class PickASeatMain {
         InnerSeatSaveBtn.setVerticalAlignment(SwingConstants.CENTER);
         seatSaveBtn.add(InnerSeatSaveBtn);
 
+        seatSaveBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] numbers = new int[people]; // 원하는 숫자 범위
+                for(int i = 0; i<people; i++){
+                    numbers[i] = Integer.parseInt(InnerLabel[i].getText());
+                }
+                try {
+                    setTable(numbers, jComboBox.getSelectedItem().toString());
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
         frame.add(seatSaveBtn);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public void setTable(int[] numbers, String className) throws SQLException {
+//        for(int i = 0; i<numbers.length; i++){
+//            System.out.print(numbers[i] + " ");
+//        }
+        Connection connection = Util.getConnection();
+
+        for(int i = 0; i<numbers.length; i++){
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE seat SET seat_order = ? WHERE class_name = ? AND student_id = ?");
+            preparedStatement.setInt(1, numbers[i]);
+            preparedStatement.setString(2, className);
+            preparedStatement.setInt(3, i+1);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        }
+
+        connection.close();
+    }
+    public void mainTables() {
+        removeAllComponents(seat);
+
+        tables = new JLabel[people];
+        customToggleButtons = new CustomToggleButton[people];
+        InnerLabel = new JLabel[people];
+
+        int[] divisionCnt = new int[division];
+        int Remain = people % (division * 2);
+        for(int i = 0; i<division; i++){
+            int plus = 0;
+            if(Remain - 2 >= 0) {
+                plus = 2;
+                Remain -= 2;
+            }else if(Remain - 1 >= 0){
+                plus = 1;
+                Remain -= 1;
+            }
+            int repeat = (people / (division * 2)) * 2 + plus;
+            divisionCnt[i] = repeat;
+        }
+        for(int i = 0; i<divisionCnt.length; i++){
+            int cnt = 0;
+            int repeat = divisionCnt[i];
+            int height = (int)(Math.ceil(repeat / 2.0));
+            height = height * 75 + (height - 1) + 16;
+
+            int margin = (1200 / division - 259) / 2;
+
+            JPanel divisions = new JPanel();
+            divisions.setLayout(new GridLayout((int)(Math.ceil(repeat / 2.0)),2));
+            divisions.setBounds(margin, 0, 259, height);
+
+            JLabel l = new JLabel();
+            l.setSize(259, height);
+            l.setHorizontalAlignment(SwingConstants.CENTER);
+            l.setOpaque(true);
+
+            for(int j = 0; j<(int)(Math.ceil(repeat / 2.0)); j++){ // 0 1 2
+                int index = (i + 1) * 2 - 1;
+                for(int k = index; k<=index + 1; k++){
+                    cnt++;
+                    if(cnt > repeat) break;
+                    int tableIndex = (k + (j * (2 * division))) - 1;
+                    String tableNumber = seatOrder.get(tableIndex).toString();
+                    tables[Integer.parseInt(tableNumber) - 1] = new JLabel();
+                    tables[Integer.parseInt(tableNumber) - 1].setOpaque(true);
+                    tables[Integer.parseInt(tableNumber) - 1].setLayout(null);
+
+                    JLabel InnerTable = new JLabel();
+                    InnerTable.setBounds(3, 3, 120, 69);
+                    InnerTable.setBorder(roundedBorder);
+                    tables[Integer.parseInt(tableNumber) - 1].add(InnerTable);
+
+                    JLabel InnerTextTable = new JLabel();
+                    InnerTextTable.setLayout(null);
+                    InnerTextTable.setBounds(3,3, 114, 63);
+                    Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
+                    InnerTextTable.setBorder(InnerRoundedBorder);
+
+                    InnerLabel[Integer.parseInt(tableNumber) - 1] = new JLabel(tableNumber);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBounds(5,5, 104, 53);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setOpaque(true);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setBackground(Color.WHITE);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setHorizontalAlignment(SwingConstants.CENTER);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setVerticalAlignment(SwingConstants.CENTER);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setForeground(SettingClass.mainColor);
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+
+                    InnerTextTable.add(InnerLabel[Integer.parseInt(tableNumber) - 1]);
+
+                    InnerTable.add(InnerTextTable);
+
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1] = new CustomToggleButton("",  tableNumber, fixedNumbers);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBounds(2, 2, 20, 20);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setOpaque(false);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setContentAreaFilled(false);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setBorderPainted(false);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setFocusPainted(false);
+                    customToggleButtons[Integer.parseInt(tableNumber) - 1].setForeground(new Color(0, 0, 0, 0));
+
+                    InnerLabel[Integer.parseInt(tableNumber) - 1].add(customToggleButtons[Integer.parseInt(tableNumber) - 1]);
+                    divisions.add(tables[Integer.parseInt(tableNumber) - 1]);
+                }
+            }
+            l.add(divisions);
+            seat.add(l);
+        }
+
+    }
+    public static void removeAllComponents(JPanel panel) {
+        panel.removeAll();
+        panel.revalidate();
+        panel.repaint();
     }
     public static List<Integer> shuffleNumbers(int[] numberRange, List<Integer> excludeNumbers) {
         List<Integer> availableNumbers = new ArrayList<>();
@@ -341,16 +394,34 @@ public class PickASeatMain {
     }
     public void getClassInfo(String className) throws SQLException {
         people = 16;
-
+        seatOrder = new ArrayList<>();
         Connection connection = Util.getConnection();
+
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT division FROM my_class WHERE class_name = ?");
         preparedStatement.setString(1, className);
         ResultSet result = preparedStatement.executeQuery();
         while(result.next()) {
             division = result.getInt("division");
         }
+
+
+//        seatOrder
+        PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT seat_order FROM seat WHERE class_name = ?");
+        preparedStatement2.setString(1, className);
+        ResultSet result2 = preparedStatement2.executeQuery();
+        while(result2.next()) {
+            seatOrder.add(result2.getInt("seat_order"));
+        }
+
         preparedStatement.close();
+        preparedStatement2.close();
+
         connection.close();
+
+//        for(int i = 0; i<seatOrder.size(); i++){
+//            System.out.print(seatOrder.get(i) + " ");
+//        }
+        mainTables();
     }
     public String[] getClassOption() throws SQLException{
         ArrayList<String> classOptionsList = new ArrayList<>();
@@ -439,6 +510,7 @@ class CustomComboBoxUI extends MetalComboBoxUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         comboBox.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, SettingClass.mainColor)); // Set the border color to blue
+        comboBox.setFocusable(false);
     }
 
     @Override

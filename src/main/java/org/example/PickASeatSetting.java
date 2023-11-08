@@ -9,14 +9,20 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PickASeatSetting {
+    JLabel inputPerson;
+    JTextField inputDivision;
+    int firstDivision;
     public static void main(String args[]){
-        new PickASeatSetting();
+//        new PickASeatSetting("나의학급");
     }
-    PickASeatSetting(){
+    PickASeatSetting(String SelectedClass) throws SQLException{
         Color backgroud = new Color(0xA1A1A1);
 
         // JFrame 생성
@@ -55,8 +61,9 @@ public class PickASeatSetting {
         allPerson.setFont(new Font("Noto Sans", Font.PLAIN, 25));
         backgroundImg.add(allPerson);
 
-        JTextField inputPerson = new JTextField(3);
-        setNumberOnlyFilter(inputPerson); // 텍스트 필드에 숫자만 입력되도록 필터 설정
+        inputPerson = new JLabel();
+        Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 1);
+        inputPerson.setBorder(border);
         inputPerson.setBounds(68, 122, 119, 29);
         inputPerson.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputPerson);
@@ -78,8 +85,9 @@ public class PickASeatSetting {
         allDivision.setFont(new Font("Noto Sans", Font.PLAIN, 25));
         backgroundImg.add(allDivision);
 
-        JTextField inputDivision = new JTextField(3);
+        inputDivision = new JTextField(3);
         setNumberOnlyFilter(inputDivision); // 텍스트 필드에 숫자만 입력되도록 필터 설정
+        inputPerson.setBorder(border);
         inputDivision.setBounds(68, 270, 119, 29);
         inputDivision.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputDivision);
@@ -124,7 +132,15 @@ public class PickASeatSetting {
                     JOptionPane.showMessageDialog(frame, "분단 수를 입력해주세요!");
                 }else{
                     frame.dispose();
-//                    new PickASeatMain(Integer.parseInt(people), Integer.parseInt(division));
+
+                    if(Integer.parseInt(division) != firstDivision){
+                        try {
+                            setCurrectDivision(SelectedClass, Integer.parseInt(division));
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
                     try {
                         new PickASeatMain();
                     } catch (SQLException ex) {
@@ -134,6 +150,7 @@ public class PickASeatSetting {
 
             }
         });
+        getClassInfo(SelectedClass);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -160,4 +177,30 @@ public class PickASeatSetting {
             }
         });
     }
+
+    public void getClassInfo (String className) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM my_class WHERE class_name = ?");
+        preparedStatement.setString(1, className);
+        ResultSet result = preparedStatement.executeQuery();
+        result.next();
+        inputDivision.setText(result.getInt("division")+"");
+        firstDivision = result.getInt("division");
+        inputPerson.setText("16");
+
+        preparedStatement.close();
+        connection.close();
+    }
+
+    public void setCurrectDivision(String className, int newDivision) throws SQLException{
+        Connection connection = Util.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE my_class SET division = ? WHERE class_name = ?");
+        preparedStatement.setInt(1, newDivision);
+        preparedStatement.setString(2, className);
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+        connection.close();
+    }
+
 }

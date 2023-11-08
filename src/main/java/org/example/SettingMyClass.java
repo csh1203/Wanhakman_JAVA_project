@@ -230,11 +230,17 @@ public class SettingMyClass extends JPanel {
         Connection connection = Util.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO my_class (class_name, class_type, division) VALUES (?, 1, 3)");
         preparedStatement.setString(1, class_name);
-        // 다음의 질의문이 실행됨
-        // 수정, 삭제 관련 작업은 Statement와 마찬가지로 executeUpdate 메서드 실행
-        int rowsAffected = preparedStatement.executeUpdate();
-        System.out.println(rowsAffected);
+        preparedStatement.executeUpdate();
         preparedStatement.close();
+
+        for(int i = 1; i<=16; i++){
+            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO seat (class_name, student_id, seat_order) VALUES (?, ?, ?)");
+            preparedStatement2.setString(1, class_name);
+            preparedStatement2.setInt(2, i);
+            preparedStatement2.setInt(3, i);
+            preparedStatement2.executeUpdate();
+            preparedStatement2.close();
+        }
 
         connection.close();
 
@@ -317,13 +323,6 @@ public class SettingMyClass extends JPanel {
                 }
             });
         }
-
-//        editClass.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                editToggleButton(editClass, deleteClass);
-//            }
-//        });
     }
 
 }
