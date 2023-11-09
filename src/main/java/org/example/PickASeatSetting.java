@@ -14,13 +14,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PickASeatSetting {
     JLabel inputPerson;
     JTextField inputDivision;
-    int firstDivision;
     JLabel inputClassName;
     int index;
+    int comboBoxIndex;
+    String classOption[] = {"분단 대형", "시험 대형", "모둠 대형"};
+
+    JComboBox jComboBox = new JComboBox<>(classOption);
     public static void main(String args[]){
 //        new PickASeatSetting("나의학급");
     }
@@ -64,7 +68,7 @@ public class PickASeatSetting {
         backgroundImg.add(allPerson);
 
         inputPerson = new JLabel();
-        Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 1);
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         inputPerson.setBorder(border);
         inputPerson.setBounds(68, 122, 119, 29);
         inputPerson.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
@@ -99,16 +103,41 @@ public class PickASeatSetting {
 
         inputDivision = new JTextField(3);
         setNumberOnlyFilter(inputDivision); // 텍스트 필드에 숫자만 입력되도록 필터 설정
-        inputPerson.setBorder(border);
+        inputDivision.setBorder(BorderFactory.createLineBorder(Color.black, 1));
         inputDivision.setBounds(68, 270, 119, 29);
         inputDivision.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputDivision);
+
+        getClassInfo(SelectedClass);
 
         JLabel division = new JLabel("분단");
         division.setBounds(199, 270, 50, 29);
         division.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         division.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(division);
+
+        JLabel layout = new JLabel("교실 대형");
+        layout.setBounds(319, 221, 200, 34);
+        layout.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        backgroundImg.add(layout);
+
+
+        jComboBox.setBounds(319, 270, 150, 30);
+        jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        jComboBox.setUI(new CustomComboBoxUI());
+        jComboBox.setBackground(Color.WHITE);
+        jComboBox.setSelectedItem(classOption[comboBoxIndex]);
+
+        jComboBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        jComboBox.setOpaque(false);
+        backgroundImg.add(jComboBox);
+
+        jComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
 
         JButton checkBtn = new JButton();
 
@@ -137,23 +166,23 @@ public class PickASeatSetting {
             public void actionPerformed(ActionEvent e) {
                 String people = inputPerson.getText();
                 String division = inputDivision.getText();
+                String classType = (String)jComboBox.getSelectedItem();
+                int classIndex = Arrays.asList(classOption).indexOf(classType) + 1;
 
                 if(people == ""){
                     JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요!");
                 }else if(division == ""){
                     JOptionPane.showMessageDialog(frame, "분단 수를 입력해주세요!");
                 }else{
-                    frame.dispose();
-
-                    if(Integer.parseInt(division) != firstDivision){
-                        try {
-                            setCurrectDivision(SelectedClass, Integer.parseInt(division));
-                        } catch (SQLException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                    try {
+                        setCurrectDivision(SelectedClass, Integer.parseInt(division), classIndex);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
                     }
 
+
                     try {
+                        frame.dispose();
                         new PickASeatMain(index);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
@@ -162,7 +191,7 @@ public class PickASeatSetting {
 
             }
         });
-        getClassInfo(SelectedClass);
+
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -197,7 +226,8 @@ public class PickASeatSetting {
         ResultSet result = preparedStatement.executeQuery();
         result.next();
         inputDivision.setText(result.getInt("division")+"");
-        firstDivision = result.getInt("division");
+        comboBoxIndex = result.getInt("class_type") - 1;
+        jComboBox.setSelectedItem(classOption[comboBoxIndex]);
         inputPerson.setText("16");
         inputClassName.setText(className);
 
@@ -212,7 +242,6 @@ public class PickASeatSetting {
         preparedStatement1.setString(1, className);
         ResultSet result2 = preparedStatement1.executeQuery();
         result2.next();
-        System.out.println((result2.getInt(1) - 1) + " dd");
         index = result2.getInt(1) - 1;
 
         result2.close();
@@ -222,11 +251,13 @@ public class PickASeatSetting {
         connection.close();
     }
 
-    public void setCurrectDivision(String className, int newDivision) throws SQLException{
+    public void setCurrectDivision(String className, int newDivision, int classTypeIndex) throws SQLException{
         Connection connection = Util.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE my_class SET division = ? WHERE class_name = ?");
-        preparedStatement.setInt(1, newDivision);
-        preparedStatement.setString(2, className);
+
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE my_class SET class_type = ?, division = ? WHERE class_name = ?");
+        preparedStatement.setInt(1, classTypeIndex);
+        preparedStatement.setInt(2, newDivision);
+        preparedStatement.setString(3, className);
         preparedStatement.executeUpdate();
 
         preparedStatement.close();
