@@ -66,8 +66,7 @@ public class PickASeatMain {
 
         getClassInfo(classOption[index]);
 
-        seat.setLayout(new GridLayout(1, division));
-        seat.setBounds(0, 259, 1280, seatHeight);
+//        seat.setBounds(0, 259, 1280, seatHeight);
         frame.add(seat);
 
         JButton settingBtn = new JButton("설정");
@@ -457,8 +456,14 @@ public class PickASeatMain {
     }
     public void type3MakeTables() {
         //table = 126 * 75 / margin = 4 / division_margin = 30
-        seatHeight = (int)Math.ceil(Math.ceil(people / 4.0) / 2);
-        seat.setLayout(new GridLayout(1, division));
+        int tableWidth = 126;
+        int tableHeight = 75;
+        int table_margin = 4;
+        int division_margin = 40;
+
+        int seatRows = (int)Math.ceil(Math.ceil(people / 4.0) / 2);
+        seat.setLayout(new GridLayout(seatRows, 3));
+        seatHeight = (tableHeight * 2 + table_margin) * 2 + ((seatRows - 1) * division_margin);
 
         int type3Division = (int)Math.ceil(people / 4.0);
 
@@ -467,8 +472,8 @@ public class PickASeatMain {
         InnerLabel = new JLabel[people];
         InnerTable = new JLabel[people];
 
-        int[] divisionCnt = new int[type3Division];
-        int peopleCnt = 19;
+        int[] divisionCnt = new int[type3Division]; //divisionCnt.length : 분단 수. divisionCnt[i] : 분단 별 인원
+        int peopleCnt = 16;
         for(int i = 0; i<division; i++){
             if(peopleCnt - 4 >= 0) {
                 divisionCnt[i] = 4;
@@ -478,25 +483,27 @@ public class PickASeatMain {
             }
 
         }
+        int margin = 0;
+        if(divisionCnt.length <= 4) margin = (1200 / 2 - (tableWidth * 2 + table_margin)) / 2;
+        else margin = 80;
         for(int i = 0; i<divisionCnt.length; i++){
             int cnt = 0;
             int repeat = divisionCnt[i];
-            int height = repeat * 75 + (repeat - 1) * 16;
-            int margin = (1200 / division - 126) / 2;
-//            System.out.println(repeat + " " + height);
+            int height = tableHeight * 2 + table_margin;
             JPanel divisions = new JPanel();
-            divisions.setLayout(new GridLayout(repeat,1));
-            divisions.setBounds(margin, 0, 126, height);
+            divisions.setLayout(new GridLayout(2,2));
+            divisions.setBackground(Color.pink);
+            divisions.setBounds(margin, 0, 126 * 2 + table_margin, height);
 
             JLabel l = new JLabel();
-            l.setSize(126, height);
+            l.setSize(tableWidth * 2 + table_margin, height);
             l.setHorizontalAlignment(SwingConstants.CENTER);
             l.setOpaque(true);
 
             for(int j = 0; j<repeat; j++){
                 cnt++;
                 if(cnt > repeat) break;
-                int tableIndex = (i + 1) + (j * division) - 1;
+                int tableIndex = (i * 4) + j;
                 String tableNumber = seatOrder.get(tableIndex).toString();
                 tables[tableIndex] = new JLabel();
                 tables[tableIndex].setOpaque(true);
