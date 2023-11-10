@@ -9,7 +9,7 @@ public class SettingClassInfo extends JPanel {
     public static void main(String args[]) throws SQLException {
         new Setting();
     }
-    public SettingClassInfo(){
+    public SettingClassInfo() throws SQLException {
         Border underBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
         setLayout(null);
 
