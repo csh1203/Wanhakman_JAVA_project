@@ -343,7 +343,13 @@ public class Main extends Frame {
     }
     private Date getStartOfThisWeek() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // 이번 주 월요일
+
+        if(calendar.get(Calendar.DAY_OF_WEEK) == 1){
+            calendar.add(Calendar.DAY_OF_WEEK, -6);
+        }else {
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // 이번 주 월요일
+        }
+
         return calendar.getTime();
     }
     public void editSchedule(String date, String content, JTextArea contentArea) throws SQLException{
