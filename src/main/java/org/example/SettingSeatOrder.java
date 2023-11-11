@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SettingSeatOrder extends JPanel {
     JComboBox<String> jComboBox;
-    Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
+    Border roundedBorder;
     int people;
     int division;
     ArrayList<Integer> seatOrder;
@@ -26,6 +26,8 @@ public class SettingSeatOrder extends JPanel {
     int tableWidth = 108;
     int tableHeight = 65;
     public SettingSeatOrder() throws SQLException {
+        SettingClass.getMainColor();
+        roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
         setLayout(null);
         String[] classOption = getClassOption();
 
@@ -53,6 +55,8 @@ public class SettingSeatOrder extends JPanel {
         add(seat);
 
         JLabel teachingDeskLabel = new JLabel();
+
+
 
         teachingDeskLabel.setBorder(roundedBorder);
         teachingDeskLabel.setBounds(372, 87, 295,78);

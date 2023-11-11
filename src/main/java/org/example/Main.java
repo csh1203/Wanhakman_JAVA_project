@@ -28,6 +28,7 @@ public class Main extends Frame {
     }
 
     public Main() throws SQLException {
+        SettingClass.getMainColor();
         currentDate = getStartOfThisWeek(); // 이번주 월요일 날짜를 사용
         // JFrame 생성
         JFrame frame = new JFrame("완벽한 학급 만들기");
@@ -287,7 +288,8 @@ public class Main extends Frame {
         frame.setVisible(true);
 
     }
-    private void updateCalendar(Date date) throws SQLException{
+    private void
+    updateCalendar(Date date) throws SQLException{
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

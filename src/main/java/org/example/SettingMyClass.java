@@ -25,6 +25,7 @@ public class SettingMyClass extends JPanel {
         new Setting();
     }
     public SettingMyClass() throws SQLException {
+        setBounds(0,0, 1045, 832);
         setLayout(null);
 
         JLabel title = new JLabel("나의 교실");

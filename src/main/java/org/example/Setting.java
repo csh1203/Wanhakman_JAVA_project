@@ -94,27 +94,82 @@ public class Setting {
         directBtn4.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         directBtns.add(directBtn4);
 
-        JPanel rightPanel = new JPanel(new CardLayout());
+//        JPanel rightPanel = new JPanel(new CardLayout());
+//        rightPanel.setBounds(235, 0, 1045, 832);
+//
+//        JPanel basePanel = new JPanel();
+//
+//        SettingClassInfo panel1 = new SettingClassInfo();
+//        SettingThemeColor panel2 = new SettingThemeColor();
+//        SettingEditLayout panel3 = new SettingEditLayout();
+//        SettingMyClass panel4 = new SettingMyClass();
+//
+//        rightPanel.add(basePanel, "basePanel");
+//        rightPanel.add(panel1, "Panel 1");
+//        rightPanel.add(panel2, "Panel 2");
+//        rightPanel.add(panel3, "Panel 3");
+//        rightPanel.add(panel4, "Panel 4");
+//
+//        directBtn1.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 1"));
+//        directBtn2.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 2"));
+//        directBtn3.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 3"));
+//        directBtn4.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 4"));
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(null);
         rightPanel.setBounds(235, 0, 1045, 832);
 
-        JPanel basePanel = new JPanel();
-
-        SettingClassInfo panel1 = new SettingClassInfo();
-        SettingThemeColor panel2 = new SettingThemeColor();
-        SettingEditLayout panel3 = new SettingEditLayout();
-        SettingMyClass panel4 = new SettingMyClass();
 
 
-        rightPanel.add(basePanel, "basePanel");
-        rightPanel.add(panel1, "Panel 1");
-        rightPanel.add(panel2, "Panel 2");
-        rightPanel.add(panel3, "Panel 3");
-        rightPanel.add(panel4, "Panel 4");
 
-        directBtn1.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 1"));
-        directBtn2.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 2"));
-        directBtn3.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 3"));
-        directBtn4.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 4"));
+
+
+
+        directBtn1.addActionListener(e -> {
+            rightPanel.removeAll();
+            rightPanel.revalidate();
+            rightPanel.repaint();
+
+            SettingClassInfo panel1 = null;
+            try {
+                panel1 = new SettingClassInfo();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            rightPanel.add(panel1);
+        });
+        directBtn2.addActionListener(e -> {
+            rightPanel.removeAll();
+            rightPanel.revalidate();
+            rightPanel.repaint();
+
+            SettingThemeColor panel2 = null;
+            try {
+                panel2 = new SettingThemeColor();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            rightPanel.add(panel2);
+        });
+        directBtn3.addActionListener(e -> {
+            rightPanel.removeAll();
+            rightPanel.revalidate();
+            rightPanel.repaint();
+            SettingEditLayout panel3 = new SettingEditLayout();
+            rightPanel.add(panel3);
+        });
+        directBtn4.addActionListener(e -> {
+            rightPanel.removeAll();
+            rightPanel.revalidate();
+            rightPanel.repaint();
+            SettingMyClass panel4 = null;
+            try {
+                panel4 = new SettingMyClass();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            rightPanel.add(panel4);
+        });
 
         frame.add(rightPanel);
 

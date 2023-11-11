@@ -10,6 +10,8 @@ public class SettingClassInfo extends JPanel {
         new Setting();
     }
     public SettingClassInfo() throws SQLException {
+        setBounds(0,0, 1045, 832);
+
         Border underBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
         setLayout(null);
 
