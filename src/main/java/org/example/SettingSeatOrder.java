@@ -212,7 +212,7 @@ public class SettingSeatOrder extends JPanel {
     }
 
     public void type2MakeTables() {
-        seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * 16;
+        seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * 5;
         seat.setLayout(new GridLayout(1, division));
 //        seat.setBounds(0, 259, 1280, seatHeight);
 
@@ -234,7 +234,7 @@ public class SettingSeatOrder extends JPanel {
         for(int i = 0; i<divisionCnt.length; i++){
             int cnt = 0;
             int repeat = divisionCnt[i];
-            int height = repeat * tableHeight + (repeat - 1) * 16;
+            int height = repeat * tableHeight + (repeat - 1) * 5;
             int margin = (1045 / division - tableWidth) / 2;
 //            System.out.println(repeat + " " + height);
             JPanel divisions = new JPanel();
