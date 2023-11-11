@@ -278,7 +278,24 @@ public class PickASeatMain {
     }
 
     public void type1MakeTables() {
-        seatHeight = (int)(Math.ceil(people / (division * 2.0))) * 75 + ((int)(Math.ceil(people / (division * 2.0))) - 1) * 16;
+        int tableWidth = 126;
+        int tableHeight = 75;
+        int tableMargin = 16;
+        int tableWMargin = 7;
+
+        if(division >= 5){
+            tableWidth = 108;
+            tableHeight = 56;
+            tableMargin = 10;
+            tableWMargin = 4;
+        }else if(division >= 6){
+            tableWidth = 60;
+            tableHeight = 42;
+            tableMargin = 6;
+            tableWMargin = 2;
+        }
+
+        seatHeight = (int)(Math.ceil(people / (division * 2.0))) * tableHeight + ((int)(Math.ceil(people / (division * 2.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
 //        seat.setBounds(0, 259, 1280, seatHeight);
 
@@ -305,16 +322,16 @@ public class PickASeatMain {
             int cnt = 0;
             int repeat = divisionCnt[i];
             int height = (int)(Math.ceil(repeat / 2.0));
-            height = height * 75 + (height - 1) + 16;
+            height = height * tableHeight + (height - 1) + tableMargin;
 
-            int margin = (1200 / division - 259) / 2;
+            int margin = (1200 / division - (tableWidth * 2 + tableWMargin)) / 2;
 
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout((int)(Math.ceil(repeat / 2.0)),2));
-            divisions.setBounds(margin, 0, 259, height);
+            divisions.setBounds(margin, 0, tableWidth * 2 + tableWMargin, height);
 
             JLabel l = new JLabel();
-            l.setSize(259, height);
+            l.setSize(tableWidth * 2 + tableWMargin, height);
             l.setHorizontalAlignment(SwingConstants.CENTER);
             l.setOpaque(true);
 
@@ -330,18 +347,18 @@ public class PickASeatMain {
                     tables[tableIndex].setLayout(null);
 
                     InnerTable[tableIndex] = new JLabel();
-                    InnerTable[tableIndex].setBounds(3, 3, 120, 69);
+                    InnerTable[tableIndex].setBounds(3, 3, tableWidth - 6, tableHeight - 6);
                     InnerTable[tableIndex].setBorder(roundedBorder);
                     tables[tableIndex].add(InnerTable[tableIndex]);
 
                     JLabel InnerTextTable = new JLabel();
                     InnerTextTable.setLayout(null);
-                    InnerTextTable.setBounds(3,3, 114, 63);
+                    InnerTextTable.setBounds(3,3, tableWidth - 12, tableHeight - 12);
                     Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
                     InnerTextTable.setBorder(InnerRoundedBorder);
 
                     InnerLabel[tableIndex] = new JLabel(tableNumber);
-                    InnerLabel[tableIndex].setBounds(5,5, 104, 53);
+                    InnerLabel[tableIndex].setBounds(5,5, tableWidth - 22, tableHeight - 22);
                     InnerLabel[tableIndex].setOpaque(true);
                     InnerLabel[tableIndex].setBackground(Color.WHITE);
                     InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
@@ -371,7 +388,20 @@ public class PickASeatMain {
     }
 
     public void type2MakeTables() {
-        seatHeight = (int)(Math.ceil(people / (division * 1.0))) * 75 + ((int)(Math.ceil(people / (division * 1.0))) - 1) * 16;
+        int tableWidth = 126;
+        int tableHeight = 75;
+        int tableMargin = 16;
+
+        if(division <= 4){
+            tableWidth = 108;
+            tableHeight = 56;
+            tableMargin = 10;
+        }else if(division <= 3){
+            tableWidth = 60;
+            tableHeight = 42;
+            tableMargin = 6;
+        }
+        seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
 //        seat.setBounds(0, 259, 1280, seatHeight);
 
@@ -394,15 +424,15 @@ public class PickASeatMain {
         for(int i = 0; i<divisionCnt.length; i++){
             int cnt = 0;
             int repeat = divisionCnt[i];
-            int height = repeat * 75 + (repeat - 1) * 16;
-            int margin = (1200 / division - 126) / 2;
+            int height = repeat * tableHeight + (repeat - 1) * tableMargin;
+            int margin = (1200 / division - tableWidth) / 2;
 //            System.out.println(repeat + " " + height);
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(repeat,1));
-            divisions.setBounds(margin, 0, 126, height);
+            divisions.setBounds(margin, 0, tableWidth, height);
 
             JLabel l = new JLabel();
-            l.setSize(126, height);
+            l.setSize(tableWidth, height);
             l.setHorizontalAlignment(SwingConstants.CENTER);
             l.setOpaque(true);
 
@@ -416,18 +446,18 @@ public class PickASeatMain {
                     tables[tableIndex].setLayout(null);
 
                     InnerTable[tableIndex] = new JLabel();
-                    InnerTable[tableIndex].setBounds(3, 3, 120, 69);
+                    InnerTable[tableIndex].setBounds(3, 3, tableWidth - 6, tableHeight - 6);
                     InnerTable[tableIndex].setBorder(roundedBorder);
                     tables[tableIndex].add(InnerTable[tableIndex]);
 
                     JLabel InnerTextTable = new JLabel();
                     InnerTextTable.setLayout(null);
-                    InnerTextTable.setBounds(3,3, 114, 63);
+                    InnerTextTable.setBounds(3,3, tableWidth - 12, tableHeight - 12);
                     Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
                     InnerTextTable.setBorder(InnerRoundedBorder);
 
                     InnerLabel[tableIndex] = new JLabel(tableNumber);
-                    InnerLabel[tableIndex].setBounds(5,5, 104, 53);
+                    InnerLabel[tableIndex].setBounds(5,5, tableWidth - 22, tableHeight - 22);
                     InnerLabel[tableIndex].setOpaque(true);
                     InnerLabel[tableIndex].setBackground(Color.WHITE);
                     InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
@@ -460,6 +490,18 @@ public class PickASeatMain {
         int tableHeight = 75;
         int table_margin = 4;
         int division_margin = 40;
+
+        if(people >= 25){
+            tableWidth = 108;
+            tableHeight = 56;
+            table_margin = 2;
+            division_margin = 30;
+        }else if(division >= 6){
+            tableWidth = 60;
+            tableHeight = 42;
+            table_margin = 2;
+            division_margin = 20;
+        }
 
         int seatRows = (int)Math.ceil(Math.ceil(people / 4.0) / 2);
         seat.setLayout(new GridLayout(seatRows, 3));

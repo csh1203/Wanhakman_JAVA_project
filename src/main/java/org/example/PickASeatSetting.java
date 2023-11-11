@@ -25,6 +25,7 @@ public class PickASeatSetting {
     String classOption[] = {"분단 대형", "시험 대형", "모둠 대형"};
 
     JComboBox jComboBox = new JComboBox<>(classOption);
+    JLabel division;
     public static void main(String args[]){
 //        new PickASeatSetting("나의학급");
     }
@@ -108,13 +109,13 @@ public class PickASeatSetting {
         inputDivision.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
         backgroundImg.add(inputDivision);
 
-        getClassInfo(SelectedClass);
-
-        JLabel division = new JLabel("분단");
+        division = new JLabel();
         division.setBounds(199, 270, 50, 29);
         division.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         division.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(division);
+
+        getClassInfo(SelectedClass);
 
         JLabel layout = new JLabel("교실 대형");
         layout.setBounds(319, 221, 200, 34);
@@ -135,7 +136,17 @@ public class PickASeatSetting {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+//                {"분단 대형", "시험 대형", "모둠 대형"};
+                if(jComboBox.getSelectedItem() == "분단 대형"){
+                    division.setText("분단");
+                    inputDivision.setEnabled(true);
+                }else if(jComboBox.getSelectedItem() == "시험 대형"){
+                    division.setText("줄");
+                    inputDivision.setEnabled(true);
+                } else if (jComboBox.getSelectedItem() == "모둠 대형") {
+                    division.setText("");
+                    inputDivision.setEnabled(false);
+                }
             }
         });
 
@@ -230,6 +241,15 @@ public class PickASeatSetting {
         jComboBox.setSelectedItem(classOption[comboBoxIndex]);
         inputPerson.setText("16");
         inputClassName.setText(className);
+
+        if(comboBoxIndex == 0){
+            division.setText("분단");
+        }else if(comboBoxIndex == 1){
+            division.setText("줄");
+        } else if (comboBoxIndex == 2) {
+            division.setText("");
+            inputDivision.setEnabled(false);
+        }
 
         PreparedStatement preparedStatement1 =
                 connection.prepareStatement(
