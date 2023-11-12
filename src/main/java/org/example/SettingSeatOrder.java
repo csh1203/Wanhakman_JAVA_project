@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -25,6 +26,10 @@ public class SettingSeatOrder extends JPanel {
     int seatHeight;
     int tableWidth = 108;
     int tableHeight = 65;
+
+    public static void main(String args[]) throws SQLException {
+        new Setting();
+    }
     public SettingSeatOrder() throws SQLException {
         SettingClass.getMainColor();
         roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
@@ -56,8 +61,6 @@ public class SettingSeatOrder extends JPanel {
 
         JLabel teachingDeskLabel = new JLabel();
 
-
-
         teachingDeskLabel.setBorder(roundedBorder);
         teachingDeskLabel.setBounds(372, 87, 295,78);
 
@@ -71,6 +74,36 @@ public class SettingSeatOrder extends JPanel {
         InnerTeachingDest.setBackground(SettingClass.mainColor);
         teachingDeskLabel.add(InnerTeachingDest);
         add(teachingDeskLabel);
+
+
+        JButton printButton = new JButton();
+        printButton.setLayout(null);
+        printButton.setBounds(900, 630,90, 53);
+        printButton.setBorder(roundedBorder);
+        printButton.setOpaque(false);
+        printButton.setContentAreaFilled(false);
+        printButton.setFocusPainted(false);
+
+        JLabel InnerPrintButton = new JLabel("인쇄");
+        InnerPrintButton.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        InnerPrintButton.setBounds(10, 10, 70, 33);
+        InnerPrintButton.setHorizontalAlignment(SwingConstants.CENTER);
+        InnerPrintButton.setVerticalAlignment(SwingConstants.CENTER);
+        InnerPrintButton.setOpaque(true);
+        InnerPrintButton.setBackground(SettingClass.mainColor);
+        InnerPrintButton.setForeground(Color.WHITE);
+        printButton.add(InnerPrintButton);
+
+        add(printButton);
+
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                printBoard pb = new printBoard();
+//                pb.printPanel(SettingSeatOrder.this);
+                showPrintPreview();
+            }
+        });
     }
     public String[] getClassOption() throws SQLException{
         ArrayList<String> classOptionsList = new ArrayList<>();
@@ -374,4 +407,91 @@ public class SettingSeatOrder extends JPanel {
         panel.revalidate();
         panel.repaint();
     }
-}
+
+
+    private void showPrintPreview() {
+            PrinterJob job = PrinterJob.getPrinterJob();
+            PageFormat pageFormat = job.defaultPage();
+
+            // 용지 방향 설정 (가로 방향)
+            pageFormat.setOrientation(PageFormat.LANDSCAPE);
+            job.setPrintable(new Printable() {
+                @Override
+                public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                    if (pageIndex > 0) {
+                        return Printable.NO_SUCH_PAGE;
+                    }
+
+                    // JPanel의 내용을 그래픽에 그림
+                    SettingSeatOrder.this.printAll(graphics);
+
+                    return Printable.PAGE_EXISTS;
+                }
+            }, pageFormat);
+
+            // 프린터 대화상자 띄우기
+            if (job.printDialog()) {
+                try {
+                    // 미리보기 창 열기
+                    if (job.printDialog()) {
+                        PageFormat pf = job.pageDialog(pageFormat);
+                        if (pf != pageFormat) {
+                            pageFormat = pf;
+                            job.setPrintable(new Printable() {
+                                @Override
+                                public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                                    if (pageIndex > 0) {
+                                        return Printable.NO_SUCH_PAGE;
+                                    }
+
+                                    // JPanel의 내용을 그래픽에 그림
+                                    SettingSeatOrder.this.printAll(graphics);
+
+                                    return Printable.PAGE_EXISTS;
+                                }
+                            }, pageFormat);
+
+                            // 인쇄 실행
+                            job.print();
+                        }
+                    }
+                } catch (PrinterException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+//    private class PagePrintable implements Printable {
+//        @Override
+//        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+//            if (pageIndex > 0) {
+//                return Printable.NO_SUCH_PAGE;
+//            }
+//
+//            Graphics2D g2d = (Graphics2D) graphics;
+//            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+//
+//            // JPanel의 내용을 그리는 코드
+//            printComponent(g2d);
+//
+//            return Printable.PAGE_EXISTS;
+//        }
+//    }
+//    private void printComponent(Graphics2D g2d) {
+//        // JPanel의 내용을 그리는 코드를 작성
+//        // 이 예제에서는 간단하게 버튼의 텍스트를 그려보겠습니다.
+//        Component[] components = getComponents();
+//        for (Component component : components) {
+//            if (component instanceof JComponent) {
+//                JComponent jComponent = (JComponent) component;
+//                paintComponent(g2d, jComponent);
+//            }
+//        }
+//    }
+//    private void paintComponent(Graphics2D g2d, JComponent component) {
+//        // 컴포넌트의 크기와 위치 정보를 고려하여 그림을 그린다.
+//        int width = (int) component.getSize().getWidth();
+//        int height = (int) component.getSize().getHeight();
+//        component.paint(g2d.create(0, 0, width, height));
+//    }
+
