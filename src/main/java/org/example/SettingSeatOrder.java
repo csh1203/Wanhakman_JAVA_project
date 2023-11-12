@@ -101,7 +101,8 @@ public class SettingSeatOrder extends JPanel {
             public void actionPerformed(ActionEvent e) {
 //                printBoard pb = new printBoard();
 //                pb.printPanel(SettingSeatOrder.this);
-                showPrintPreview();
+//                printPanel(SettingSeatOrder.this);
+                showPrintPreview(SettingSeatOrder.this, jComboBox, printButton, jComboBox.getSelectedItem().toString());
             }
         });
     }
@@ -409,74 +410,143 @@ public class SettingSeatOrder extends JPanel {
     }
 
 
-    private void showPrintPreview() {
-            PrinterJob job = PrinterJob.getPrinterJob();
-            PageFormat pageFormat = job.defaultPage();
+    private static void showPrintPreview(JPanel panel, JComboBox<String> jComboBox, JButton printButton, String waterMark) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        PageFormat pageFormat = job.defaultPage();
 
-            // 용지 방향 설정 (가로 방향)
-            pageFormat.setOrientation(PageFormat.LANDSCAPE);
-            job.setPrintable(new Printable() {
-                @Override
-                public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-                    if (pageIndex > 0) {
-                        return Printable.NO_SUCH_PAGE;
-                    }
+        // 용지 방향 설정 (가로 방향)
+        pageFormat.setOrientation(PageFormat.LANDSCAPE);
 
-                    // JPanel의 내용을 그래픽에 그림
-                    SettingSeatOrder.this.printAll(graphics);
+        // 패널의 크기를 A4 용지에 맞게 조절
+//        double pageWidth = pageFormat.getImageableWidth();
+//        double pageHeight = pageFormat.getImageableHeight();
+//        double panelWidth = panel.getPreferredSize().getWidth();
+//        double panelHeight = panel.getPreferredSize().getHeight();
+//
+//        double scaleX = pageWidth / panelWidth;
+//        double scaleY = pageHeight / panelHeight;
+//
+//        if (scaleX < scaleY) {
+//            // 패널이 용지의 너비에 맞게 조절될 경우
+//            panelWidth *= scaleX;
+//            panelHeight *= scaleX;
+//        } else {
+//            // 패널이 용지의 높이에 맞게 조절될 경우
+//            panelWidth *= scaleY;
+//            panelHeight *= scaleY;
+//        }
 
-                    return Printable.PAGE_EXISTS;
+//        panel.setSize((int) panelWidth, (int) panelHeight);
+
+        job.setPrintable(new Printable() {
+            @Override
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                if (pageIndex > 0) {
+                    return Printable.NO_SUCH_PAGE;
                 }
-            }, pageFormat);
 
-            // 프린터 대화상자 띄우기
-            if (job.printDialog()) {
-                try {
-                    // 미리보기 창 열기
-                    if (job.printDialog()) {
-                        PageFormat pf = job.pageDialog(pageFormat);
-                        if (pf != pageFormat) {
-                            pageFormat = pf;
-                            job.setPrintable(new Printable() {
-                                @Override
-                                public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-                                    if (pageIndex > 0) {
-                                        return Printable.NO_SUCH_PAGE;
-                                    }
+                Graphics2D g2d = (Graphics2D) graphics;
+                g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-                                    // JPanel의 내용을 그래픽에 그림
-                                    SettingSeatOrder.this.printAll(graphics);
+                // A4 용지 크기 계산
+                double pageWidth = pageFormat.getImageableWidth();
+                double pageHeight = pageFormat.getImageableHeight();
 
-                                    return Printable.PAGE_EXISTS;
-                                }
-                            }, pageFormat);
+                // JPanel의 크기를 A4 용지 크기에 맞게 비율 조정
+                double scaleX = pageWidth / panel.getWidth();
+                double scaleY = pageHeight / panel.getHeight();
+                g2d.scale(scaleX, scaleY);
 
-                            // 인쇄 실행
-                            job.print();
-                        }
-                    }
-                } catch (PrinterException e) {
-                    e.printStackTrace();
-                }
+                jComboBox.setVisible(false);
+                printButton.setVisible(false);
+
+                // 원하는 영역만 그리기
+                panel.print(g2d);
+
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
+                String watermarkText = waterMark;
+//                int textWidth = g2d.getFontMetrics().stringWidth(watermarkText);
+//                int textHeight = g2d.getFontMetrics().getHeight();
+                int x = 50;
+                int y = 50;
+                g2d.drawString(watermarkText, x, y);
+
+                jComboBox.setVisible(true);
+                printButton.setVisible(true);
+
+                return Printable.PAGE_EXISTS;
+            }
+        }, pageFormat);
+
+        // 프린터 대화상자 띄우기
+        if (job.printDialog()) {
+            try {
+                // 인쇄 실행
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
             }
         }
     }
-//    private class PagePrintable implements Printable {
-//        @Override
-//        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-//            if (pageIndex > 0) {
-//                return Printable.NO_SUCH_PAGE;
+
+    private static class PrintablePanel implements Printable {
+        private JPanel panel;
+
+        public PrintablePanel(JPanel panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            if (pageIndex > 0) {
+                return Printable.NO_SUCH_PAGE;
+            }
+
+            Graphics2D g2d = (Graphics2D) graphics;
+            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+            // A4 용지 크기 계산
+            double pageWidth = pageFormat.getImageableWidth();
+            double pageHeight = pageFormat.getImageableHeight();
+
+            // JPanel의 크기를 A4 용지 크기에 맞게 비율 조정
+            double scaleX = pageWidth / panel.getWidth();
+            double scaleY = pageHeight / panel.getHeight();
+            g2d.scale(scaleX, scaleY);
+
+            // 원하는 영역만 그리기
+            panel.print(g2d);
+
+            return Printable.PAGE_EXISTS;
+        }
+    }
+}
+
+
+//    private static void printPanel(JPanel panel) {
+//        PrinterJob printerJob = PrinterJob.getPrinterJob();
+//        printerJob.setJobName("Print Panel");
+//
+//        PageFormat pageFormat = printerJob.pageDialog(printerJob.defaultPage());
+//
+//        // 수동으로 용지 방향을 가로로 변경
+//        pageFormat.setOrientation(PageFormat.LANDSCAPE);
+//
+//        printerJob.setPrintable(new PrintablePanel(panel), pageFormat);
+//
+//        if (printerJob.printDialog()) {
+//            try {
+//                printerJob.print();
+//            } catch (PrinterException ex) {
+//                ex.printStackTrace();
 //            }
-//
-//            Graphics2D g2d = (Graphics2D) graphics;
-//            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-//
-//            // JPanel의 내용을 그리는 코드
-//            printComponent(g2d);
-//
-//            return Printable.PAGE_EXISTS;
 //        }
 //    }
+//
+//
+
+
 //    private void printComponent(Graphics2D g2d) {
 //        // JPanel의 내용을 그리는 코드를 작성
 //        // 이 예제에서는 간단하게 버튼의 텍스트를 그려보겠습니다.
