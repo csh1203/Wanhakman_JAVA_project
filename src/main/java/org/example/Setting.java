@@ -74,7 +74,7 @@ public class Setting {
         directBtn2.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         directBtns.add(directBtn2);
 
-        JButton directBtn3 = new JButton("레이아웃 수정");
+        JButton directBtn3 = new JButton("나의 교실");
         directBtn3.setBounds(0, 120, btnWidth, 30);
         directBtn3.setOpaque(false);
         directBtn3.setContentAreaFilled(false);
@@ -84,46 +84,9 @@ public class Setting {
         directBtn3.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
         directBtns.add(directBtn3);
 
-        JButton directBtn4 = new JButton("나의 교실");
-        directBtn4.setBounds(0, 180, btnWidth, 30);
-        directBtn4.setOpaque(false);
-        directBtn4.setContentAreaFilled(false);
-        directBtn4.setFocusPainted(false);
-        directBtn4.setBorderPainted(false);
-        directBtn4.setHorizontalAlignment(SwingConstants.RIGHT);
-        directBtn4.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
-        directBtns.add(directBtn4);
-
-//        JPanel rightPanel = new JPanel(new CardLayout());
-//        rightPanel.setBounds(235, 0, 1045, 832);
-//
-//        JPanel basePanel = new JPanel();
-//
-//        SettingClassInfo panel1 = new SettingClassInfo();
-//        SettingThemeColor panel2 = new SettingThemeColor();
-//        SettingEditLayout panel3 = new SettingEditLayout();
-//        SettingMyClass panel4 = new SettingMyClass();
-//
-//        rightPanel.add(basePanel, "basePanel");
-//        rightPanel.add(panel1, "Panel 1");
-//        rightPanel.add(panel2, "Panel 2");
-//        rightPanel.add(panel3, "Panel 3");
-//        rightPanel.add(panel4, "Panel 4");
-//
-//        directBtn1.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 1"));
-//        directBtn2.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 2"));
-//        directBtn3.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 3"));
-//        directBtn4.addActionListener(e -> ((CardLayout) rightPanel.getLayout()).show(rightPanel, "Panel 4"));
-
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(null);
         rightPanel.setBounds(235, 0, 1045, 832);
-
-
-
-
-
-
 
         directBtn1.addActionListener(e -> {
             rightPanel.removeAll();
@@ -155,20 +118,13 @@ public class Setting {
             rightPanel.removeAll();
             rightPanel.revalidate();
             rightPanel.repaint();
-            SettingEditLayout panel3 = new SettingEditLayout();
-            rightPanel.add(panel3);
-        });
-        directBtn4.addActionListener(e -> {
-            rightPanel.removeAll();
-            rightPanel.revalidate();
-            rightPanel.repaint();
-            SettingMyClass panel4 = null;
+            SettingMyClass panel3 = null;
             try {
-                panel4 = new SettingMyClass();
+                panel3 = new SettingMyClass();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-            rightPanel.add(panel4);
+            rightPanel.add(panel3);
         });
 
         frame.add(rightPanel);
