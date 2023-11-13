@@ -43,7 +43,7 @@ public class SettingClass {
             // 폰트 로딩에 실패한 경우 예외 처리
         }
     }
-    public static void LightcustomFont(JComponent component, int fontStyle, int fontSize) {
+    public static void LightCustomFont(JComponent component, int fontStyle, int fontSize) {
         String fontPath = "NotoSansKR-Light.ttf"; // 다운로드한 파일명에 맞게 수정
         Font notoSansFont;
         // 폰트 로딩

@@ -26,9 +26,6 @@ public class PickASeatSetting {
 
     JComboBox jComboBox = new JComboBox<>(classOption);
     JLabel division;
-    public static void main(String args[]){
-//        new PickASeatSetting("나의학급");
-    }
     PickASeatSetting(String SelectedClass) throws SQLException{
         Color backgroud = new Color(0xA1A1A1);
 
@@ -65,30 +62,30 @@ public class PickASeatSetting {
 
         JLabel allPerson = new JLabel("학생 수");
         allPerson.setBounds(68, 70, 80, 34);
-        allPerson.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        SettingClass.customFont(allPerson, Font.PLAIN, 25);
         backgroundImg.add(allPerson);
 
         inputPerson = new JLabel();
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         inputPerson.setBorder(border);
         inputPerson.setBounds(68, 122, 119, 29);
-        inputPerson.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(inputPerson, Font.PLAIN, 21);
         backgroundImg.add(inputPerson);
 
         JLabel myung = new JLabel("명");
         myung.setBounds(199, 122, 25, 29);
-        myung.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(myung, Font.PLAIN, 25);
         myung.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung);
 
         JLabel classNameTitle = new JLabel("교실");
         classNameTitle.setBounds(319, 70, 50, 35);
-        classNameTitle.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        SettingClass.customFont(classNameTitle, Font.PLAIN, 25);
         backgroundImg.add(classNameTitle);
 
         inputClassName = new JLabel();
         inputClassName.setBounds(319, 122, 220, 29);
-        inputClassName.setFont(new Font("Noto Sans", Font.BOLD, 24));
+        SettingClass.customFont(inputClassName, Font.BOLD, 24);
         backgroundImg.add(inputClassName);
 
         JLabel line = new JLabel();
@@ -99,19 +96,19 @@ public class PickASeatSetting {
 
         JLabel allDivision = new JLabel("분단 수");
         allDivision.setBounds(68, 221, 100, 34);
-        allDivision.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        SettingClass.customFont(allDivision, Font.PLAIN, 25);
         backgroundImg.add(allDivision);
 
         inputDivision = new JTextField(3);
         setNumberOnlyFilter(inputDivision); // 텍스트 필드에 숫자만 입력되도록 필터 설정
         inputDivision.setBorder(BorderFactory.createLineBorder(Color.black, 1));
         inputDivision.setBounds(68, 270, 119, 29);
-        inputDivision.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(inputDivision, Font.PLAIN, 21);
         backgroundImg.add(inputDivision);
 
         division = new JLabel();
         division.setBounds(199, 270, 50, 29);
-        division.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(division, Font.PLAIN, 25);
         division.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(division);
 
@@ -119,12 +116,12 @@ public class PickASeatSetting {
 
         JLabel layout = new JLabel("교실 대형");
         layout.setBounds(319, 221, 200, 34);
-        layout.setFont(new Font("Noto Sans", Font.PLAIN, 25));
+        SettingClass.customFont(layout, Font.PLAIN, 25);
         backgroundImg.add(layout);
 
 
         jComboBox.setBounds(319, 270, 150, 30);
-        jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        SettingClass.customFont(allPerson, Font.BOLD, 18);
         jComboBox.setUI(new CustomComboBoxUI());
         jComboBox.setBackground(Color.WHITE);
         jComboBox.setSelectedItem(classOption[comboBoxIndex]);
@@ -136,7 +133,6 @@ public class PickASeatSetting {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                {"분단 대형", "시험 대형", "모둠 대형"};
                 if(jComboBox.getSelectedItem() == "분단 대형"){
                     division.setText("분단");
                     inputDivision.setEnabled(true);
@@ -166,7 +162,7 @@ public class PickASeatSetting {
         InnerBtn.setBounds(10, 10, 132, 26);
         InnerBtn.setOpaque(true);
         InnerBtn.setBackground(SettingClass.mainColor);
-        InnerBtn.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(InnerBtn, Font.BOLD, 25);
         InnerBtn.setForeground(Color.WHITE);
         checkBtn.add(InnerBtn);
 

@@ -29,10 +29,6 @@ public class PickASeatMain {
     JLabel[] InnerTable;
     int seatType;
     int seatHeight;
-    public static void main(String args[]) throws SQLException {
-
-        new PickASeatMain(0);
-    }
     PickASeatMain(int index) throws SQLException {
         String[] classOption = getClassOption();
 
@@ -46,7 +42,7 @@ public class PickASeatMain {
 
         jComboBox = new JComboBox<>(classOption);
         jComboBox.setBounds(47, 36, 200, 40);
-        jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 24));
+        SettingClass.customFont(jComboBox, Font.BOLD, 24);
         jComboBox.setSelectedIndex(index);
         jComboBox.setUI(new CustomComboBoxUI());
         jComboBox.setOpaque(false);
@@ -65,13 +61,11 @@ public class PickASeatMain {
         });
 
         getClassInfo(classOption[index]);
-
-//        seat.setBounds(0, 259, 1280, seatHeight);
         frame.add(seat);
 
         JButton settingBtn = new JButton("설정");
         settingBtn.setBounds(1100, 31, 100, 33);
-        settingBtn.setFont(new Font("Noto Sans", Font.BOLD, 24)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(settingBtn, Font.BOLD, 24);
         settingBtn.setForeground(setting); // 글자 색상 설정
 
         // 버튼의 배경을 없애기
@@ -121,7 +115,7 @@ public class PickASeatMain {
         teachingDeskLabel.setBounds(463, 104, 355,95);
 
         JLabel InnerTeachingDest = new JLabel("교탁");
-        InnerTeachingDest.setFont(new Font("Noto Sans", Font.BOLD, 40)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(InnerTeachingDest, Font.BOLD, 40);
         InnerTeachingDest.setBounds(10, 10, 335, 75);
         InnerTeachingDest.setForeground(Color.WHITE);
         InnerTeachingDest.setHorizontalAlignment(SwingConstants.CENTER);
@@ -146,7 +140,7 @@ public class PickASeatMain {
         InnerSeatChangeBtn.setBounds(10, 10, 173, 33);
         InnerSeatChangeBtn.setOpaque(true);
         InnerSeatChangeBtn.setBackground(SettingClass.mainColor);
-        InnerSeatChangeBtn.setFont(new Font("Noto Sans", Font.BOLD, 25));
+        SettingClass.customFont(InnerSeatChangeBtn, Font.BOLD, 25);
         InnerSeatChangeBtn.setForeground(Color.WHITE);
         InnerSeatChangeBtn.setHorizontalAlignment(SwingConstants.CENTER);
         InnerSeatChangeBtn.setVerticalAlignment(SwingConstants.CENTER);
@@ -186,7 +180,7 @@ public class PickASeatMain {
         InnerSeatSaveBtn.setBounds(10, 10, 73, 33);
         InnerSeatSaveBtn.setOpaque(true);
         InnerSeatSaveBtn.setBackground(SettingClass.mainColor);
-        InnerSeatSaveBtn.setFont(new Font("Noto Sans", Font.BOLD, 25));
+        SettingClass.customFont(InnerSeatSaveBtn, Font.BOLD, 25);
         InnerSeatSaveBtn.setForeground(Color.WHITE);
         InnerSeatSaveBtn.setHorizontalAlignment(SwingConstants.CENTER);
         InnerSeatSaveBtn.setVerticalAlignment(SwingConstants.CENTER);
@@ -297,7 +291,6 @@ public class PickASeatMain {
 
         seatHeight = (int)(Math.ceil(people / (division * 2.0))) * tableHeight + ((int)(Math.ceil(people / (division * 2.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         customToggleButtons = new CustomToggleButton[people];
@@ -364,7 +357,7 @@ public class PickASeatMain {
                     InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                    InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                    SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                     InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -403,7 +396,6 @@ public class PickASeatMain {
         }
         seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         customToggleButtons = new CustomToggleButton[people];
@@ -426,7 +418,6 @@ public class PickASeatMain {
             int repeat = divisionCnt[i];
             int height = repeat * tableHeight + (repeat - 1) * tableMargin;
             int margin = (1200 / division - tableWidth) / 2;
-//            System.out.println(repeat + " " + height);
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(repeat,1));
             divisions.setBounds(margin, 0, tableWidth, height);
@@ -463,7 +454,7 @@ public class PickASeatMain {
                     InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                    InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                    SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                     InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -485,7 +476,6 @@ public class PickASeatMain {
         }
     }
     public void type3MakeTables() {
-        //table = 126 * 75 / margin = 4 / division_margin = 30
         int tableWidth = 126;
         int tableHeight = 75;
         int table_margin = 4;
@@ -514,7 +504,7 @@ public class PickASeatMain {
         InnerLabel = new JLabel[people];
         InnerTable = new JLabel[people];
 
-        int[] divisionCnt = new int[type3Division]; //divisionCnt.length : 분단 수. divisionCnt[i] : 분단 별 인원
+        int[] divisionCnt = new int[type3Division];
         int peopleCnt = 16;
         for(int i = 0; i<division; i++){
             if(peopleCnt - 4 >= 0) {
@@ -569,7 +559,7 @@ public class PickASeatMain {
                 InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                 InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -787,6 +777,6 @@ class CustomComboBoxUI extends MetalComboBoxUI {
 
     @Override
     public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
-        // Do nothing to remove the background
+
     }
 }

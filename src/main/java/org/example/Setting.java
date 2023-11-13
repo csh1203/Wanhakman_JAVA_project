@@ -9,10 +9,7 @@ import java.sql.SQLException;
 
 public class Setting {
     static JFrame frame;
-    public static void main(String args[]) throws SQLException {
 
-        new Setting();
-    }
     public Setting() throws SQLException {
         // JFrame 생성
         frame = new JFrame("설정");
@@ -61,7 +58,7 @@ public class Setting {
         directBtn1.setFocusPainted(false);
         directBtn1.setBorderPainted(false);
         directBtn1.setHorizontalAlignment(SwingConstants.RIGHT);
-        directBtn1.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(directBtn1, Font.PLAIN, 25);
         directBtns.add(directBtn1);
 
         JButton directBtn2 = new JButton("테마컬러");
@@ -71,7 +68,7 @@ public class Setting {
         directBtn2.setFocusPainted(false);
         directBtn2.setBorderPainted(false);
         directBtn2.setHorizontalAlignment(SwingConstants.RIGHT);
-        directBtn2.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(directBtn2, Font.PLAIN, 25);
         directBtns.add(directBtn2);
 
         JButton directBtn3 = new JButton("나의 교실");
@@ -81,7 +78,7 @@ public class Setting {
         directBtn3.setFocusPainted(false);
         directBtn3.setBorderPainted(false);
         directBtn3.setHorizontalAlignment(SwingConstants.RIGHT);
-        directBtn3.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(directBtn3, Font.PLAIN, 25);
         directBtns.add(directBtn3);
 
         JPanel rightPanel = new JPanel();

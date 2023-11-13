@@ -21,16 +21,13 @@ public class SettingMyClass extends JPanel {
 
     int deleteBtnXPosition = 113 + classNameWidth;
     JFrame addFrame;
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingMyClass() throws SQLException {
         setBounds(0,0, 1045, 832);
         setLayout(null);
 
         JLabel title = new JLabel("나의 교실");
         title.setBounds(113, 110, 150, 36);
-        title.setFont(new Font("Noto Sans", Font.BOLD, 30)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(title, Font.BOLD, 30);
         add(title);
 
         ArrayList<String> myClass = getMyClass();
@@ -53,7 +50,7 @@ public class SettingMyClass extends JPanel {
         for(int i = 0; i<myClass.size(); i++){
             myClassLabel[i] = new JLabel(myClass.get(i));
             myClassLabel[i].setBounds(0, yPosition, classNameWidth, 35);
-            myClassLabel[i].setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+            SettingClass.customFont(myClassLabel[i], Font.BOLD, 25);
             myClassPanel.add(myClassLabel[i]);
 
             deleteClass[i] = new JButton();
@@ -69,7 +66,7 @@ public class SettingMyClass extends JPanel {
             InnerDeleteClass.setBounds(10, 10, 50, 15);
             InnerDeleteClass.setOpaque(true);
             InnerDeleteClass.setBackground(Color.BLACK);
-            InnerDeleteClass.setFont(new Font("Noto Sans", Font.PLAIN, 16));
+            SettingClass.customFont(InnerDeleteClass, Font.PLAIN, 16);
             InnerDeleteClass.setForeground(Color.WHITE);
             InnerDeleteClass.setHorizontalAlignment(SwingConstants.CENTER);
             InnerDeleteClass.setVerticalAlignment(SwingConstants.CENTER);
@@ -94,7 +91,7 @@ public class SettingMyClass extends JPanel {
 
         editClass = new JButton("교실 편집");
         editClass.setBounds(855, 30, 150, 40);
-        editClass.setFont(new Font("Noto Sans", Font.BOLD, 20));
+        SettingClass.customFont(editClass, Font.BOLD, 20);
         editClass.setOpaque(false);
         editClass.setBorderPainted(false);
         editClass.setFocusPainted(false);
@@ -110,7 +107,7 @@ public class SettingMyClass extends JPanel {
 
         addClassBtn = new JButton("교실 추가하기");
         addClassBtn.setBounds(800, 710, 200, 40);
-        addClassBtn.setFont(new Font("Noto Sans", Font.BOLD, 20));
+        SettingClass.customFont(addClassBtn, Font.BOLD, 20);
         addClassBtn.setOpaque(false);
         addClassBtn.setContentAreaFilled(false);
         addClassBtn.setBorderPainted(false);
@@ -133,18 +130,18 @@ public class SettingMyClass extends JPanel {
         addFrame.setLayout(null);
 
         JLabel title = new JLabel("교실 추가하기");
-        title.setFont(new Font("Noto Sans", Font.BOLD, 25));
+        SettingClass.customFont(title, Font.BOLD, 25);
         title.setBounds(40, 30, 200, 40);
         addFrame.add(title);
 
         JLabel subTitle = new JLabel("교실 이름");
         subTitle.setBounds(40, 90, 100, 40);
-        subTitle.setFont(new Font("Noto Sans", Font.BOLD, 20));
+        SettingClass.customFont(subTitle, Font.BOLD, 20);
         addFrame.add(subTitle);
 
         JTextField inputClassName = new JTextField();
         inputClassName.setBounds(40, 130, 268, 40);
-        inputClassName.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        SettingClass.customFont(inputClassName, Font.BOLD, 18);
         addFrame.add(inputClassName);
 
         Border roundedBorder = BorderFactory.createLineBorder(Color.BLACK, 20, true);
@@ -158,7 +155,7 @@ public class SettingMyClass extends JPanel {
 
         JLabel InnerAddBtn = new JLabel("추가");
         InnerAddBtn.setBounds(10, 10, 58, 25);
-        InnerAddBtn.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        SettingClass.customFont(InnerAddBtn, Font.BOLD, 18);
         InnerAddBtn.setOpaque(true);
         InnerAddBtn.setBackground(Color.BLACK);
         InnerAddBtn.setForeground(Color.WHITE);
@@ -169,7 +166,7 @@ public class SettingMyClass extends JPanel {
 
         JButton deleteBtn = new JButton("취소");
         deleteBtn.setBounds(370, 225, 78, 45);
-        deleteBtn.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        SettingClass.customFont(deleteBtn, Font.BOLD, 18);
         deleteBtn.setOpaque(false);
         deleteBtn.setBorderPainted(false);
         deleteBtn.setContentAreaFilled(false);
@@ -300,7 +297,7 @@ public class SettingMyClass extends JPanel {
         for(int i = 0; i<myClass.size(); i++){
             myClassLabel[i] = new JLabel(myClass.get(i));
             myClassLabel[i].setBounds(0, yPosition, classNameWidth, 35);
-            myClassLabel[i].setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+            SettingClass.customFont(myClassLabel[i], Font.BOLD, 25);
             myClassPanel.add(myClassLabel[i]);
 
             deleteClass[i] = new JButton();
@@ -316,7 +313,7 @@ public class SettingMyClass extends JPanel {
             InnerDeleteClass.setBounds(10, 10, 50, 15);
             InnerDeleteClass.setOpaque(true);
             InnerDeleteClass.setBackground(Color.BLACK);
-            InnerDeleteClass.setFont(new Font("Noto Sans", Font.PLAIN, 16));
+            SettingClass.customFont(InnerDeleteClass, Font.PLAIN, 16);
             InnerDeleteClass.setForeground(Color.WHITE);
             InnerDeleteClass.setHorizontalAlignment(SwingConstants.CENTER);
             InnerDeleteClass.setVerticalAlignment(SwingConstants.CENTER);

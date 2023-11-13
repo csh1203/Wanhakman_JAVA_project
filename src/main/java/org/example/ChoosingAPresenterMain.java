@@ -10,12 +10,6 @@ import java.util.*;
 import java.util.List;
 
 public class ChoosingAPresenterMain {
-    public static void main(String args[]){
-        ArrayList<Integer> ex = new ArrayList<>();
-        ex.add(2);
-        ex.add(14);
-        new ChoosingAPresenterMain("16", "4", ex);
-    }
     public ChoosingAPresenterMain(String allPerson, String presentPerson, ArrayList<Integer> exceptPerson) {
         Color setting = new Color(0x474747);
         // JFrame 생성
@@ -27,7 +21,7 @@ public class ChoosingAPresenterMain {
 
         JButton settingBtn = new JButton("설정");
         settingBtn.setBounds(1100, 31, 100, 33);
-        settingBtn.setFont(new Font("Noto Sans", Font.BOLD, 24)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(settingBtn, Font.BOLD, 24);
         settingBtn.setForeground(setting); // 글자 색상 설정
 
         // 버튼의 배경을 없애기
@@ -40,7 +34,9 @@ public class ChoosingAPresenterMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new ChoosingAPresenterSetting();
+                String except = exceptPerson.toString();
+                System.out.println(except);
+                new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except);
             }
         });
         frame.add(settingBtn);
@@ -79,7 +75,7 @@ public class ChoosingAPresenterMain {
         Border InnerRoundedBorder = BorderFactory.createLineBorder(Color.WHITE, 30, true);
         resultLabel.setBorder(InnerRoundedBorder);
         resultLabel.setBounds(10, 10, 831, 370);
-        resultLabel.setFont(new Font("Noto Sans", Font.PLAIN, 80)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(resultLabel, Font.PLAIN, 80);
         resultLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트를 가운데에 정렬
         resultLabel.setVerticalAlignment(JLabel.CENTER);
         resultFrame.add(resultLabel);
@@ -95,7 +91,7 @@ public class ChoosingAPresenterMain {
         InnerBtn.setBackground(SettingClass.mainColor);
         InnerBtn.setHorizontalAlignment(SwingConstants.CENTER);
         InnerBtn.setVerticalAlignment(SwingConstants.CENTER);
-        InnerBtn.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(InnerBtn, Font.BOLD, 25);
         InnerBtn.setForeground(Color.WHITE); // 글자 색상 설정
         makePresenterBtn.add(InnerBtn);
 

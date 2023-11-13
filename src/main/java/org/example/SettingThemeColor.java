@@ -14,9 +14,6 @@ public class SettingThemeColor extends JPanel {
     Color mainColor;
     JLabel InnerLabel = new JLabel();
     JButton setColorButton = new JButton();
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingThemeColor() throws SQLException {
         setBounds(0,0, 1045, 832);
         getMainColor();
@@ -25,7 +22,7 @@ public class SettingThemeColor extends JPanel {
 
         JLabel currectThemeColorTitle = new JLabel("현재 테마 컬러");
         currectThemeColorTitle.setBounds(124, 111, 200, 41);
-        currectThemeColorTitle.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(currectThemeColorTitle, Font.BOLD, 25);
         add(currectThemeColorTitle);
         JPanel panel = new JPanel() {
             @Override
@@ -65,7 +62,7 @@ public class SettingThemeColor extends JPanel {
         panel.add(setColorButton);
 
         InnerLabel.setBounds(10, 10, 221, 65);
-        InnerLabel.setFont(new Font("Noto Sans", Font.PLAIN, 20));
+        SettingClass.customFont(InnerLabel, Font.PLAIN, 20);
         InnerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         InnerLabel.setVerticalAlignment(SwingConstants.CENTER);
         InnerLabel.setOpaque(true);
