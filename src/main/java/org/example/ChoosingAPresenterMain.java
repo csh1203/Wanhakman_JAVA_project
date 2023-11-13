@@ -10,12 +10,6 @@ import java.util.*;
 import java.util.List;
 
 public class ChoosingAPresenterMain {
-    public static void main(String args[]){
-        ArrayList<Integer> ex = new ArrayList<>();
-        ex.add(2);
-        ex.add(14);
-        new ChoosingAPresenterMain("16", "4", ex);
-    }
     public ChoosingAPresenterMain(String allPerson, String presentPerson, ArrayList<Integer> exceptPerson) {
         Color setting = new Color(0x474747);
         // JFrame 생성

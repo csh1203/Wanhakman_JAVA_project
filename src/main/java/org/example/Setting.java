@@ -9,10 +9,7 @@ import java.sql.SQLException;
 
 public class Setting {
     static JFrame frame;
-    public static void main(String args[]) throws SQLException {
 
-        new Setting();
-    }
     public Setting() throws SQLException {
         // JFrame 생성
         frame = new JFrame("설정");

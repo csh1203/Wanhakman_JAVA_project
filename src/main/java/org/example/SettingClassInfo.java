@@ -6,9 +6,6 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class SettingClassInfo extends JPanel {
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingClassInfo() throws SQLException {
         setBounds(0,0, 1045, 832);
 

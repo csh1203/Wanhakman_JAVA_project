@@ -320,12 +320,10 @@ public class Main extends Frame {
     public String getCurrectText(String date) throws SQLException{
         Connection connection = Util.getConnection();
 
-        Statement statement1 = connection.createStatement();
-
         String text = "";
-        String sql1 = "select EXISTS (SELECT date, content from scheduler WHERE date Like \""+date+"\" limit 1) as success";
-
-        ResultSet result2 = statement1.executeQuery(sql1);
+        PreparedStatement preparedStatement = connection.prepareStatement("select EXISTS (SELECT date, content from scheduler WHERE date Like ? limit 1) as success");
+        preparedStatement.setString(1, date);
+        ResultSet result2 = preparedStatement.executeQuery();
         result2.next();
 
         if(result2.getString(1).equals("1")){
@@ -337,7 +335,7 @@ public class Main extends Frame {
             preparedStatement1.close();
         }
         result2.close();
-        statement1.close();
+        preparedStatement.close();
         connection.close();
 
         return text;

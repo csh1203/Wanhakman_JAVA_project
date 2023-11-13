@@ -21,9 +21,6 @@ public class SettingMyClass extends JPanel {
 
     int deleteBtnXPosition = 113 + classNameWidth;
     JFrame addFrame;
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingMyClass() throws SQLException {
         setBounds(0,0, 1045, 832);
         setLayout(null);

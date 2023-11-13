@@ -26,9 +26,6 @@ public class PickASeatSetting {
 
     JComboBox jComboBox = new JComboBox<>(classOption);
     JLabel division;
-    public static void main(String args[]){
-//        new PickASeatSetting("나의학급");
-    }
     PickASeatSetting(String SelectedClass) throws SQLException{
         Color backgroud = new Color(0xA1A1A1);
 
@@ -136,7 +133,6 @@ public class PickASeatSetting {
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                {"분단 대형", "시험 대형", "모둠 대형"};
                 if(jComboBox.getSelectedItem() == "분단 대형"){
                     division.setText("분단");
                     inputDivision.setEnabled(true);

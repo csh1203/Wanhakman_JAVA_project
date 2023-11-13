@@ -14,9 +14,6 @@ public class SettingThemeColor extends JPanel {
     Color mainColor;
     JLabel InnerLabel = new JLabel();
     JButton setColorButton = new JButton();
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingThemeColor() throws SQLException {
         setBounds(0,0, 1045, 832);
         getMainColor();

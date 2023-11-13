@@ -18,11 +18,6 @@ import java.util.stream.Stream;
 
 public class ChoosingAPresenterSetting {
     int people = 16;
-    public static void main(String args[]){
-        ArrayList<Integer> except = new ArrayList<>();
-
-        new ChoosingAPresenterSetting(4, "");
-    }
     public ChoosingAPresenterSetting(int presenter, String except) {
         Color backgroud = new Color(0xA1A1A1);
         Dimension dim = new Dimension(1280, 832);
@@ -210,7 +205,6 @@ public class ChoosingAPresenterSetting {
                 } else {
                     ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
                     if(ExceptPerson.length() == 0){
-//                        ExpectPersonArr.add(-1);
                     }else{
                         String[] numberStrings = ExceptPerson.split("[,\\s]+");
 
@@ -284,9 +278,9 @@ class CustomCheckboxUI extends BasicCheckBoxUI {
 
         // 테두리 색을 선택 상태에 따라 조절
         if (model.isSelected()) {
-            g2.setColor(Color.black); // 체크 박스가 선택되었을 때 테두리 색을 파란색으로 설정
+            g2.setColor(Color.black);
         } else {
-            g2.setColor(backgroud); // 체크 박스가 선택되지 않았을 때 테두리 색을 검은색으로 설정
+            g2.setColor(backgroud);
         }
 
         // 체크 박스 테두리를 그립니다.

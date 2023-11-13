@@ -20,16 +20,12 @@ public class SettingSeatOrder extends JPanel {
     int seatType;
     JLabel[] tables;
     JLabel[] InnerTable;
-//    CustomToggleButton[] customToggleButtons;
     JLabel[] InnerLabel;
     JPanel seat = new JPanel();
     int seatHeight;
     int tableWidth = 108;
     int tableHeight = 65;
 
-    public static void main(String args[]) throws SQLException {
-        new Setting();
-    }
     public SettingSeatOrder() throws SQLException {
         SettingClass.getMainColor();
         roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
@@ -99,9 +95,6 @@ public class SettingSeatOrder extends JPanel {
         printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                printBoard pb = new printBoard();
-//                pb.printPanel(SettingSeatOrder.this);
-//                printPanel(SettingSeatOrder.this);
                 showPrintPreview(SettingSeatOrder.this, jComboBox, printButton, jComboBox.getSelectedItem().toString());
             }
         });
@@ -138,7 +131,6 @@ public class SettingSeatOrder extends JPanel {
             division = result.getInt("division");
             seatType = result.getInt("class_type");
         }
-//        seatOrder
         PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT seat_order FROM seat WHERE class_name = ?");
         preparedStatement2.setString(1, className);
         ResultSet result2 = preparedStatement2.executeQuery();
@@ -165,7 +157,6 @@ public class SettingSeatOrder extends JPanel {
     public void type1MakeTables() {
         seatHeight = (int)(Math.ceil(people / (division * 2.0))) * tableHeight + ((int)(Math.ceil(people / (division * 2.0))) - 1) * 16;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         InnerLabel = new JLabel[people];
@@ -248,7 +239,6 @@ public class SettingSeatOrder extends JPanel {
     public void type2MakeTables() {
         seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * 5;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         InnerLabel = new JLabel[people];
@@ -270,7 +260,6 @@ public class SettingSeatOrder extends JPanel {
             int repeat = divisionCnt[i];
             int height = repeat * tableHeight + (repeat - 1) * 5;
             int margin = (1045 / division - tableWidth) / 2;
-//            System.out.println(repeat + " " + height);
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(repeat,1));
             divisions.setBounds(margin, 0, tableWidth, height);
@@ -320,9 +309,6 @@ public class SettingSeatOrder extends JPanel {
         }
     }
     public void type3MakeTables() {
-        //table = 126 * 75 / margin = 4 / division_margin = 30
-//        int tableWidth = 108;
-//        int tableHeight = 56;
         int table_margin = 4;
         int division_margin = 40;
 
@@ -417,27 +403,6 @@ public class SettingSeatOrder extends JPanel {
         // 용지 방향 설정 (가로 방향)
         pageFormat.setOrientation(PageFormat.LANDSCAPE);
 
-        // 패널의 크기를 A4 용지에 맞게 조절
-//        double pageWidth = pageFormat.getImageableWidth();
-//        double pageHeight = pageFormat.getImageableHeight();
-//        double panelWidth = panel.getPreferredSize().getWidth();
-//        double panelHeight = panel.getPreferredSize().getHeight();
-//
-//        double scaleX = pageWidth / panelWidth;
-//        double scaleY = pageHeight / panelHeight;
-//
-//        if (scaleX < scaleY) {
-//            // 패널이 용지의 너비에 맞게 조절될 경우
-//            panelWidth *= scaleX;
-//            panelHeight *= scaleX;
-//        } else {
-//            // 패널이 용지의 높이에 맞게 조절될 경우
-//            panelWidth *= scaleY;
-//            panelHeight *= scaleY;
-//        }
-
-//        panel.setSize((int) panelWidth, (int) panelHeight);
-
         job.setPrintable(new Printable() {
             @Override
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -487,79 +452,4 @@ public class SettingSeatOrder extends JPanel {
             }
         }
     }
-
-    private static class PrintablePanel implements Printable {
-        private JPanel panel;
-
-        public PrintablePanel(JPanel panel) {
-            this.panel = panel;
-        }
-
-        @Override
-        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            if (pageIndex > 0) {
-                return Printable.NO_SUCH_PAGE;
-            }
-
-            Graphics2D g2d = (Graphics2D) graphics;
-            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
-            // A4 용지 크기 계산
-            double pageWidth = pageFormat.getImageableWidth();
-            double pageHeight = pageFormat.getImageableHeight();
-
-            // JPanel의 크기를 A4 용지 크기에 맞게 비율 조정
-            double scaleX = pageWidth / panel.getWidth();
-            double scaleY = pageHeight / panel.getHeight();
-            g2d.scale(scaleX, scaleY);
-
-            // 원하는 영역만 그리기
-            panel.print(g2d);
-
-            return Printable.PAGE_EXISTS;
-        }
-    }
 }
-
-
-//    private static void printPanel(JPanel panel) {
-//        PrinterJob printerJob = PrinterJob.getPrinterJob();
-//        printerJob.setJobName("Print Panel");
-//
-//        PageFormat pageFormat = printerJob.pageDialog(printerJob.defaultPage());
-//
-//        // 수동으로 용지 방향을 가로로 변경
-//        pageFormat.setOrientation(PageFormat.LANDSCAPE);
-//
-//        printerJob.setPrintable(new PrintablePanel(panel), pageFormat);
-//
-//        if (printerJob.printDialog()) {
-//            try {
-//                printerJob.print();
-//            } catch (PrinterException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
-//
-//
-
-
-//    private void printComponent(Graphics2D g2d) {
-//        // JPanel의 내용을 그리는 코드를 작성
-//        // 이 예제에서는 간단하게 버튼의 텍스트를 그려보겠습니다.
-//        Component[] components = getComponents();
-//        for (Component component : components) {
-//            if (component instanceof JComponent) {
-//                JComponent jComponent = (JComponent) component;
-//                paintComponent(g2d, jComponent);
-//            }
-//        }
-//    }
-//    private void paintComponent(Graphics2D g2d, JComponent component) {
-//        // 컴포넌트의 크기와 위치 정보를 고려하여 그림을 그린다.
-//        int width = (int) component.getSize().getWidth();
-//        int height = (int) component.getSize().getHeight();
-//        component.paint(g2d.create(0, 0, width, height));
-//    }
-

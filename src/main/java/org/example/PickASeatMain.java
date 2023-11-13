@@ -29,10 +29,6 @@ public class PickASeatMain {
     JLabel[] InnerTable;
     int seatType;
     int seatHeight;
-    public static void main(String args[]) throws SQLException {
-
-        new PickASeatMain(0);
-    }
     PickASeatMain(int index) throws SQLException {
         String[] classOption = getClassOption();
 
@@ -65,8 +61,6 @@ public class PickASeatMain {
         });
 
         getClassInfo(classOption[index]);
-
-//        seat.setBounds(0, 259, 1280, seatHeight);
         frame.add(seat);
 
         JButton settingBtn = new JButton("설정");
@@ -297,7 +291,6 @@ public class PickASeatMain {
 
         seatHeight = (int)(Math.ceil(people / (division * 2.0))) * tableHeight + ((int)(Math.ceil(people / (division * 2.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         customToggleButtons = new CustomToggleButton[people];
@@ -403,7 +396,6 @@ public class PickASeatMain {
         }
         seatHeight = (int)(Math.ceil(people / (division * 1.0))) * tableHeight + ((int)(Math.ceil(people / (division * 1.0))) - 1) * tableMargin;
         seat.setLayout(new GridLayout(1, division));
-//        seat.setBounds(0, 259, 1280, seatHeight);
 
         tables = new JLabel[people];
         customToggleButtons = new CustomToggleButton[people];
@@ -426,7 +418,6 @@ public class PickASeatMain {
             int repeat = divisionCnt[i];
             int height = repeat * tableHeight + (repeat - 1) * tableMargin;
             int margin = (1200 / division - tableWidth) / 2;
-//            System.out.println(repeat + " " + height);
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(repeat,1));
             divisions.setBounds(margin, 0, tableWidth, height);
@@ -485,7 +476,6 @@ public class PickASeatMain {
         }
     }
     public void type3MakeTables() {
-        //table = 126 * 75 / margin = 4 / division_margin = 30
         int tableWidth = 126;
         int tableHeight = 75;
         int table_margin = 4;
@@ -514,7 +504,7 @@ public class PickASeatMain {
         InnerLabel = new JLabel[people];
         InnerTable = new JLabel[people];
 
-        int[] divisionCnt = new int[type3Division]; //divisionCnt.length : 분단 수. divisionCnt[i] : 분단 별 인원
+        int[] divisionCnt = new int[type3Division];
         int peopleCnt = 16;
         for(int i = 0; i<division; i++){
             if(peopleCnt - 4 >= 0) {
@@ -787,6 +777,6 @@ class CustomComboBoxUI extends MetalComboBoxUI {
 
     @Override
     public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
-        // Do nothing to remove the background
+
     }
 }
