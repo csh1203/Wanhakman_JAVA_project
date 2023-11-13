@@ -278,7 +278,7 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new ChoosingAPresenterSetting();
+                new ChoosingAPresenterSetting(0, "");
             }
         });
 

@@ -23,7 +23,7 @@ public class SettingClassInfo extends JPanel {
 
         JButton stuInfo = new JButton("학생 정보");
         stuInfo.setBounds(47, 24, 150, 30);
-        stuInfo.setFont(new Font("Noto Sans", Font.PLAIN, 22));
+        SettingClass.customFont(stuInfo, Font.PLAIN, 22);
         stuInfo.setBorderPainted(false);
         stuInfo.setContentAreaFilled(false);
         stuInfo.setFocusPainted(false);
@@ -32,7 +32,7 @@ public class SettingClassInfo extends JPanel {
 
         JButton seatOrder = new JButton("자리 배치");
         seatOrder.setBounds(235, 24, 150, 30);
-        seatOrder.setFont(new Font("Noto Sans", Font.PLAIN, 22));
+        SettingClass.customFont(seatOrder, Font.PLAIN, 22);
         seatOrder.setBorderPainted(false);
         seatOrder.setContentAreaFilled(false);
         seatOrder.setFocusPainted(false);
@@ -41,7 +41,7 @@ public class SettingClassInfo extends JPanel {
 
         JButton roleDetermind = new JButton("1인 1역");
         roleDetermind.setBounds(423, 24, 150, 30);
-        roleDetermind.setFont(new Font("Noto Sans", Font.PLAIN, 22));
+        SettingClass.customFont(roleDetermind, Font.PLAIN, 22);
         roleDetermind.setBorderPainted(false);
         roleDetermind.setContentAreaFilled(false);
         roleDetermind.setFocusPainted(false);

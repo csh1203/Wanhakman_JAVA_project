@@ -11,14 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class ChoosingAPresenterSetting {
+    int people = 16;
     public static void main(String args[]){
-        new ChoosingAPresenterSetting();
+        ArrayList<Integer> except = new ArrayList<>();
+
+        new ChoosingAPresenterSetting(4, "");
     }
-    public ChoosingAPresenterSetting() {
+    public ChoosingAPresenterSetting(int presenter, String except) {
         Color backgroud = new Color(0xA1A1A1);
         Dimension dim = new Dimension(1280, 832);
 
@@ -77,36 +82,37 @@ public class ChoosingAPresenterSetting {
 
         JLabel person = new JLabel("학생 수");
         person.setBounds(68, 70, 80, 34);
-        person.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(person, Font.PLAIN, 25);
         person.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(person);
 
-        JTextField inputPerson = new JTextField(3);
-        setNumberOnlyFilter(inputPerson); // 텍스트 필드에 숫자만 입력되도록 필터 설정
+        JLabel inputPerson = new JLabel(people+"");
+        inputPerson.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         inputPerson.setBounds(68, 122, 119, 29);
-        inputPerson.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(inputPerson, Font.PLAIN, 21);
         backgroundImg.add(inputPerson);
 
         JLabel myung = new JLabel("명");
         myung.setBounds(199, 122, 25, 29);
-        myung.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(myung, Font.PLAIN, 25);
         myung.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung);
 
         JLabel presenterCnt = new JLabel("발표 인원");
         presenterCnt.setBounds(276, 70, 105, 33);
-        presenterCnt.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(presenterCnt, Font.PLAIN, 25);
         backgroundImg.add(presenterCnt);
 
         JTextField inputPresenterCnt = new JTextField(3);
         setNumberOnlyFilter(inputPresenterCnt); // 텍스트 필드에 숫자만 입력되도록 필터 설정
         inputPresenterCnt.setBounds(276, 122, 119, 29);
-        inputPresenterCnt.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(inputPresenterCnt, Font.PLAIN, 21);
+        if(presenter > 0) inputPresenterCnt.setText(presenter+"");
         backgroundImg.add(inputPresenterCnt);
 
         JLabel myung2 = new JLabel("명");
         myung2.setBounds(407, 122, 25, 29);
-        myung2.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(myung2, Font.PLAIN, 25);
         myung2.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(myung2);
 
@@ -118,41 +124,50 @@ public class ChoosingAPresenterSetting {
 
         JLabel exceptPerson = new JLabel("제외할 번호");
         exceptPerson.setBounds(68, 221, 135, 31);
-        exceptPerson.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(exceptPerson, Font.PLAIN, 25);
         exceptPerson.setForeground(backgroud);
         backgroundImg.add(exceptPerson);
 
         JCheckBox exceptCheck = new JCheckBox();
         exceptCheck.setBounds(199, 228, 20, 20);
         exceptCheck.setUI(new CustomCheckboxUI());
+
         backgroundImg.add(exceptCheck);
 
         JTextField inputExcept = new JTextField(3);
         inputExcept.setBounds(68, 270, 119, 29);
         inputExcept.setBorder(new LineBorder(backgroud));
-        inputExcept.setEnabled(false);
-        PlainDocument doc = (PlainDocument) inputExcept.getDocument();
-        doc.setDocumentFilter(new NumberWithCommaDocumentFilter());
-//        setNumberOnlyFilter(inputExcept); // 텍스트 필드에 숫자만 입력되도록 필터 설정
-        inputExcept.setFont(new Font("Noto Sans", Font.PLAIN, 21)); // 폰트 및 글자 크기 설정
+
+        SettingClass.customFont(inputExcept, Font.PLAIN, 21);
         backgroundImg.add(inputExcept);
 
         JLabel bun = new JLabel("번");
         bun.setBounds(199, 270, 25, 29);
-        bun.setFont(new Font("Noto Sans", Font.PLAIN, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(bun, Font.PLAIN, 25);
         bun.setForeground(backgroud); // 글자 색상 설정
         backgroundImg.add(bun);
+
+        if(except.length() > 2) {
+            exceptCheck.setSelected(true);
+            inputExcept.setEnabled(true);
+            exceptPerson.setForeground(Color.BLACK);
+            inputExcept.setBorder(new LineBorder(Color.BLACK));
+            bun.setForeground(Color.BLACK);
+            inputExcept.setEnabled(true);
+            inputExcept.setText(except.substring(1, except.length() - 1));
+        }else inputExcept.setEnabled(false);
 
         exceptCheck.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    exceptPerson.setForeground(Color.BLACK); // 체크 박스가 선택되었을 때 라벨의 글씨 색을 파란색으로 변경
+                    exceptPerson.setForeground(Color.BLACK);
                     inputExcept.setBorder(new LineBorder(Color.BLACK));
                     bun.setForeground(Color.BLACK);
                     inputExcept.setEnabled(true);
+
                 } else {
-                    exceptPerson.setForeground(backgroud); // 체크 박스가 선택 해제되었을 때 라벨의 글씨 색을 검은색으로 변경
+                    exceptPerson.setForeground(backgroud);
                     inputExcept.setBorder(new LineBorder(backgroud));
                     bun.setForeground(backgroud);
                     inputExcept.setEnabled(false);
@@ -178,7 +193,7 @@ public class ChoosingAPresenterSetting {
         InnerBtn.setBounds(10, 10, 132, 26);
         InnerBtn.setOpaque(true);
         InnerBtn.setBackground(SettingClass.mainColor);
-        InnerBtn.setFont(new Font("Noto Sans", Font.BOLD, 25)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(InnerBtn, Font.BOLD, 25);
         InnerBtn.setForeground(Color.WHITE);
         checkBtn.add(InnerBtn);
 
@@ -190,33 +205,36 @@ public class ChoosingAPresenterSetting {
                 String PresenterPerson = inputPresenterCnt.getText();
                 String ExceptPerson = inputExcept.getText();
 
-                ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
-                if(ExceptPerson.length() == 0){
-                    ExpectPersonArr.add(-1);
-                }else{
-                    String ch = "";
-                    for(int i = 0; i<ExceptPerson.length(); i++){
-                        if(ExceptPerson.charAt(i) == ','){
-                            ExpectPersonArr.add(Integer.parseInt(ch));
-                            ch = "";
-                        }else{
-                            ch += ExceptPerson.charAt(i);
-                        }
-                    }
-                    ExpectPersonArr.add(Integer.parseInt(ch));
-                }
+                if (ExceptPerson.matches("[^0-9,\\s]+")) {
+                    JOptionPane.showMessageDialog(frame, "숫자만 입력이 가능합니다", "오류", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
+                    if(ExceptPerson.length() == 0){
+//                        ExpectPersonArr.add(-1);
+                    }else{
+                        String[] numberStrings = ExceptPerson.split("[,\\s]+");
 
-                if (Allperson.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요.");
-                }else if(PresenterPerson.isEmpty()){
-                    JOptionPane.showMessageDialog(frame, "발표 인원을 입력해주세요.");
-                }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson)){
-                    JOptionPane.showMessageDialog(frame, "발표 인원을 다시 입력해주세요.");
-                }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson) + ExpectPersonArr.size()){
-                    JOptionPane.showMessageDialog(frame, "학생 수를 다시 입력해주세요.");
-                }else{
-                    frame.dispose();
-                    new ChoosingAPresenterMain(Allperson, PresenterPerson, ExpectPersonArr);
+                        // 추출된 문자열을 정수 ArrayList로 변환
+                        for (String numberString : numberStrings) {
+                            if (!numberString.isEmpty()) {
+                                ExpectPersonArr.add(Integer.parseInt(numberString));
+                            }
+                        }
+
+                    }
+
+                    if (Allperson.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요.");
+                    }else if(PresenterPerson.isEmpty()){
+                        JOptionPane.showMessageDialog(frame, "발표 인원을 입력해주세요.");
+                    }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson)){
+                        JOptionPane.showMessageDialog(frame, "발표 인원을 다시 입력해주세요.");
+                    }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson) + ExpectPersonArr.size()){
+                        JOptionPane.showMessageDialog(frame, "학생 수를 다시 입력해주세요.");
+                    }else{
+                        frame.dispose();
+                        new ChoosingAPresenterMain(Allperson, PresenterPerson, ExpectPersonArr);
+                    }
                 }
             }
         });
@@ -299,34 +317,6 @@ class CustomCheckboxUI extends BasicCheckBoxUI {
             // 커스텀 아이콘을 그립니다.
             checkIcon.paintIcon(c, g, 3, 3);
         }
-    }
-}
-
-class NumberWithCommaDocumentFilter extends DocumentFilter {
-    @Override
-    public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-        Document doc = fb.getDocument();
-        StringBuilder sb = new StringBuilder(doc.getText(0, doc.getLength()));
-        sb.insert(offset, string);
-
-        if (isValidInput(sb.toString())) {
-            super.insertString(fb, offset, string, attr);
-        }
-    }
-
-    @Override
-    public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        Document doc = fb.getDocument();
-        StringBuilder sb = new StringBuilder(doc.getText(0, doc.getLength()));
-        sb.replace(offset, offset + length, text);
-
-        if (isValidInput(sb.toString())) {
-            super.replace(fb, offset, length, text, attrs);
-        }
-    }
-
-    private boolean isValidInput(String input) {
-        return input.matches("^[0-9,]*$");
     }
 }
 

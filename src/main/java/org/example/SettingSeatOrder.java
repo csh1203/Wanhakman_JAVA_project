@@ -38,7 +38,7 @@ public class SettingSeatOrder extends JPanel {
 
         jComboBox = new JComboBox<>(classOption);
         jComboBox.setBounds(28, 16, 200, 40);
-        jComboBox.setFont(new Font("Noto Sans", Font.BOLD, 20));
+        SettingClass.customFont(jComboBox, Font.BOLD, 20);
         jComboBox.setUI(new CustomComboBoxUI());
         jComboBox.setOpaque(false);
         add(jComboBox);
@@ -65,7 +65,7 @@ public class SettingSeatOrder extends JPanel {
         teachingDeskLabel.setBounds(372, 87, 295,78);
 
         JLabel InnerTeachingDest = new JLabel("교탁");
-        InnerTeachingDest.setFont(new Font("Noto Sans", Font.BOLD, 40)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(InnerTeachingDest, Font.BOLD, 40);
         InnerTeachingDest.setBounds(10, 10, 275, 58);
         InnerTeachingDest.setForeground(Color.WHITE);
         InnerTeachingDest.setHorizontalAlignment(SwingConstants.CENTER);
@@ -85,7 +85,7 @@ public class SettingSeatOrder extends JPanel {
         printButton.setFocusPainted(false);
 
         JLabel InnerPrintButton = new JLabel("인쇄");
-        InnerPrintButton.setFont(new Font("Noto Sans", Font.BOLD, 18));
+        SettingClass.customFont(InnerPrintButton, Font.BOLD, 18);
         InnerPrintButton.setBounds(10, 10, 70, 33);
         InnerPrintButton.setHorizontalAlignment(SwingConstants.CENTER);
         InnerPrintButton.setVerticalAlignment(SwingConstants.CENTER);
@@ -231,7 +231,7 @@ public class SettingSeatOrder extends JPanel {
                     InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                     InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                    InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                    SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                     InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -307,7 +307,7 @@ public class SettingSeatOrder extends JPanel {
                 InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                 InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -391,7 +391,7 @@ public class SettingSeatOrder extends JPanel {
                 InnerLabel[tableIndex].setHorizontalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setVerticalAlignment(SwingConstants.CENTER);
                 InnerLabel[tableIndex].setForeground(SettingClass.mainColor);
-                InnerLabel[tableIndex].setFont(new Font("Noto Sans", Font.BOLD, 20)); // 폰트 및 글자 크기 설정
+                SettingClass.customFont(InnerLabel[tableIndex], Font.BOLD, 20);
 
                 InnerTextTable.add(InnerLabel[tableIndex]);
 
@@ -466,8 +466,6 @@ public class SettingSeatOrder extends JPanel {
                 g2d.setColor(Color.BLACK);
                 g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
                 String watermarkText = waterMark;
-//                int textWidth = g2d.getFontMetrics().stringWidth(watermarkText);
-//                int textHeight = g2d.getFontMetrics().getHeight();
                 int x = 50;
                 int y = 50;
                 g2d.drawString(watermarkText, x, y);
