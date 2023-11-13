@@ -105,7 +105,7 @@ public class Main extends Frame {
 
             scheduleArea[i] = new JTextArea();
             scheduleArea[i].setBounds(5, 30, 150, 150);
-            SettingClass.customFont(scheduleArea[i], Font.PLAIN, 12);
+            SettingClass.LightCustomFont(scheduleArea[i], Font.PLAIN, 12);
             scheduleArea[i].setOpaque(true);
             scheduleArea[i].setPreferredSize(new Dimension(150, 150));
             scheduleArea[i].setLayout(null);
@@ -373,7 +373,7 @@ public class Main extends Frame {
         dateLabel.setBackground(Color.WHITE);
         dateLabel.setHorizontalAlignment(JLabel.CENTER);
         dateLabel.setVerticalAlignment(JLabel.CENTER);
-        dateLabel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(dateLabel, Font.PLAIN, 16);
         panel.add(dateLabel);
 
         JTextArea contentLabel = new JTextArea(content);
@@ -383,7 +383,7 @@ public class Main extends Frame {
         contentLabel.setBorder(border);
         contentLabel.setLineWrap(true);
         contentLabel.setWrapStyleWord(true);
-        contentLabel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(contentLabel, Font.PLAIN, 16);
         panel.add(contentLabel);
         editFrame.add(panel);
 
@@ -391,7 +391,7 @@ public class Main extends Frame {
 
         JButton check = new JButton("확인");
         check.setBounds(10, 295, 140, 40);
-        check.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(check, Font.PLAIN, 16);
         check.setForeground(Color.WHITE);
         check.setBackground(SettingClass.mainColor);
         check.setBorder(borderBtn);
@@ -400,7 +400,7 @@ public class Main extends Frame {
 
         JButton cancel = new JButton("취소");
         cancel.setBounds(150, 295, 140, 40);
-        cancel.setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+        SettingClass.customFont(cancel, Font.PLAIN, 16);
         cancel.setForeground(SettingClass.mainColor);
         cancel.setBackground(Color.WHITE);
         cancel.setBorder(borderBtn);
@@ -431,10 +431,11 @@ public class Main extends Frame {
     static public void setSchedule(String date, String content, JTextArea contentArea) throws SQLException{
         Connection connection = Util.getConnection();
 
-        Statement statement1 = connection.createStatement();
-        String sql1 = "select EXISTS (SELECT date, content from scheduler WHERE date Like \""+date+"\" limit 1) as success";
+        PreparedStatement preparedStatement = connection.prepareStatement("select EXISTS (SELECT date, content from scheduler WHERE date Like ? limit 1) as success");
+        preparedStatement.setString(1, date);
+        preparedStatement.executeQuery();
 
-        ResultSet result2 = statement1.executeQuery(sql1);
+        ResultSet result2 = preparedStatement.executeQuery();
         result2.next();
         if(result2.getString(1).equals("1")){ // 이미 존재 한다.
             PreparedStatement preparedStatement2 = connection.prepareStatement("UPDATE scheduler SET content = ? WHERE date = ?");
@@ -445,13 +446,15 @@ public class Main extends Frame {
             contentArea.setText(content);
             preparedStatement2.close();
         }else{// 존재하지 않는다.
-            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO scheduler (date, content) VALUES(\""+ date+"\", \""+content+"\")");
+            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO scheduler (date, content) VALUES(?, ?)");
+            preparedStatement2.setString(1, date);
+            preparedStatement2.setString(2, content);
             preparedStatement2.executeUpdate();
             contentArea.setText(content);
             preparedStatement2.close();
         }
         result2.close();
-        statement1.close();
+        preparedStatement.close();
 
         connection.close();
     }
