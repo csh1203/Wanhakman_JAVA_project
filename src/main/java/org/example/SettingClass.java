@@ -43,4 +43,19 @@ public class SettingClass {
             // 폰트 로딩에 실패한 경우 예외 처리
         }
     }
+    public static void LightcustomFont(JComponent component, int fontStyle, int fontSize) {
+        String fontPath = "NotoSansKR-Light.ttf"; // 다운로드한 파일명에 맞게 수정
+        Font notoSansFont;
+        // 폰트 로딩
+        try {
+            notoSansFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath)).deriveFont(fontStyle, fontSize);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(notoSansFont);
+
+            component.setFont(notoSansFont);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+            // 폰트 로딩에 실패한 경우 예외 처리
+        }
+    }
 }

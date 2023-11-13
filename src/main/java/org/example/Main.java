@@ -73,7 +73,7 @@ public class Main extends Frame {
             weekLabel[i] = new JLabel(weekDay[i]);
             Border border = BorderFactory.createLineBorder(SettingClass.mainColor, 3);
             weekLabel[i].setBorder(border);
-            weekLabel[i].setFont(new Font("Noto Sans", Font.PLAIN, 18)); // 폰트 및 글자 크기 설정
+            SettingClass.customFont(weekLabel[i], Font.PLAIN, 18);
             weekLabel[i].setHorizontalAlignment(JLabel.CENTER);
             weekLabel[i].setVerticalAlignment(JLabel.CENTER);
             weekPanel.add(weekLabel[i]);
@@ -97,7 +97,7 @@ public class Main extends Frame {
 
             dateLabel[i] = new JLabel();
             dateLabel[i].setBounds(5, 5, 150, 25);
-            dateLabel[i].setFont(new Font("Noto Sans", Font.PLAIN, 16)); // 폰트 및 글자 크기 설정
+            SettingClass.customFont(dateLabel[i], Font.PLAIN, 16);
             dateLabel[i].setForeground(SettingClass.mainColor); // 글자 색상 설정
             dateLabel[i].setOpaque(true);
             dateLabel[i].setBackground(Color.WHITE);
@@ -105,6 +105,7 @@ public class Main extends Frame {
 
             scheduleArea[i] = new JTextArea();
             scheduleArea[i].setBounds(5, 30, 150, 150);
+            SettingClass.customFont(scheduleArea[i], Font.PLAIN, 12);
             scheduleArea[i].setOpaque(true);
             scheduleArea[i].setPreferredSize(new Dimension(150, 150));
             scheduleArea[i].setLayout(null);
