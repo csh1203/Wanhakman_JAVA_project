@@ -22,8 +22,6 @@ public class DetermineRole {
         frame = new JFrame("1인 1역 정하기");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setBackground(Color.WHITE);
-        frame.setBackground(Color.WHITE);
         frame.setLayout(null);
 
         // Title
