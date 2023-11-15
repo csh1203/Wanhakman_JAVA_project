@@ -1,34 +1,52 @@
 package org.example;
 
+import org.xml.sax.SAXException;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class DetermineRole {
     private JFrame frame;
-    private DefaultTableModel tableModel;
+    private DefaultTableModel model;
     private JTable table;
-    private JButton addButton;
+    private JPanel panel;
 
-    public DetermineRole() {
+    public DetermineRole() throws SQLException {
         frame = new JFrame("1인 1역 정하기");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(Color.WHITE);
         frame.setBackground(Color.WHITE);
 
-        JLabel title = new RoundedLabel("우리반 1인 1역");
-        title.setFont(new Font("Noto Sans", Font.BOLD, 36));
-        title.setForeground(Color.BLACK);
-        title.setBounds(500, 80, 400, 60);
-        frame.add(title);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
+        // Title
+        JLabel title = new JLabel("우리반 1인 1역");
+        SettingClass.customFont(title, Font.BOLD, 36);
+        title.setForeground(Color.BLACK);
+
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 0, 10, 0);
+        frame.add(title, gbc);
+
+        // 홈버튼
         JLabel homeBtn = new JLabel();
-        homeBtn.setBounds(1150, 35, 70, 70);
-        homeBtn.setIcon(new ImageIcon("C:\\java_Wanhakman\\Wanhakman_JAVA_project\\img\\homeBtn.png"));
-        frame.getContentPane().add(homeBtn);
+        homeBtn.setBounds(0, 0, 70, 70);
+        homeBtn.setIcon(new ImageIcon("img/homeBtn.png"));
+
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.insets = new Insets(0, 0, 10, 10);
+        frame.add(homeBtn, gbc);
 
         homeBtn.addMouseListener(new MouseAdapter() {
             @Override
@@ -42,145 +60,241 @@ public class DetermineRole {
             }
         });
 
-        JLabel button1 = new RoundedLabel("인쇄");
-        button1.setFont(new Font("Noto Sans", Font.BOLD, 14));
-        button1.setBounds(900, 697, 80, 40);
-        button1.setHorizontalAlignment(SwingConstants.CENTER);
-        button1.setBackground(Color.decode("#47815E"));
-        button1.setOpaque(true);
-        button1.setForeground(Color.WHITE);
-        frame.add(button1);
+        model = new DefaultTableModel();
+        model.addColumn("역할");
+        model.addColumn("하는 일");
+        model.addColumn("담당자");
 
-        JLabel button2 = new RoundedLabel("저장");
-        button2.setFont(new Font("Noto Sans", Font.BOLD, 14));
-        button2.setBounds(1000, 697, 80, 40);
-        button2.setHorizontalAlignment(SwingConstants.CENTER);
-        button2.setBackground(Color.decode("#47815E"));
-        button2.setOpaque(true);
-        button2.setForeground(Color.WHITE);
-        frame.add(button2);
+        table = new JTable(model);
+        showTable();
 
-        button2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if ("추가".equals(button2.getText())) {
-                    tableModel.addRow(new String[]{"", "", ""});
-                }
+        // addBtn
+        JButton addBtn = new JButton("추가");
+        SettingClass.customFont(addBtn, Font.PLAIN, 14);
+        addBtn.setForeground(Color.WHITE);
+        addBtn.setBackground(Color.decode("#47815E"));
+
+        addBtn.addActionListener(e -> addTableRow());
+
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        frame.add(addBtn, gbc);
+
+        // delBtn
+        JButton DelBtn = new JButton("삭제");
+        SettingClass.customFont(DelBtn, Font.PLAIN, 14);
+        DelBtn.setForeground(Color.WHITE);
+        DelBtn.setBackground(Color.decode("#47815E"));
+
+        DelBtn.addActionListener(e -> {
+            try {
+                DelTableRow();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
-        JLabel button3 = new RoundedLabel("편집");
-        button3.setFont(new Font("Noto Sans", Font.BOLD, 14));
-        button3.setBounds(1100, 697, 80, 40);
-        button3.setHorizontalAlignment(SwingConstants.CENTER);
-        button3.setBackground(Color.decode("#47815E"));
-        button3.setOpaque(true);
-        button3.setForeground(Color.WHITE);
-        frame.add(button3);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        frame.add(DelBtn, gbc);
 
-        button3.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (button3.getText().equals("편집")) {
-                    button1.setVisible(false);
-                    button2.setText("추가");
-                    button3.setText("확인");
-                } else {
-                    button1.setVisible(true);
-                    button2.setText("저장");
-                    button3.setText("편집");
-                }
-            }
-        });
+        // saveBtn
+        JButton saveBtn = new JButton("저장");
+        SettingClass.customFont(saveBtn, Font.PLAIN, 14);
+        saveBtn.setForeground(Color.WHITE);
+        saveBtn.setBackground(Color.decode("#47815E"));
 
-        tableModel = new DefaultTableModel(new String[]{"역할", "하는 일", "이름"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return true;
-            }
+        saveBtn.addActionListener(e -> setRole());
 
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return String.class;
-            }
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        frame.add(saveBtn, gbc);
 
-            @Override
-            public Object getValueAt(int row, int column) {
-                return super.getValueAt(row, column);
-            }
-
-            @Override
-            public void setValueAt(Object aValue, int row, int column) {
-                super.setValueAt(aValue, row, column);
-                fireTableCellUpdated(row, column);
-            }
-        };
-        tableModel.setRowCount(13);
-
-        table = new JTable(tableModel) {
-            @Override
-            protected JTableHeader createDefaultTableHeader() {
-                return new JTableHeader(columnModel) {
-                    @Override
-                    public TableCellRenderer getDefaultRenderer() {
-                        return new DefaultTableCellRenderer() {
-                            @Override
-                            public Component getTableCellRendererComponent(JTable table, Object value,
-                                                                           boolean isSelected, boolean hasFocus, int row, int column) {
-                                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                                component.setBackground(Color.decode("#47815E"));
-                                component.setFont(new Font("Noto Sans", Font.BOLD, 20));
-                                component.setForeground(Color.WHITE);
-                                setHorizontalAlignment(SwingConstants.CENTER);
-                                return component;
-                            }
-                        };
-                    }
-                };
-            }
-            public TableCellRenderer getCellRenderer(int row, int column) {
-                return new DefaultTableCellRenderer() {
-                    @Override
-                    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                                   boolean isSelected, boolean hasFocus, int row, int column) {
-                        Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                        setHorizontalAlignment(SwingConstants.CENTER);
-                        setFont(new Font("Noto Sans", Font.PLAIN, 14));
-                        return component;
-                    }
-                };
-            }
-        };
-        table.setRowHeight(25);
-
-        JScrollPane tableScrollPane = new JScrollPane(table);
-        tableScrollPane.setBounds(180, 180, 900, 360);
-        frame.add(tableScrollPane);
-
+        getRole();
+        
         frame.setLocationRelativeTo(null);
-        frame.setLayout(null);
         frame.setVisible(true);
     }
 
-    private class RoundedLabel extends JLabel {
-        public RoundedLabel(String text) {
-            super(text);
+    // 1인 1역 불러오기
+    public void getRole() throws SQLException {
+        ArrayList<String> role_name = new ArrayList<>();
+        ArrayList<String> role_explain = new ArrayList<>();
+        ArrayList<String> name = new ArrayList<>();
+
+        // Util 클래스 내용 참조
+        Connection connection = Util.getConnection();
+
+        // Statement 객체 생성 및 질의문 실행
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM role"); // 결과 조회
+
+        while (result.next()) {
+            role_name.add(result.getString("role_name"));
+            role_explain.add(result.getString("role_explain"));
+            name.add(result.getString("name"));
         }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setClip(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 10, 10));
-            super.paintComponent(g2d);
-            g2d.dispose();
+        // 리소스 해제
+        result.close();
+        statement.close();
+        connection.close();
+
+        // Call the appropriate showTable method with arguments
+        showTable(role_name, role_explain, name);
+    }
+
+    private void addTableRow() {
+        model.addRow(new Object[]{"", "", ""});
+        int newRow = model.getRowCount() - 1;
+        Rectangle rect = table.getCellRect(newRow, 0, true);
+        table.setRowHeight(newRow, 30);
+        table.scrollRectToVisible(rect);
+    }
+
+    private void DelTableRow() throws SQLException {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            int choice = JOptionPane.showConfirmDialog(frame, "선택한 행을 삭제하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                deleteRowFromDatabase(selectedRow);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "행을 선택한 후 삭제해주세요.", "알림", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
+    private void deleteRowFromDatabase(int rowIndex) throws SQLException {
+        String role_name = (String) model.getValueAt(rowIndex, 0);
+        String role_explain = (String) model.getValueAt(rowIndex, 1);
+        String name = (String) model.getValueAt(rowIndex, 2);
+
+        Connection connection = Util.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM role WHERE role_name = ? AND role_explain = ? AND name = ?");
+
+        preparedStatement.setString(1, role_name);
+        preparedStatement.setString(2, role_explain);
+        preparedStatement.setString(3, name);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+        connection.close();
+
+        // 선택한 행 삭제
+        model.removeRow(rowIndex);
+    }
+
+    // 저장을 누르면 바뀐 값을 DB에 저장
+    public void setRole() {
+        try {
+            Connection connection = Util.getConnection();
+            String sql = "INSERT INTO role (role_name, role_explain, name) VALUES (?, ?, ?)";
+            String checkIfExistsSql = "SELECT COUNT(*) FROM role WHERE role_name = ? AND role_explain = ? AND name = ?";
+
+            try (PreparedStatement insertStatement = connection.prepareStatement(sql);
+                 PreparedStatement checkIfExistsStatement = connection.prepareStatement(checkIfExistsSql)) {
+
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String role_name = (String) model.getValueAt(i, 0);
+                    String role_explain = (String) model.getValueAt(i, 1);
+                    String name = (String) model.getValueAt(i, 2);
+
+                    // 데이터가 이미 존재하는지
+                    checkIfExistsStatement.setString(1, role_name);
+                    checkIfExistsStatement.setString(2, role_explain);
+                    checkIfExistsStatement.setString(3, name);
+                    ResultSet resultSet = checkIfExistsStatement.executeQuery();
+                    resultSet.next();
+                    int rowCount = resultSet.getInt(1);
+
+                    // 내가 추가 버튼을 눌러 입력한 데이터만 들어가게
+                    if (rowCount == 0) {
+                        insertStatement.setString(1, role_name);
+                        insertStatement.setString(2, role_explain);
+                        insertStatement.setString(3, name);
+                        insertStatement.executeUpdate();
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "데이터가 성공적으로 저장되었습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "데이터 저장 중 오류가 발생했습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // table
+    private void showTable(ArrayList<String> role_name, ArrayList<String> role_explain, ArrayList<String> student_name) {
+
+//        model.setRowCount(0);
+
+        for(int i=0; i<role_name.size(); i++) {
+            model.addRow(new String[]{role_name.get(i), role_explain.get(i), student_name.get(i)});
+        }
+
+        table.setRowHeight(30);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // table column 조정
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(200);
+        columnModel.getColumn(1).setPreferredWidth(800);
+        columnModel.getColumn(2).setPreferredWidth(200);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        SettingClass.customFont(table, Font.PLAIN, 14);
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.setDefaultRenderer(Object.class, centerRenderer);
+        table.setRowHeight(0, 30);
+
+        // table 전체 크기
+        scrollPane.setPreferredSize(new Dimension(1000, 400));
+
+        // 역할, 하는일, 담당자 폰트 적용
+        JTableHeader header = table.getTableHeader();
+        SettingClass.customFont(header, Font.BOLD, 20);
+        header.setBackground(Color.decode("#47815E"));
+        header.setForeground(Color.WHITE);
+
+        // 테이블 margin
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridy = 2;
+        gbc2.insets = new Insets(10, 10, 10, 0);
+        frame.add(scrollPane, gbc2);
+    }
+
+    public static void removeAllComponents(JPanel panel) {
+        panel.removeAll();
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    // Overloaded showTable method without arguments
+    private void showTable() {
+        JScrollPane scrollPane = new JScrollPane(table);
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridy = 2;
+        gbc2.insets = new Insets(10, 10, 10, 0);
+        frame.add(scrollPane, gbc2);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+        SwingUtilities.invokeLater(() -> {
+            try {
                 new DetermineRole();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         });
     }
