@@ -29,6 +29,7 @@ public class Main extends Frame {
 
     public Main() throws SQLException {
         SettingClass.getMainColor();
+        getClassInfo();
         currentDate = getStartOfThisWeek(); // 이번주 월요일 날짜를 사용
         // JFrame 생성
         JFrame frame = new JFrame("완벽한 학급 만들기");
@@ -454,6 +455,27 @@ public class Main extends Frame {
         result2.close();
         preparedStatement.close();
 
+        connection.close();
+    }
+    public void getClassInfo() throws SQLException {
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM my_class");
+
+        int length = 0;
+        // 결과 조회
+        while(result.next()) {
+            // 필요한 칼럼값 가져오기
+            String name = result.getString("class_name");
+            int age = result.getInt("class_type");
+            int division = result.getInt("division");
+            length++;
+        }
+        System.out.println(length);
+
+        // 리소스 해제
+        result.close();
+        statement.close();
         connection.close();
     }
 }
