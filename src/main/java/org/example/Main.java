@@ -271,7 +271,11 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new DetermineRole();
+                try {
+                    new DetermineRole();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -465,16 +469,29 @@ public class Main extends Frame {
         int length = 0;
         // 결과 조회
         while(result.next()) {
-            // 필요한 칼럼값 가져오기
-            String name = result.getString("class_name");
-            int age = result.getInt("class_type");
-            int division = result.getInt("division");
             length++;
         }
-        System.out.println(length);
+        if(length == 0) addClassInfo();
 
         // 리소스 해제
         result.close();
+        statement.close();
+        connection.close();
+    }
+    public void addClassInfo() throws SQLException {
+        Connection connection = Util.getConnection();
+
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("INSERT INTO my_class (class_name, class_type, division) VALUES(\"나의 학급\", 1, 3)");
+        PreparedStatement preparedStatement = connection.prepareStatement("insert into seat (class_name, student_id, seat_order) values (\"나의 학급\", ?, ?)");
+        for(int i = 0; i<16; i++){
+            preparedStatement.setInt(1, i+1);
+            preparedStatement.setInt(2, i+1);
+            preparedStatement.executeUpdate();
+        }
+
+        // 리소스 해제
+        preparedStatement.close();
         statement.close();
         connection.close();
     }
