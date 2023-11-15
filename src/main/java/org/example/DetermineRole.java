@@ -1,15 +1,14 @@
 package org.example;
 
-import org.xml.sax.SAXException;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.table.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -17,7 +16,7 @@ public class DetermineRole {
     private JFrame frame;
     private DefaultTableModel model;
     private JTable table;
-    private JPanel panel;
+    Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
 
     public DetermineRole() throws SQLException {
         frame = new JFrame("1인 1역 정하기");
@@ -25,32 +24,26 @@ public class DetermineRole {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBackground(Color.WHITE);
-
-        frame.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        frame.setLayout(null);
 
         // Title
         JLabel title = new JLabel("우리반 1인 1역");
         SettingClass.customFont(title, Font.BOLD, 36);
         title.setForeground(Color.BLACK);
-
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        frame.add(title, gbc);
+        title.setBounds(525, 100, 300, 50);
+        frame.add(title);
 
         // 홈버튼
-        JLabel homeBtn = new JLabel();
-        homeBtn.setBounds(0, 0, 70, 70);
-        homeBtn.setIcon(new ImageIcon("img/homeBtn.png"));
-
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.insets = new Insets(0, 0, 10, 10);
-        frame.add(homeBtn, gbc);
-
-        homeBtn.addMouseListener(new MouseAdapter() {
+        ImageIcon home = new ImageIcon("img/homeBtn.png");
+        JButton homeBtn = new JButton(home);
+        homeBtn.setBounds(1190, 24, 45, 45);
+        homeBtn.setOpaque(false);
+        homeBtn.setContentAreaFilled(false);
+        homeBtn.setBorderPainted(false);
+        homeBtn.setFocusPainted(false);
+        homeBtn.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 try {
                     new Main();
@@ -59,6 +52,7 @@ public class DetermineRole {
                 }
             }
         });
+        frame.add(homeBtn);
 
         model = new DefaultTableModel();
         model.addColumn("역할");
@@ -66,52 +60,94 @@ public class DetermineRole {
         model.addColumn("담당자");
 
         table = new JTable(model);
-        showTable();
 
-        // addBtn
-        JButton addBtn = new JButton("추가");
-        SettingClass.customFont(addBtn, Font.PLAIN, 14);
-        addBtn.setForeground(Color.WHITE);
-        addBtn.setBackground(Color.decode("#47815E"));
+        // 추가
+        JButton addBtn = new JButton();
+        addBtn.setBounds(100, 100, 93, 53);
+        addBtn.setLayout(null);
+        addBtn.setBorder(roundedBorder);
+        addBtn.setOpaque(false);
+        addBtn.setContentAreaFilled(false);
+        addBtn.setFocusPainted(false);
 
-        addBtn.addActionListener(e -> addTableRow());
+        JLabel addLabel = new JLabel("추가");
+        addLabel.setBounds(930, 710, 93, 53);
+        addLabel.setOpaque(true);
+        addLabel.setBackground(SettingClass.mainColor);
+        SettingClass.customFont(addLabel, Font.BOLD, 25);
+        addLabel.setForeground(Color.WHITE);
+        addLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        addLabel.setVerticalAlignment(SwingConstants.CENTER);
+        addLabel.add(addBtn);
 
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        frame.add(addBtn, gbc);
-
-        // delBtn
-        JButton DelBtn = new JButton("삭제");
-        SettingClass.customFont(DelBtn, Font.PLAIN, 14);
-        DelBtn.setForeground(Color.WHITE);
-        DelBtn.setBackground(Color.decode("#47815E"));
-
-        DelBtn.addActionListener(e -> {
-            try {
-                DelTableRow();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+        addLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addTableRow();
             }
         });
+        frame.add(addLabel);
 
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        frame.add(DelBtn, gbc);
+        // 삭제
+        JButton delBtn = new JButton();
+        delBtn.setBounds(100, 100, 93, 53);
+        delBtn.setLayout(null);
+        delBtn.setBorder(roundedBorder);
+        delBtn.setOpaque(false);
+        delBtn.setContentAreaFilled(false);
+        delBtn.setFocusPainted(false);
 
-        // saveBtn
-        JButton saveBtn = new JButton("저장");
-        SettingClass.customFont(saveBtn, Font.PLAIN, 14);
-        saveBtn.setForeground(Color.WHITE);
-        saveBtn.setBackground(Color.decode("#47815E"));
+        JLabel delLabel = new JLabel("삭제");
+        delLabel.setBounds(1030, 710, 93, 53);
+        delLabel.setOpaque(true);
+        delLabel.setBackground(SettingClass.mainColor);
+        SettingClass.customFont(delLabel, Font.BOLD, 25);
+        delLabel.setForeground(Color.WHITE);
+        delLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        delLabel.setVerticalAlignment(SwingConstants.CENTER);
+        delLabel.add(delBtn);
 
-        saveBtn.addActionListener(e -> setRole());
+        delLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    DelTableRow();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        frame.add(delLabel);
 
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        frame.add(saveBtn, gbc);
+        // 저장
+        JButton saveBtn = new JButton();
+        saveBtn.setBounds(100, 100, 93, 53);
+        saveBtn.setLayout(null);
+        saveBtn.setBorder(roundedBorder);
+        saveBtn.setOpaque(false);
+        saveBtn.setContentAreaFilled(false);
+        saveBtn.setFocusPainted(false);
+
+        JLabel saveLabel = new JLabel("저장");
+        saveLabel.setBounds(1130, 710, 93, 53);
+        saveLabel.setOpaque(true);
+        saveLabel.setBackground(SettingClass.mainColor);
+        SettingClass.customFont(saveLabel, Font.BOLD, 25);
+        saveLabel.setForeground(Color.WHITE);
+        saveLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        saveLabel.setVerticalAlignment(SwingConstants.CENTER);
+        saveLabel.add(saveBtn);
+
+        saveLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setRole();
+            }
+        });
+        frame.add(saveLabel);
 
         getRole();
-        
+
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -235,8 +271,7 @@ public class DetermineRole {
 
     // table
     private void showTable(ArrayList<String> role_name, ArrayList<String> role_explain, ArrayList<String> student_name) {
-
-//        model.setRowCount(0);
+        model.setRowCount(0);
 
         for(int i=0; i<role_name.size(); i++) {
             model.addRow(new String[]{role_name.get(i), role_explain.get(i), student_name.get(i)});
@@ -245,6 +280,7 @@ public class DetermineRole {
         table.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(140, 200, 1000, 400);
 
         // table column 조정
         TableColumnModel columnModel = table.getColumnModel();
@@ -267,26 +303,13 @@ public class DetermineRole {
         header.setBackground(Color.decode("#47815E"));
         header.setForeground(Color.WHITE);
 
-        // 테이블 margin
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridy = 2;
-        gbc2.insets = new Insets(10, 10, 10, 0);
-        frame.add(scrollPane, gbc2);
+        frame.add(scrollPane);
     }
 
     public static void removeAllComponents(JPanel panel) {
         panel.removeAll();
         panel.revalidate();
         panel.repaint();
-    }
-
-    // Overloaded showTable method without arguments
-    private void showTable() {
-        JScrollPane scrollPane = new JScrollPane(table);
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridy = 2;
-        gbc2.insets = new Insets(10, 10, 10, 0);
-        frame.add(scrollPane, gbc2);
     }
 
     public static void main(String[] args) {
