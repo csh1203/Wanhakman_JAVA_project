@@ -270,7 +270,11 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new DetermineRole();
+                try {
+                    new DetermineRole();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
