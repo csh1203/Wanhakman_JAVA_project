@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -17,6 +15,7 @@ public class SettingDetermindRole extends JPanel {
 
     public SettingDetermindRole() throws SQLException {
         SettingClass.getMainColor();
+        roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
         setLayout(null);
 
         JLabel studentLabel = new JLabel();
