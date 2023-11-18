@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class ChoosingAPresenterSetting {
-    int people = 16;
-    public ChoosingAPresenterSetting(int presenter, String except) {
+    int people = SettingClass.getClassPeople();
+    public ChoosingAPresenterSetting(int presenter, String except) throws SQLException {
         Color backgroud = new Color(0xA1A1A1);
         Dimension dim = new Dimension(1280, 832);
 

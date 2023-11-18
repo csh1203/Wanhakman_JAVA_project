@@ -251,9 +251,15 @@ public class Main extends Frame {
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
                 try {
-                    new PickASeatMain(0);
+                    int peopleCnt =  SettingClass.getClassPeople();
+                    if(peopleCnt == 0){
+                        JOptionPane.showMessageDialog(frame, "학생 정보를 입력한 후, 이용해주세요");
+                    }else{
+                        frame.dispose();
+                        new PickASeatMain(0);
+                    }
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -284,7 +290,11 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new ChoosingAPresenterSetting(0, "");
+                try {
+                    new ChoosingAPresenterSetting(0, "");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -295,8 +305,7 @@ public class Main extends Frame {
         frame.setVisible(true);
 
     }
-    private void
-    updateCalendar(Date date) throws SQLException{
+    private void updateCalendar(Date date) throws SQLException{
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

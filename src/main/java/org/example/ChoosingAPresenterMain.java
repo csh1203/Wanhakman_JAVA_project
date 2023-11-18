@@ -36,7 +36,11 @@ public class ChoosingAPresenterMain {
                 frame.dispose();
                 String except = exceptPerson.toString();
                 System.out.println(except);
-                new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except);
+                try {
+                    new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         frame.add(settingBtn);
@@ -104,7 +108,7 @@ public class ChoosingAPresenterMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<Integer> randomNumbers = generateRandomNumbers(1, Integer.parseInt(allPerson), Integer.parseInt(presentPerson), exceptPerson);
-                resultLabel.setText(randomNumbers.toString().substring(1, randomNumbers.toString().length()-1));
+                resultLabel.setText("<html>"+randomNumbers.toString().substring(1, randomNumbers.toString().length()-1)+"</html>");
             }
         });
         frame.add(makePresenterBtn);

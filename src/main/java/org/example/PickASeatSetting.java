@@ -68,6 +68,7 @@ public class PickASeatSetting {
         inputPerson = new JLabel();
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         inputPerson.setBorder(border);
+        inputPerson.setText(SettingClass.getClassPeople()+"");
         inputPerson.setBounds(68, 122, 119, 29);
         SettingClass.customFont(inputPerson, Font.PLAIN, 21);
         backgroundImg.add(inputPerson);
@@ -119,9 +120,8 @@ public class PickASeatSetting {
         SettingClass.customFont(layout, Font.PLAIN, 25);
         backgroundImg.add(layout);
 
-
         jComboBox.setBounds(319, 270, 150, 30);
-        SettingClass.customFont(allPerson, Font.BOLD, 18);
+        SettingClass.customFont(jComboBox, Font.BOLD, 18);
         jComboBox.setUI(new CustomComboBoxUI());
         jComboBox.setBackground(Color.WHITE);
         jComboBox.setSelectedItem(classOption[comboBoxIndex]);
@@ -171,14 +171,11 @@ public class PickASeatSetting {
         checkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String people = inputPerson.getText();
                 String division = inputDivision.getText();
                 String classType = (String)jComboBox.getSelectedItem();
                 int classIndex = Arrays.asList(classOption).indexOf(classType) + 1;
 
-                if(people == ""){
-                    JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요!");
-                }else if(division == ""){
+                if(division == ""){
                     JOptionPane.showMessageDialog(frame, "분단 수를 입력해주세요!");
                 }else{
                     try {
@@ -186,7 +183,6 @@ public class PickASeatSetting {
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
-
 
                     try {
                         frame.dispose();
@@ -235,7 +231,6 @@ public class PickASeatSetting {
         inputDivision.setText(result.getInt("division")+"");
         comboBoxIndex = result.getInt("class_type") - 1;
         jComboBox.setSelectedItem(classOption[comboBoxIndex]);
-        inputPerson.setText("16");
         inputClassName.setText(className);
 
         if(comboBoxIndex == 0){

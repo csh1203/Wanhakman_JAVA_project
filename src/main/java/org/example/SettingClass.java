@@ -58,4 +58,19 @@ public class SettingClass {
             // 폰트 로딩에 실패한 경우 예외 처리
         }
     }
+    public static int getClassPeople() throws SQLException {
+        int rowCount = 0;
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("select count(*) from student");
+
+        while(result.next()) {
+            rowCount = result.getInt(1);
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+        return rowCount;
+    }
 }

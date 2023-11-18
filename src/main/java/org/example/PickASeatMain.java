@@ -31,8 +31,9 @@ public class PickASeatMain {
     int seatHeight;
     PickASeatMain(int index) throws SQLException {
         String[] classOption = getClassOption();
-
         Color setting = new Color(0x474747);
+
+
 
         // JFrame 생성
         frame = new JFrame("자리 뽑기");
@@ -148,7 +149,6 @@ public class PickASeatMain {
 
         frame.add(seatChangeBtn);
 
-
         seatChangeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -223,7 +223,7 @@ public class PickASeatMain {
 
         JOptionPane.showMessageDialog(frame,"저장되었습니다.");
     }
-    public void mainTables() {
+    public void mainTables() throws SQLException {
         removeAllComponents(seat);
 
         if(seatType == 1) type1MakeTables();
@@ -249,10 +249,23 @@ public class PickASeatMain {
                     if (firstClickedLabel[0] == null) {
                         firstClickedLabel[0] = clickedLabel;
                     } else {
+                        if(fixedNumbers.contains(Integer.parseInt(firstClickedLabel[0].getText()))){
+                            fixedNumbers.remove(fixedNumbers.indexOf(Integer.parseInt(firstClickedLabel[0].getText())));
+                            fixedNumbers.add(Integer.parseInt(clickedLabel.getText()));
+                        }
+                        if(fixedNumbers.contains(Integer.parseInt(clickedLabel.getText()))){
+                            fixedNumbers.remove(fixedNumbers.indexOf(Integer.parseInt(clickedLabel.getText())));
+                            fixedNumbers.add(Integer.parseInt(firstClickedLabel[0].getText()));
+                        }
+
                         String tempText = firstClickedLabel[0].getText();
                         firstClickedLabel[0].setText(clickedLabel.getText());
                         clickedLabel.setText(tempText);
                         firstClickedLabel[0] = null;
+
+                        String btnTempText = customToggleButtons[selectIndex.get(0)].getText();
+                        customToggleButtons[selectIndex.get(0)].setText(customToggleButtons[selectIndex.get(1)].getText());
+                        customToggleButtons[selectIndex.get(1)].setText(btnTempText);
 
                         InnerTable[selectIndex.get(0)].setBorder(roundedBorder);
                         InnerLabel[selectIndex.get(0)].setForeground(SettingClass.mainColor);
@@ -293,9 +306,9 @@ public class PickASeatMain {
         seat.setLayout(new GridLayout(1, division));
 
         tables = new JLabel[people];
-        customToggleButtons = new CustomToggleButton[people];
         InnerLabel = new JLabel[people];
         InnerTable = new JLabel[people];
+        customToggleButtons = new CustomToggleButton[people];
 
         int[] divisionCnt = new int[division];
         int Remain = people % (division * 2);
@@ -475,7 +488,7 @@ public class PickASeatMain {
             seat.add(l);
         }
     }
-    public void type3MakeTables() {
+    public void type3MakeTables() throws SQLException {
         int tableWidth = 126;
         int tableHeight = 75;
         int table_margin = 4;
@@ -505,7 +518,7 @@ public class PickASeatMain {
         InnerTable = new JLabel[people];
 
         int[] divisionCnt = new int[type3Division];
-        int peopleCnt = 16;
+        int peopleCnt = SettingClass.getClassPeople();
         for(int i = 0; i<division; i++){
             if(peopleCnt - 4 >= 0) {
                 divisionCnt[i] = 4;
@@ -513,8 +526,8 @@ public class PickASeatMain {
             }else{
                 divisionCnt[i] = peopleCnt;
             }
-
         }
+
         int margin = 0;
         if(divisionCnt.length <= 4) margin = (1200 / 2 - (tableWidth * 2 + table_margin)) / 2;
         else margin = 80;
@@ -524,7 +537,6 @@ public class PickASeatMain {
             int height = tableHeight * 2 + table_margin;
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(2,2));
-            divisions.setBackground(Color.pink);
             divisions.setBounds(margin, 0, 126 * 2 + table_margin, height);
 
             JLabel l = new JLabel();
@@ -648,7 +660,7 @@ public class PickASeatMain {
         return shuffledNumbers;
     }
     public void getClassInfo(String className) throws SQLException {
-        people = 16;
+        people = SettingClass.getClassPeople();
         seatOrder = new ArrayList<>();
         Connection connection = Util.getConnection();
 
