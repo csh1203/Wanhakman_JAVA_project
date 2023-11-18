@@ -17,6 +17,7 @@ public class SettingStudentInfo extends JPanel {
 
     public SettingStudentInfo() throws SQLException {
         SettingClass.getMainColor();
+        roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
         setLayout(null);
 
         JLabel studentLabel = new JLabel();
