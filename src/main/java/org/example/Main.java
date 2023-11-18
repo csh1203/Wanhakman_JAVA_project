@@ -481,7 +481,7 @@ public class Main extends Frame {
         while(result.next()) {
             length++;
         }
-        if(length == 0) addClassInfo();
+        if(length == 0 && SettingClass.getClassPeople() > 0) addClassInfo();
 
         // 리소스 해제
         result.close();
@@ -519,7 +519,7 @@ public class Main extends Frame {
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO my_class (class_name, class_type, division) VALUES(\"나의 학급\", 1, 3)");
         PreparedStatement preparedStatement = connection.prepareStatement("insert into seat (class_name, student_id, seat_order) values (\"나의 학급\", ?, ?)");
-        for(int i = 0; i<16; i++){
+        for(int i = 0; i<SettingClass.getClassPeople(); i++){
             preparedStatement.setInt(1, i+1);
             preparedStatement.setInt(2, i+1);
             preparedStatement.executeUpdate();

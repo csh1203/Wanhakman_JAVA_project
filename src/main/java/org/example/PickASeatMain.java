@@ -506,7 +506,7 @@ public class PickASeatMain {
             division_margin = 20;
         }
 
-        int seatRows = (int)Math.ceil(Math.ceil(people / 4.0) / 2);
+        int seatRows = (int)Math.ceil(people / 12.0);
         seat.setLayout(new GridLayout(seatRows, 3));
         seatHeight = (tableHeight * 2 + table_margin) * 2 + ((seatRows - 1) * division_margin);
 
@@ -518,8 +518,8 @@ public class PickASeatMain {
         InnerTable = new JLabel[people];
 
         int[] divisionCnt = new int[type3Division];
-        int peopleCnt = SettingClass.getClassPeople();
-        for(int i = 0; i<division; i++){
+        int peopleCnt = people;
+        for(int i = 0; i<type3Division; i++){
             if(peopleCnt - 4 >= 0) {
                 divisionCnt[i] = 4;
                 peopleCnt -= 4;

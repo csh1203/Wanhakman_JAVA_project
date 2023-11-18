@@ -101,21 +101,27 @@ public class SettingSeatOrder extends JPanel {
     }
     public String[] getClassOption() throws SQLException{
         ArrayList<String> classOptionsList = new ArrayList<>();
-        Connection connection = Util.getConnection();
-        // Statement 객체 생성 및 질의문 실행
-        Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM my_class");
+        String[] classOptions;
+        if(SettingClass.getClassPeople() > 0){
+            Connection connection = Util.getConnection();
+            // Statement 객체 생성 및 질의문 실행
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery("SELECT * FROM my_class");
 
-        // 결과 조회
-        while(result.next()) {
-            classOptionsList.add(result.getString("class_name"));
+            // 결과 조회
+            while(result.next()) {
+                classOptionsList.add(result.getString("class_name"));
+            }
+            // 리소스 해제
+            result.close();
+            statement.close();
+            connection.close();
+
+            classOptions = classOptionsList.toArray(new String[classOptionsList.size()]);
+        }else{
+            classOptions = new String[1];
+            classOptions[0] = " ";
         }
-        // 리소스 해제
-        result.close();
-        statement.close();
-        connection.close();
-
-        String[] classOptions = classOptionsList.toArray(new String[classOptionsList.size()]);
 
         return classOptions;
     }

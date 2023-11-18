@@ -176,13 +176,21 @@ public class SettingMyClass extends JPanel {
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String class_name = inputClassName.getText();
                 try {
-                    addCurrentClass(class_name);
+                    if(SettingClass.getClassPeople() > 0){
+                        String class_name = inputClassName.getText();
+                        try {
+                            addCurrentClass(class_name);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(Setting.frame,"학생 정보를 먼저 입력해주세요");
+                        addFrame.dispose();
+                    }
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-//                addFrame.dispose();
             }
         });
 
@@ -240,7 +248,7 @@ public class SettingMyClass extends JPanel {
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
-            for(int i = 1; i<=16; i++){
+            for(int i = 1; i<=SettingClass.getClassPeople(); i++){
                 PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT INTO seat (class_name, student_id, seat_order) VALUES (?, ?, ?)");
                 preparedStatement2.setString(1, class_name);
                 preparedStatement2.setInt(2, i);
