@@ -105,7 +105,7 @@ public class SettingThemeColor extends JPanel {
         Connection connection = Util.getConnection();
 
         Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("SELECT color FROM main_color WHERE id = 1");
+        ResultSet result = statement.executeQuery("SELECT * FROM main_color");
 
         result.next();
         mainColor = Color.decode(result.getString("color"));
@@ -126,7 +126,7 @@ public class SettingThemeColor extends JPanel {
 
     private void setMainColor(String color) throws SQLException {
         Connection connection = Util.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE main_color SET color = ? WHERE id = 1");
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE main_color SET color = ?");
         preparedStatement.setString(1, color);
         preparedStatement.executeUpdate();
         preparedStatement.close();

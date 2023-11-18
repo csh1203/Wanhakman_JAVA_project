@@ -28,8 +28,9 @@ public class Main extends Frame {
     }
 
     public Main() throws SQLException {
-        SettingClass.getMainColor();
         getClassInfo();
+        getMainColorInfo();
+        SettingClass.getMainColor();
         currentDate = getStartOfThisWeek(); // 이번주 월요일 날짜를 사용
         // JFrame 생성
         JFrame frame = new JFrame("완벽한 학급 만들기");
@@ -475,6 +476,31 @@ public class Main extends Frame {
 
         // 리소스 해제
         result.close();
+        statement.close();
+        connection.close();
+    }
+    public void getMainColorInfo() throws SQLException {
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM main_color");
+
+        int length = 0;
+        // 결과 조회
+        while(result.next()) {
+            length++;
+        }
+        if(length == 0) addMainColorInfo();
+
+        // 리소스 해제
+        result.close();
+        statement.close();
+        connection.close();
+    }
+    public void addMainColorInfo() throws SQLException {
+        Connection connection = Util.getConnection();
+
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("INSERT INTO main_color (color) VALUES(\"0x47815E\")");
         statement.close();
         connection.close();
     }

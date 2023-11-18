@@ -18,7 +18,7 @@ public class SettingClass {
         Connection connection = Util.getConnection();
 
         Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("SELECT color FROM main_color WHERE id = 1");
+        ResultSet result = statement.executeQuery("SELECT * FROM main_color");
 
         result.next();
         SettingClass.mainColor = Color.decode(result.getString("color"));
