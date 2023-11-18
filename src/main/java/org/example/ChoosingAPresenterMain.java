@@ -35,9 +35,13 @@ public class ChoosingAPresenterMain {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 String except = exceptPerson.toString();
-                System.out.println(except);
                 try {
-                    new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except);
+                    if (ChoosingAPresenterSetting.people == 0){
+                        new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except, allPerson);
+                    }else{
+                        new ChoosingAPresenterSetting(Integer.parseInt(presentPerson), except, "0");
+                    }
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

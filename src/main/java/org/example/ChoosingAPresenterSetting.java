@@ -17,8 +17,17 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class ChoosingAPresenterSetting {
-    int people = SettingClass.getClassPeople();
-    public ChoosingAPresenterSetting(int presenter, String except) throws SQLException {
+    static int people;
+
+    static {
+        try {
+            people = SettingClass.getClassPeople();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ChoosingAPresenterSetting(int presenter, String except, String inputPeople) throws SQLException {
         Color backgroud = new Color(0xA1A1A1);
         Dimension dim = new Dimension(1280, 832);
 
@@ -81,11 +90,20 @@ public class ChoosingAPresenterSetting {
         person.setForeground(Color.black); // 글자 색상 설정
         backgroundImg.add(person);
 
-        JLabel inputPerson = new JLabel(people+"");
-        inputPerson.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        inputPerson.setBounds(68, 122, 119, 29);
-        SettingClass.customFont(inputPerson, Font.PLAIN, 21);
-        backgroundImg.add(inputPerson);
+        JTextField inputCurrectPerson = new JTextField();
+        if(!(inputPeople.equals("0"))) inputCurrectPerson.setText(inputPeople);
+        if(people > 0){
+            JLabel inputPerson = new JLabel(people+"");
+            inputPerson.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+            inputPerson.setBounds(68, 122, 119, 29);
+            SettingClass.customFont(inputPerson, Font.PLAIN, 21);
+            backgroundImg.add(inputPerson);
+        }else{
+            inputCurrectPerson.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+            inputCurrectPerson.setBounds(68, 122, 119, 29);
+            SettingClass.customFont(inputCurrectPerson, Font.PLAIN, 21);
+            backgroundImg.add(inputCurrectPerson);
+        }
 
         JLabel myung = new JLabel("명");
         myung.setBounds(199, 122, 25, 29);
@@ -196,40 +214,74 @@ public class ChoosingAPresenterSetting {
         checkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String Allperson = inputPerson.getText();
-                String PresenterPerson = inputPresenterCnt.getText();
-                String ExceptPerson = inputExcept.getText();
+                if(people > 0){
+                    String PresenterPerson = inputPresenterCnt.getText();
+                    String ExceptPerson = inputExcept.getText();
 
-                if (ExceptPerson.matches("[^0-9,\\s]+")) {
-                    JOptionPane.showMessageDialog(frame, "숫자만 입력이 가능합니다", "오류", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
-                    if(ExceptPerson.length() == 0){
-                    }else{
-                        String[] numberStrings = ExceptPerson.split("[,\\s]+");
+                    if (ExceptPerson.matches("[^0-9,\\s]+")) {
+                        JOptionPane.showMessageDialog(frame, "숫자만 입력이 가능합니다", "오류", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
+                        if(ExceptPerson.length() == 0){
+                        }else{
+                            String[] numberStrings = ExceptPerson.split("[,\\s]+");
 
-                        // 추출된 문자열을 정수 ArrayList로 변환
-                        for (String numberString : numberStrings) {
-                            if (!numberString.isEmpty()) {
-                                ExpectPersonArr.add(Integer.parseInt(numberString));
+                            // 추출된 문자열을 정수 ArrayList로 변환
+                            for (String numberString : numberStrings) {
+                                if (!numberString.isEmpty()) {
+                                    ExpectPersonArr.add(Integer.parseInt(numberString));
+                                }
                             }
+
+                        }
+                        if(PresenterPerson.isEmpty()){
+                            JOptionPane.showMessageDialog(frame, "발표 인원을 입력해주세요.");
+                        }else if(people < Integer.parseInt(PresenterPerson)){
+                            JOptionPane.showMessageDialog(frame, "발표 인원을 다시 입력해주세요.");
+                        }else if(people < Integer.parseInt(PresenterPerson) + ExpectPersonArr.size()){
+                            JOptionPane.showMessageDialog(frame, "학생 수를 다시 입력해주세요.");
+                        }else{
+                            frame.dispose();
+                            new ChoosingAPresenterMain(people+"", PresenterPerson, ExpectPersonArr);
+                        }
+                    }
+                }else{
+                    String Allperson = inputCurrectPerson.getText();
+                    String PresenterPerson = inputPresenterCnt.getText();
+                    String ExceptPerson = inputExcept.getText();
+
+                    if (ExceptPerson.matches("[^0-9,\\s]+")) {
+                        JOptionPane.showMessageDialog(frame, "숫자만 입력이 가능합니다", "오류", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        ArrayList<Integer> ExpectPersonArr = new ArrayList<>();
+                        if(ExceptPerson.length() == 0){
+                        }else{
+                            String[] numberStrings = ExceptPerson.split("[,\\s]+");
+
+                            // 추출된 문자열을 정수 ArrayList로 변환
+                            for (String numberString : numberStrings) {
+                                if (!numberString.isEmpty()) {
+                                    ExpectPersonArr.add(Integer.parseInt(numberString));
+                                }
+                            }
+
                         }
 
-                    }
-
-                    if (Allperson.isEmpty()) {
-                        JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요.");
-                    }else if(PresenterPerson.isEmpty()){
-                        JOptionPane.showMessageDialog(frame, "발표 인원을 입력해주세요.");
-                    }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson)){
-                        JOptionPane.showMessageDialog(frame, "발표 인원을 다시 입력해주세요.");
-                    }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson) + ExpectPersonArr.size()){
-                        JOptionPane.showMessageDialog(frame, "학생 수를 다시 입력해주세요.");
-                    }else{
-                        frame.dispose();
-                        new ChoosingAPresenterMain(Allperson, PresenterPerson, ExpectPersonArr);
+                        if (Allperson.isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "학생 수를 입력해주세요.");
+                        }else if(PresenterPerson.isEmpty()){
+                            JOptionPane.showMessageDialog(frame, "발표 인원을 입력해주세요.");
+                        }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson)){
+                            JOptionPane.showMessageDialog(frame, "발표 인원을 다시 입력해주세요.");
+                        }else if(Integer.parseInt(Allperson) < Integer.parseInt(PresenterPerson) + ExpectPersonArr.size()){
+                            JOptionPane.showMessageDialog(frame, "학생 수를 다시 입력해주세요.");
+                        }else{
+                            frame.dispose();
+                            new ChoosingAPresenterMain(Allperson, PresenterPerson, ExpectPersonArr);
+                        }
                     }
                 }
+
             }
         });
 

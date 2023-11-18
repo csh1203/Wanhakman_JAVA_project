@@ -291,7 +291,7 @@ public class Main extends Frame {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 try {
-                    new ChoosingAPresenterSetting(0, "");
+                    new ChoosingAPresenterSetting(0, "", "0");
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
