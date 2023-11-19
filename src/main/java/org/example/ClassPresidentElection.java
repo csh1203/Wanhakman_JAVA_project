@@ -14,7 +14,7 @@ public class ClassPresidentElection {
     private JPanel panelContainer;
     private List<CandidatePanel> panels;
     private JScrollPane scrollPane;
-    private List<String> candidateNames; // Added field
+    private List<String> candidateNames;
 
     public ClassPresidentElection() throws SQLException {
         frame = new JFrame("회장 선거");
@@ -69,19 +69,6 @@ public class ClassPresidentElection {
         frame.setVisible(true);
     }
 
-    private void nextPage() {
-        if (areAllTextFieldsFilled()) {
-            // Create an instance of ClassPresidentElectionVoting and pass the candidateNames
-            try {
-                new ClassPresidentElectionInput();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            JOptionPane.showMessageDialog(frame, "후보자 이름을 적어주세요.");
-        }
-    }
-
     private boolean areAllTextFieldsFilled() {
         for (CandidatePanel panel : panels) {
             if (!panel.isTextFieldFilled()) {
@@ -92,7 +79,7 @@ public class ClassPresidentElection {
     }
 
     private void addPanel() {
-        if (panels.size() < 2) {
+        if (panels.size() < candidateNames.size()) {
             CandidatePanel panel = new CandidatePanel(panels.size() + 1);
             panelContainer.add(panel);
             panels.add(panel);
@@ -119,7 +106,7 @@ public class ClassPresidentElection {
             JButton saveBtn = new JButton(Integer.toString(number) + ".");
             saveBtn.setOpaque(true);
             saveBtn.setBackground(SettingClass.mainColor);
-            SettingClass.customFont(saveBtn, Font.BOLD, 25);
+            SettingClass.customFont(saveBtn, Font.BOLD, 18);
             saveBtn.setForeground(Color.WHITE);
             saveBtn.setHorizontalAlignment(SwingConstants.CENTER);
             saveBtn.setVerticalAlignment(SwingConstants.CENTER);
@@ -135,6 +122,25 @@ public class ClassPresidentElection {
         public boolean isTextFieldFilled() {
             return !textField.getText().trim().isEmpty();
         }
+        public String getTextFieldValue() {
+            return textField.getText().trim();
+        }
+    }
+
+    private void nextPage() {
+        if (areAllTextFieldsFilled()) {
+//            System.out.println("입력한 텍스트 필드의 값:");
+            for (CandidatePanel panel : panels) {
+//                System.out.println(panel.getTextFieldValue());
+            }
+            try {
+                new ClassPresidentElectionInput();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "후보자 이름을 적어주세요.");
+        }
     }
 
     private void getStudent() throws SQLException {
@@ -145,8 +151,11 @@ public class ClassPresidentElection {
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM student");
 
+        int numberOfStudents = 0;
+
         while (result.next()) {
             candidateNames.add(result.getString("student_name"));
+            numberOfStudents++;
         }
 
         // Resource release

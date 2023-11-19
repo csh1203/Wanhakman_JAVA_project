@@ -1,5 +1,7 @@
 package org.example;
 
+import org.w3c.dom.ls.LSOutput;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -13,18 +15,29 @@ public class ClassPresidentElectionInput {
     private JFrame frame;
     private List<CandidatePanel> panels;
     private JTextField countTextField;
+    private JTextArea box;
 
     public ClassPresidentElectionInput() throws SQLException {
+
         frame = new JFrame("회장 선거");
         frame.setBounds(100, 100, 1280, 832);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBackground(Color.WHITE);
 
-        JPanel box = new JPanel();
+//        JPanel box = new JPanel();
+//        box.setOpaque(true);
+//        box.setBounds(176, 125, 400, 450);
+//        box.setBorder(new LineBorder(SettingClass.mainColor, 3));
+
+        box = new JTextArea();
+        box.setBounds(176, 285, 400, 300);
+        SettingClass.customFont(box, Font.PLAIN, 20);
+        box.setEditable(false);
+        box.setLineWrap(true);
+        box.setWrapStyleWord(true);
         box.setOpaque(true);
-        box.setBounds(176, 125, 400, 450);
-        box.setBorder(new LineBorder(SettingClass.mainColor, 3));
+        frame.add(box);
 
         JLabel titlebox = new JLabel("후보자");
         titlebox.setHorizontalAlignment(SwingConstants.CENTER);
@@ -99,6 +112,11 @@ public class ClassPresidentElectionInput {
         frame.setVisible(true);
     }
 
+    private void addToBox(String candidateName) {
+        System.out.println("Adding to box: " + candidateName);
+        box.append(candidateName + "\n");
+    }
+
     private void nextPage() {
         // Check if countTextField is filled
         int voteCount = getVoteCount();
@@ -107,12 +125,32 @@ public class ClassPresidentElectionInput {
         } else {
             // Pass the required information to ClassPresidentElectionVoting
             try {
-                new ClassPresidentElectionVoting(voteCount, getCandidateNames());
+                List<String> candidateNamesList = getCandidateNames();
+                for (String candidateName : candidateNamesList) {
+                    addToBox(candidateName);
+                }
+
+                new ClassPresidentElectionVoting(voteCount, candidateNamesList);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+
+//    private void nextPage() {
+//        // Check if countTextField is filled
+//        int voteCount = getVoteCount();
+//        if (voteCount <= 0) {
+//            JOptionPane.showMessageDialog(frame, "투표할 인원을 입력해주세요.");
+//        } else {
+//            // Pass the required information to ClassPresidentElectionVoting
+//            try {
+//                new ClassPresidentElectionVoting(voteCount, getCandidateNames());
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    }
 
     private int getVoteCount() {
         try {
@@ -141,6 +179,7 @@ public class ClassPresidentElectionInput {
 
     private class CandidatePanel extends JPanel {
         private JTextField textField;
+        private JButton saveBtn;
 
         public CandidatePanel(ClassPresidentElectionInput parent, int number) {
             setLayout(new BorderLayout());
@@ -156,6 +195,17 @@ public class ClassPresidentElectionInput {
 
             textField = new JTextField();
             textField.setPreferredSize(new Dimension(70, 70));
+
+            saveBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String candidateName = textField.getText().trim();
+                    if (!candidateName.isEmpty()) {
+                        System.out.println("Button clicked with name: " + candidateName);
+                        parent.addToBox(candidateName);
+                    }
+                }
+            });
 
             add(saveBtn, BorderLayout.WEST);
             add(textField, BorderLayout.CENTER);

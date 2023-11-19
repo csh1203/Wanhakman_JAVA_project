@@ -14,6 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class SettingDetermindRole extends JPanel {
+    private static boolean isPrintButtonVisible;
     Border roundedBorder;
     JPanel role = new JPanel();
     private DefaultTableModel model;
@@ -52,7 +53,6 @@ public class SettingDetermindRole extends JPanel {
         InnerPrintButton.setBackground(SettingClass.mainColor);
         InnerPrintButton.setForeground(Color.WHITE);
         printBtn.add(InnerPrintButton);
-
         printBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +111,7 @@ public class SettingDetermindRole extends JPanel {
         scrollPane.setBounds(110, 50, 800, preferredHeight);
 
         // 스크롤 안 보이게
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+//        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         // table column 조정
         TableColumnModel columnModel = table.getColumnModel();
@@ -144,7 +144,9 @@ public class SettingDetermindRole extends JPanel {
         // Set paper orientation (Portrait)
         pageFormat.setOrientation(PageFormat.PORTRAIT);
 
-        printButton.setVisible(false);
+        if (isPrintButtonVisible) {
+            printButton.setVisible(false);
+        }
 
         job.setPrintable(new Printable() {
             @Override
@@ -168,6 +170,8 @@ public class SettingDetermindRole extends JPanel {
                 // Draw only the desired area
                 panel.print(g2d);
 
+                printButton.setVisible(false);
+
                 g2d.setColor(Color.BLACK);
                 g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
                 String watermarkText = waterMark;
@@ -187,6 +191,8 @@ public class SettingDetermindRole extends JPanel {
             } catch (PrinterException e) {
                 e.printStackTrace();
             } finally {
+                // Set the boolean variable to control the visibility of the print button
+                isPrintButtonVisible = false;
                 printButton.setVisible(true);
             }
         }
