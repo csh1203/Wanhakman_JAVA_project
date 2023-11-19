@@ -4,6 +4,12 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -46,6 +52,14 @@ public class SettingDetermindRole extends JPanel {
         InnerPrintButton.setBackground(SettingClass.mainColor);
         InnerPrintButton.setForeground(Color.WHITE);
         printBtn.add(InnerPrintButton);
+
+        printBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPrintPreview(SettingDetermindRole.this, printBtn, "인쇄 미리보기");
+            }
+        });
+
         add(printBtn);
 
         getRole();
@@ -89,8 +103,15 @@ public class SettingDetermindRole extends JPanel {
 
         table.setRowHeight(30);
 
+        // Calculate the preferred height based on the number of rows
+        int preferredHeight = model.getRowCount() * table.getRowHeight();
+
+        // Set the preferred size of the scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(110, 150, 800, 400);
+        scrollPane.setBounds(110, 50, 800, preferredHeight);
+
+        // 스크롤 안 보이게
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         // table column 조정
         TableColumnModel columnModel = table.getColumnModel();
@@ -105,7 +126,7 @@ public class SettingDetermindRole extends JPanel {
         table.setRowHeight(0, 30);
 
         // table 전체 크기
-        scrollPane.setPreferredSize(new Dimension(800, 400));
+        scrollPane.setPreferredSize(new Dimension(800, preferredHeight));
 
         // 역할, 하는일, 담당자 폰트 적용
         JTableHeader header = table.getTableHeader();
@@ -114,5 +135,60 @@ public class SettingDetermindRole extends JPanel {
         header.setForeground(Color.WHITE);
 
         add(scrollPane);
+    }
+
+    private static void showPrintPreview(JPanel panel, JButton printButton, String waterMark) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        PageFormat pageFormat = job.defaultPage();
+
+        // Set paper orientation (Portrait)
+        pageFormat.setOrientation(PageFormat.PORTRAIT);
+
+        printButton.setVisible(false);
+
+        job.setPrintable(new Printable() {
+            @Override
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                if (pageIndex > 0) {
+                    return Printable.NO_SUCH_PAGE;
+                }
+
+                Graphics2D g2d = (Graphics2D) graphics;
+                g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+                // A4 paper size calculation
+                double pageWidth = pageFormat.getImageableWidth();
+                double pageHeight = pageFormat.getImageableHeight();
+
+                // Scale the JPanel to fit the A4 paper size
+                double scaleX = pageWidth / panel.getWidth();
+                double scaleY = pageHeight / panel.getHeight();
+                g2d.scale(scaleX, scaleY);
+
+                // Draw only the desired area
+                panel.print(g2d);
+
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
+                String watermarkText = waterMark;
+                int x = 50;
+                int y = 50;
+                g2d.drawString(watermarkText, x, y);
+
+                return Printable.PAGE_EXISTS;
+            }
+        }, pageFormat);
+
+        // Show the print dialog
+        if (job.printDialog()) {
+            try {
+                // Execute the print job
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            } finally {
+                printButton.setVisible(true);
+            }
+        }
     }
 }

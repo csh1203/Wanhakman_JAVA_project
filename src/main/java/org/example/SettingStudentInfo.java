@@ -4,8 +4,14 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -28,6 +34,45 @@ public class SettingStudentInfo extends JPanel {
         model.addColumn("이름");
 
         table = new JTable(model);
+
+        table.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()) {
+            private final InputVerifier verifier = new InputVerifier() {
+                @Override
+                public boolean verify(JComponent input) {
+                    JTextField textField = (JTextField) input;
+                    String text = textField.getText().trim();
+
+                    if (!text.isEmpty() && !text.matches("\\d+")) {
+                        if (!errorShown) {
+                            errorShown = true;
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "숫자만 입력할 수 있습니다.",
+                                    "입력 오류",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+
+                        return false;
+                    } else {
+                        errorShown = false;
+                    }
+                    return true;
+                }
+            };
+
+            private boolean errorShown = false;
+
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JTextField) {
+                    JTextField textField = (JTextField) c;
+                    textField.setInputVerifier(verifier);
+                }
+                return c;
+            }
+        });
 
         // 추가
         JButton addBtn = new JButton();
@@ -131,9 +176,21 @@ public class SettingStudentInfo extends JPanel {
         printBtn.add(InnerPrintButton);
         add(printBtn);
 
+        printBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPrintPreview(SettingStudentInfo.this, addBtn, delBtn, saveBtn, printBtn, "인쇄 미리보기");
+            }
+        });
+
+        add(printBtn);
+
         getStudent();
 
         add(student);
+    }
+
+    private void showPrintPreview(SettingDetermindRole settingDetermindRole, JButton addBtn, JButton delBtn, JButton saveBtn, JButton printBtn, String 인쇄_미리보기) {
     }
 
     private void getStudent() throws SQLException {
@@ -279,4 +336,66 @@ public class SettingStudentInfo extends JPanel {
 
         add(scrollPane);
     }
+
+    private static void showPrintPreview(JPanel panel, JButton addButton, JButton delButton, JButton saveButton, JButton printButton, String waterMark) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        PageFormat pageFormat = job.defaultPage();
+
+        // Set paper orientation (Portrait)
+        pageFormat.setOrientation(PageFormat.PORTRAIT);
+
+        addButton.setVisible(false);
+        delButton.setVisible(false);
+        saveButton.setVisible(false);
+        printButton.setVisible(false);
+
+        job.setPrintable(new Printable() {
+            @Override
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                if (pageIndex > 0) {
+                    return Printable.NO_SUCH_PAGE;
+                }
+
+                Graphics2D g2d = (Graphics2D) graphics;
+                g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+
+                // A4 paper size calculation
+                double pageWidth = pageFormat.getImageableWidth();
+                double pageHeight = pageFormat.getImageableHeight();
+
+                // Scale the JPanel to fit the A4 paper size
+                double scaleX = pageWidth / panel.getWidth();
+                double scaleY = pageHeight / panel.getHeight();
+                g2d.scale(scaleX, scaleY);
+
+                // Draw only the desired area
+                panel.print(g2d);
+
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
+                String watermarkText = waterMark;
+                int x = 50;
+                int y = 50;
+                g2d.drawString(watermarkText, x, y);
+
+                return Printable.PAGE_EXISTS;
+            }
+        }, pageFormat);
+
+        // Show the print dialog
+        if (job.printDialog()) {
+            try {
+                // Execute the print job
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            } finally {
+                addButton.setVisible(true);
+                delButton.setVisible(true);
+                saveButton.setVisible(true);
+                printButton.setVisible(true);
+            }
+        }
+    }
+
 }
