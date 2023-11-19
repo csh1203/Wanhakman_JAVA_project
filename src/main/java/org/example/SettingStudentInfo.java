@@ -4,14 +4,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import java.awt.event.*;
+import java.awt.print.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -28,6 +22,16 @@ public class SettingStudentInfo extends JPanel {
 
         JLabel studentLabel = new JLabel();
         studentLabel.setBounds(372, 87, 295,78);
+
+        JPanel printPreviewPanel = new JPanel();
+        printPreviewPanel.setLayout(null);
+        printPreviewPanel.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
+        printPreviewPanel.add(studentLabel);
+
+        JScrollPane scrollPanePrint = new JScrollPane(table);
+        scrollPanePrint.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
+        printPreviewPanel.add(scrollPanePrint);
+        add(printPreviewPanel);
 
         model = new DefaultTableModel();
         model.addColumn("번호");
@@ -337,17 +341,43 @@ public class SettingStudentInfo extends JPanel {
         add(scrollPane);
     }
 
+    public void showprintpreview(String content) {
+        JFrame previewFrame = new JFrame("Print Preview");
+        previewFrame.setSize(400, 300);
+
+        JTextArea textArea = new JTextArea(content);
+        textArea.setEditable(false);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        previewFrame.add(scrollPane);
+
+        JButton printButton = new JButton("Print");
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle print action
+                // ...
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(printButton);
+
+        previewFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        previewFrame.setLocationRelativeTo(null);
+        previewFrame.setVisible(true);
+    }
+
     private static void showPrintPreview(JPanel panel, JButton addButton, JButton delButton, JButton saveButton, JButton printButton, String waterMark) {
         PrinterJob job = PrinterJob.getPrinterJob();
         PageFormat pageFormat = job.defaultPage();
 
         // Set paper orientation (Portrait)
         pageFormat.setOrientation(PageFormat.PORTRAIT);
-
-        addButton.setVisible(false);
-        delButton.setVisible(false);
-        saveButton.setVisible(false);
-        printButton.setVisible(false);
 
         job.setPrintable(new Printable() {
             @Override
@@ -363,13 +393,27 @@ public class SettingStudentInfo extends JPanel {
                 double pageWidth = pageFormat.getImageableWidth();
                 double pageHeight = pageFormat.getImageableHeight();
 
-                // Scale the JPanel to fit the A4 paper size
+                // Calculate the scale factors for width and height
                 double scaleX = pageWidth / panel.getWidth();
                 double scaleY = pageHeight / panel.getHeight();
+
+                // Apply scaling to fit the entire panel content onto the printed page
                 g2d.scale(scaleX, scaleY);
+
+                // Hide buttons and scroll bars during printing
+                addButton.setVisible(false);
+                delButton.setVisible(false);
+                saveButton.setVisible(false);
+                printButton.setVisible(false);
 
                 // Draw only the desired area
                 panel.print(g2d);
+
+                // Show buttons and scroll bars after printing
+                addButton.setVisible(true);
+                delButton.setVisible(true);
+                saveButton.setVisible(true);
+                printButton.setVisible(true);
 
                 g2d.setColor(Color.BLACK);
                 g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
@@ -390,6 +434,7 @@ public class SettingStudentInfo extends JPanel {
             } catch (PrinterException e) {
                 e.printStackTrace();
             } finally {
+                // Reset any changes made during printing
                 addButton.setVisible(true);
                 delButton.setVisible(true);
                 saveButton.setVisible(true);
@@ -397,5 +442,6 @@ public class SettingStudentInfo extends JPanel {
             }
         }
     }
+
 
 }
