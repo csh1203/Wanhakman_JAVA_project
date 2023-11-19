@@ -1,13 +1,13 @@
 package org.example;
 
-import org.w3c.dom.ls.LSOutput;
-
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,7 @@ public class ClassPresidentElectionInput {
     private List<CandidatePanel> panels;
     private JTextField countTextField;
     private JTextArea box;
+    private static final int MAX_CANDIDATES = 5;
 
     public ClassPresidentElectionInput() throws SQLException {
 
@@ -31,7 +32,7 @@ public class ClassPresidentElectionInput {
 //        box.setBorder(new LineBorder(SettingClass.mainColor, 3));
 
         box = new JTextArea();
-        box.setBounds(176, 285, 400, 300);
+        box.setBounds(176, 125, 400, 300);
         SettingClass.customFont(box, Font.PLAIN, 20);
         box.setEditable(false);
         box.setLineWrap(true);
@@ -101,15 +102,35 @@ public class ClassPresidentElectionInput {
         nextBtn.setBounds(476, 624, 380, 59);
         frame.add(nextBtn);
 
+        List<String> candidateNames = getStudent();
         panels = new ArrayList<>();
-        for (int i = 1; i <= MAX_CANDIDATES; i++) {
+        for (int i = 1; i <= candidateNames.size(); i++) {
             CandidatePanel panel = new CandidatePanel(this, i);
             panels.add(panel);
         }
+        frame.add(box);
 
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
         frame.setVisible(true);
+    }
+
+    private List<String> getStudent() throws SQLException {
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM student");
+
+        List<String> candidateNames = new ArrayList<>();
+
+        while (result.next()) {
+            candidateNames.add(result.getString("student_name"));
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        return candidateNames;
     }
 
     private void addToBox(String candidateName) {
@@ -229,6 +250,4 @@ public class ClassPresidentElectionInput {
             }
         });
     }
-
-    private static final int MAX_CANDIDATES = 5;
 }
