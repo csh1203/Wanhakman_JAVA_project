@@ -69,18 +69,6 @@ public class ClassPresidentElection {
         frame.setVisible(true);
     }
 
-    private void nextPage() {
-        if (areAllTextFieldsFilled()) {
-            try {
-                new ClassPresidentElectionInput();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            JOptionPane.showMessageDialog(frame, "후보자 이름을 적어주세요.");
-        }
-    }
-
     private boolean areAllTextFieldsFilled() {
         for (CandidatePanel panel : panels) {
             if (!panel.isTextFieldFilled()) {
@@ -133,6 +121,25 @@ public class ClassPresidentElection {
 
         public boolean isTextFieldFilled() {
             return !textField.getText().trim().isEmpty();
+        }
+        public String getTextFieldValue() {
+            return textField.getText().trim();
+        }
+    }
+
+    private void nextPage() {
+        if (areAllTextFieldsFilled()) {
+//            System.out.println("입력한 텍스트 필드의 값:");
+            for (CandidatePanel panel : panels) {
+//                System.out.println(panel.getTextFieldValue());
+            }
+            try {
+                new ClassPresidentElectionInput();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "후보자 이름을 적어주세요.");
         }
     }
 

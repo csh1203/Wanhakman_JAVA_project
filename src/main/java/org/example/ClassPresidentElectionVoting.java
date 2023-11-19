@@ -113,34 +113,26 @@ public class ClassPresidentElectionVoting {
 
             saveBtn.addActionListener(e -> {
                 i=1;
-                // Check if the current vote is within the valid range
                 if (i <= voteCount) {
-                    // Update the result array
                     String textFieldContent = textField.getText().trim();
 
-                    // Check if the content is not empty before parsing
                     if (!textFieldContent.isEmpty()) {
                         try {
                             int vote = Integer.parseInt(textFieldContent);
                             System.out.println("Result for student " + (i - 1) + ": " + vote);
 
-                            // Increment i and update the UI components
                             i++;
                             title.setText(voteCount + "명 투표자 중 " + i + "번 째 투표자 투표 진행중...");
                             result11.setText(i + " / " + voteCount);
                             result22.setText((voteCount - i) + " / " + voteCount);
 
-                            // Check if the voting is completed
                             if (i > voteCount) {
-                                // Perform any necessary actions when voting is completed
                                 System.out.println("Voting completed for all students.");
-                                // You can add additional logic here if needed
                             }
                         } catch (NumberFormatException ex) {
                             System.err.println("Invalid input. Please enter a valid integer.");
                         }
                     } else {
-                        // Show an error message if the input is empty
                         System.err.println("Input cannot be empty. Please enter a valid integer.");
                     }
                 }
