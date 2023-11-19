@@ -31,7 +31,7 @@ public class ClassPresidentElectionVoting {
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBackground(Color.WHITE);
 
-        title = new JLabel(voteCount + "명 투표자 중 " + i + "번 째 투표자 투표 진행중...");
+        title = new JLabel(voteCount + "명 투표자 중 " + (i-1) + "번째 투표자 투표 진행중...");
         SettingClass.customFont(title, Font.BOLD, 20);
         title.setBounds(470, 80, 400, 60);
         title.setVisible(false);
@@ -42,7 +42,7 @@ public class ClassPresidentElectionVoting {
         result1.setBounds(550, 584, 400, 60);
         frame.add(result1);
 
-        result11 = new JLabel(i + " / " + voteCount);
+        result11 = new JLabel((i-1) + " / " + voteCount);
         SettingClass.customFont(result11, Font.BOLD, 24);
         result11.setBounds(700, 584, 400, 60);
         result11.setVisible(false);
@@ -53,7 +53,7 @@ public class ClassPresidentElectionVoting {
         result2.setBounds(550, 624, 400, 60);
         frame.add(result2);
 
-        result22 = new JLabel((voteCount-i) + " / " + voteCount);
+        result22 = new JLabel(0 + " / " + voteCount);
         SettingClass.customFont(result22, Font.BOLD, 24);
         result22.setBounds(700, 624, 400, 60);
         result22.setVisible(false);
@@ -64,6 +64,7 @@ public class ClassPresidentElectionVoting {
         panelContainer.setBackground(Color.WHITE);
         panelContainer.setBorder(null);
         panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
+        panelContainer.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
 
         title.setVisible(true);
         result11.setVisible(true);
@@ -77,7 +78,8 @@ public class ClassPresidentElectionVoting {
 
         // Set up the JScrollPane
         scrollPane = new JScrollPane(panelContainer);
-        scrollPane.setBounds(442, 165, 396, 400);
+        scrollPane.setBounds(442, 165, 396, 390);
+        scrollPane.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
         frame.add(scrollPane);
 
         JLabel text = new JLabel("신중하게 투표해주세요!");
@@ -99,15 +101,17 @@ public class ClassPresidentElectionVoting {
             JButton saveBtn = new JButton(Integer.toString(number) + ".");
 
             saveBtn.setOpaque(true);
-            saveBtn.setBackground(SettingClass.mainColor);
             SettingClass.customFont(saveBtn, Font.BOLD, 25);
-            saveBtn.setForeground(Color.WHITE);
+            saveBtn.setBackground(Color.WHITE);
+            saveBtn.setForeground(Color.BLACK);
+            saveBtn.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
             saveBtn.setHorizontalAlignment(SwingConstants.CENTER);
             saveBtn.setVerticalAlignment(SwingConstants.CENTER);
             saveBtn.setPreferredSize(new Dimension(70, 70));
 
             textField = new JTextField();
             textField.setPreferredSize(new Dimension(70, 70));
+            textField.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
 
             saveBtn.addActionListener(new ActionListener() {
                 @Override
@@ -122,6 +126,16 @@ public class ClassPresidentElectionVoting {
                         result11.setText(i + " / " + voteCount);
                         result22.setText((voteCount - i) + " / " + voteCount);
                         i++;
+                    }
+                    if(i > voteCount) {
+                        SwingUtilities.invokeLater(() -> {
+                            try {
+                                new ClassPresidentElectionResult();
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        frame.dispose();
                     }
                 }
             });
