@@ -18,7 +18,9 @@ public class SettingDetermindRole extends JPanel {
     Border roundedBorder;
     JPanel role = new JPanel();
     private DefaultTableModel model;
-    private JTable table;
+    private static JTable table;
+    static JScrollPane scrollPane;
+    static JTableHeader header;
 
     public SettingDetermindRole() throws SQLException {
         SettingClass.getMainColor();
@@ -107,7 +109,7 @@ public class SettingDetermindRole extends JPanel {
         int preferredHeight = model.getRowCount() * table.getRowHeight();
 
         // Set the preferred size of the scroll pane
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         scrollPane.setBounds(110, 50, 800, 550);
 
         // 스크롤 안 보이게
@@ -129,7 +131,7 @@ public class SettingDetermindRole extends JPanel {
         scrollPane.setPreferredSize(new Dimension(800, preferredHeight));
 
         // 역할, 하는일, 담당자 폰트 적용
-        JTableHeader header = table.getTableHeader();
+        header = table.getTableHeader();
         SettingClass.customFont(header, Font.BOLD, 20);
         header.setBackground(SettingClass.mainColor);
         header.setForeground(Color.WHITE);
@@ -137,7 +139,7 @@ public class SettingDetermindRole extends JPanel {
         add(scrollPane);
     }
 
-    private static void showPrintPreview(JPanel panel, JButton printButton, String waterMark) {
+    private void showPrintPreview(JPanel panel, JButton printButton, String waterMark) {
         PrinterJob job = PrinterJob.getPrinterJob();
         PageFormat pageFormat = job.defaultPage();
 
@@ -162,22 +164,33 @@ public class SettingDetermindRole extends JPanel {
                 double pageWidth = pageFormat.getImageableWidth();
                 double pageHeight = pageFormat.getImageableHeight();
 
+                JTableHeader printHeaderR = header;
+                JTable printTableR = table;
+
+                JPanel printPanel = new JPanel();
+                printPanel.setLayout(null);
+                printPanel.setBounds(30, 30, printTableR.getWidth(), (int) pageHeight);
+
+//                table.setBounds(0, 30, 600, (int)pageHeight);
+                printPanel.add(printHeaderR);
+                printPanel.add(printTableR);
+
+
                 // Scale the JPanel to fit the A4 paper size
-                double scaleX = pageWidth / panel.getWidth();
-                double scaleY = pageHeight / panel.getHeight();
+                double scaleX = pageWidth / printPanel.getWidth();
+                double scaleY = pageHeight / printPanel.getHeight();
                 g2d.scale(scaleX, scaleY);
 
                 // Draw only the desired area
-                panel.print(g2d);
-
                 printButton.setVisible(false);
-
-                g2d.setColor(Color.BLACK);
-                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
-                String watermarkText = waterMark;
-                int x = 50;
-                int y = 50;
-                g2d.drawString(watermarkText, x, y);
+                printPanel.print(g2d);
+                printPanel.remove(printHeaderR);
+                printPanel.remove(printTableR);
+                add(header);
+                add(table);
+                header.setVisible(true);
+                table.setVisible(true);
+                printButton.setVisible(true);
 
                 return Printable.PAGE_EXISTS;
             }
