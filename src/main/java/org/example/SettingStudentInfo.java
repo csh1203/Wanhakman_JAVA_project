@@ -13,7 +13,9 @@ public class SettingStudentInfo extends JPanel {
     Border roundedBorder;
     JPanel student = new JPanel();
     private DefaultTableModel model;
-    private JTable table;
+    private static JTable table;
+    static JScrollPane scrollPane;
+    static JTableHeader header;
 
     public SettingStudentInfo() throws SQLException {
         SettingClass.getMainColor();
@@ -23,15 +25,15 @@ public class SettingStudentInfo extends JPanel {
         JLabel studentLabel = new JLabel();
         studentLabel.setBounds(372, 87, 295,78);
 
-        JPanel printPreviewPanel = new JPanel();
-        printPreviewPanel.setLayout(null);
-        printPreviewPanel.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
-        printPreviewPanel.add(studentLabel);
-
-        JScrollPane scrollPanePrint = new JScrollPane(table);
-        scrollPanePrint.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
-        printPreviewPanel.add(scrollPanePrint);
-        add(printPreviewPanel);
+//        JPanel printPreviewPanel = new JPanel();
+//        printPreviewPanel.setLayout(null);
+//        printPreviewPanel.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
+//        printPreviewPanel.add(studentLabel);
+//
+//        JScrollPane scrollPanePrint = new JScrollPane(table);
+//        scrollPanePrint.setBounds(0, 0, studentLabel.getWidth(), studentLabel.getHeight());
+//        printPreviewPanel.add(scrollPanePrint);
+//        add(printPreviewPanel);
 
         model = new DefaultTableModel();
         model.addColumn("번호");
@@ -183,7 +185,7 @@ public class SettingStudentInfo extends JPanel {
         printBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showPrintPreview(SettingStudentInfo.this, addBtn, delBtn, saveBtn, printBtn, "인쇄 미리보기");
+                showPrintPreview(SettingStudentInfo.this, addBtn, delBtn, saveBtn, printBtn);
             }
         });
 
@@ -315,7 +317,7 @@ public class SettingStudentInfo extends JPanel {
 
         table.setRowHeight(30);
 
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         scrollPane.setBounds(300, 75, 400, 486);
 
         // table column 조정
@@ -331,11 +333,10 @@ public class SettingStudentInfo extends JPanel {
 
         // table 전체 크기
         scrollPane.setPreferredSize(new Dimension(400, 286));
-
         // 역할, 하는일, 담당자 폰트 적용
-        JTableHeader header = table.getTableHeader();
+        header = table.getTableHeader();
         SettingClass.customFont(header, Font.BOLD, 20);
-        header.setBackground(Color.decode("#47815E"));
+        header.setBackground(SettingClass.mainColor);
         header.setForeground(Color.WHITE);
 
         add(scrollPane);
@@ -372,7 +373,7 @@ public class SettingStudentInfo extends JPanel {
         previewFrame.setVisible(true);
     }
 
-    private static void showPrintPreview(JPanel panel, JButton addButton, JButton delButton, JButton saveButton, JButton printButton, String waterMark) {
+    private void showPrintPreview(JPanel panel, JButton addButton, JButton delButton, JButton saveButton, JButton printButton) {
         PrinterJob job = PrinterJob.getPrinterJob();
         PageFormat pageFormat = job.defaultPage();
 
@@ -382,9 +383,13 @@ public class SettingStudentInfo extends JPanel {
         job.setPrintable(new Printable() {
             @Override
             public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
                 if (pageIndex > 0) {
                     return Printable.NO_SUCH_PAGE;
                 }
+
+                JTableHeader printHeader = header;
+                JTable printTable = table;
 
                 Graphics2D g2d = (Graphics2D) graphics;
                 g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
@@ -393,34 +398,43 @@ public class SettingStudentInfo extends JPanel {
                 double pageWidth = pageFormat.getImageableWidth();
                 double pageHeight = pageFormat.getImageableHeight();
 
+                JPanel printPanel = new JPanel();
+                printPanel.setLayout(null);
+                printPanel.setBounds(30, 30, printTable.getWidth(), (int) pageHeight);
+
+//                table.setBounds(0, 30, 600, (int)pageHeight);
+                printPanel.add(printHeader);
+                printPanel.add(printTable);
+
                 // Calculate the scale factors for width and height
-                double scaleX = pageWidth / panel.getWidth();
-                double scaleY = pageHeight / panel.getHeight();
+//                double scaleX = pageWidth / panel.getWidth();
+//                double scaleY = pageHeight / panel.getHeight();
 
                 // Apply scaling to fit the entire panel content onto the printed page
-                g2d.scale(scaleX, scaleY);
+//                g2d.scale(scaleX, scaleY);
 
                 // Hide buttons and scroll bars during printing
                 addButton.setVisible(false);
                 delButton.setVisible(false);
                 saveButton.setVisible(false);
                 printButton.setVisible(false);
-
+//                System.out.println(scrollPane.getWidth() + " " + scrollPane.getHeight() + " 1");
                 // Draw only the desired area
-                panel.print(g2d);
+                printPanel.print(g2d);
 
                 // Show buttons and scroll bars after printing
                 addButton.setVisible(true);
                 delButton.setVisible(true);
                 saveButton.setVisible(true);
                 printButton.setVisible(true);
+//                System.out.println(scrollPane.getWidth() + " " + scrollPane.getHeight() + "2");
 
-                g2d.setColor(Color.BLACK);
-                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
-                String watermarkText = waterMark;
-                int x = 50;
-                int y = 50;
-                g2d.drawString(watermarkText, x, y);
+//                g2d.setColor(Color.BLACK);
+//                g2d.setFont(new Font("SansSerif", Font.BOLD, 25));
+//                String watermarkText = waterMark;
+//                int x = 50;
+//                int y = 50;
+//                g2d.drawString(watermarkText, x, y);
 
                 return Printable.PAGE_EXISTS;
             }

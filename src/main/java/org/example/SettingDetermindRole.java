@@ -26,7 +26,7 @@ public class SettingDetermindRole extends JPanel {
         setLayout(null);
 
         JLabel studentLabel = new JLabel();
-        studentLabel.setBounds(372, 87, 295,78);
+        studentLabel.setBounds(372, 87, 295,85);
 
         model = new DefaultTableModel();
         model.addColumn("역할");
@@ -131,7 +131,7 @@ public class SettingDetermindRole extends JPanel {
         // 역할, 하는일, 담당자 폰트 적용
         JTableHeader header = table.getTableHeader();
         SettingClass.customFont(header, Font.BOLD, 20);
-        header.setBackground(Color.decode("#47815E"));
+        header.setBackground(SettingClass.mainColor);
         header.setForeground(Color.WHITE);
 
         add(scrollPane);
