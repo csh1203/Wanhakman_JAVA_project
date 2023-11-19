@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,15 +11,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ClassPresidentElectionInput {
     private JFrame frame;
     private List<CandidatePanel> panels;
     private JTextField countTextField;
     private JTextArea box;
-    private static final int MAX_CANDIDATES = 5;
+    private List<String> candidateNamesList1;
+    private int position;
 
-    public ClassPresidentElectionInput() throws SQLException {
+    public ClassPresidentElectionInput(List<String> candidateNamesList) throws SQLException {
+        this.candidateNamesList1 = candidateNamesList;
+        position = 100;
 
         frame = new JFrame("회장 선거");
         frame.setBounds(100, 100, 1280, 832);
@@ -26,18 +31,23 @@ public class ClassPresidentElectionInput {
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBackground(Color.WHITE);
 
-//        JPanel box = new JPanel();
-//        box.setOpaque(true);
-//        box.setBounds(176, 125, 400, 450);
-//        box.setBorder(new LineBorder(SettingClass.mainColor, 3));
+        JLabel[] label = new JLabel[candidateNamesList.size()];
 
-        box = new JTextArea();
-        box.setBounds(176, 125, 400, 300);
-        SettingClass.customFont(box, Font.PLAIN, 20);
-        box.setEditable(false);
-        box.setLineWrap(true);
-        box.setWrapStyleWord(true);
+        JPanel box = new JPanel();
+        box.setLayout(null);
         box.setOpaque(true);
+        box.setBounds(176, 125, 400, 450);
+        box.setBorder(new LineBorder(SettingClass.mainColor, 3));
+
+        for(int i=0; i<candidateNamesList.size(); i++) {
+            label[i] = new JLabel(candidateNamesList.get(i));
+            label[i].setBounds(120, position, 200, 100);
+            SettingClass.customFont(label[i], Font.PLAIN, 36);
+            label[i].setForeground(SettingClass.mainColor);
+            position += 50;
+            box.add(label[i]);
+        }
+
         frame.add(box);
 
         JLabel titlebox = new JLabel("후보자");
@@ -133,25 +143,16 @@ public class ClassPresidentElectionInput {
         return candidateNames;
     }
 
-    private void addToBox(String candidateName) {
-        System.out.println("Adding to box: " + candidateName);
-        box.append(candidateName + "\n");
-    }
-
     private void nextPage() {
         // Check if countTextField is filled
         int voteCount = getVoteCount();
         if (voteCount <= 0) {
             JOptionPane.showMessageDialog(frame, "투표할 인원을 입력해주세요.");
-        } else {
-            // Pass the required information to ClassPresidentElectionVoting
+        }
+        else {
             try {
-                List<String> candidateNamesList = getCandidateNames();
-                for (String candidateName : candidateNamesList) {
-                    addToBox(candidateName);
-                }
-
-                new ClassPresidentElectionVoting(voteCount, candidateNamesList);
+                System.out.println(voteCount + " " + candidateNamesList1);
+                new ClassPresidentElectionVoting(voteCount, candidateNamesList1);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -223,7 +224,6 @@ public class ClassPresidentElectionInput {
                     String candidateName = textField.getText().trim();
                     if (!candidateName.isEmpty()) {
                         System.out.println("Button clicked with name: " + candidateName);
-                        parent.addToBox(candidateName);
                     }
                 }
             });
@@ -240,14 +240,6 @@ public class ClassPresidentElectionInput {
             return !textField.getText().trim().isEmpty();
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                new ClassPresidentElectionInput();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
 }
+
+

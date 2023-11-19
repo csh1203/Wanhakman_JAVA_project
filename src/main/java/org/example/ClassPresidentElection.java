@@ -130,14 +130,12 @@ public class ClassPresidentElection {
     private void nextPage() {
         if (areAllTextFieldsFilled()) {
             List<String> candidateNamesList = new ArrayList<>();
-            System.out.println("입력한 텍스트 필드의 값:");
             for (CandidatePanel panel : panels) {
                 String candidateName = panel.getTextFieldValue();
-                System.out.println(candidateName);
                 candidateNamesList.add(candidateName);
             }
             try {
-                new ClassPresidentElectionInput();
+                new ClassPresidentElectionInput(candidateNamesList);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
