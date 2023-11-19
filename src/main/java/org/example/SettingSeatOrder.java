@@ -348,7 +348,6 @@ public class SettingSeatOrder extends JPanel {
             int height = tableHeight * 2 + table_margin;
             JPanel divisions = new JPanel();
             divisions.setLayout(new GridLayout(2,2));
-            divisions.setBackground(Color.pink);
             divisions.setBounds(margin, 0, tableWidth * 2 + table_margin, height);
 
             JLabel l = new JLabel();
