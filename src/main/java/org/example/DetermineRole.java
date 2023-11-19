@@ -16,7 +16,6 @@ public class DetermineRole {
     private JFrame frame;
     private DefaultTableModel model;
     private JTable table;
-    Border roundedBorder = BorderFactory.createLineBorder(SettingClass.mainColor, 30, true);
 
     public DetermineRole() throws SQLException {
         frame = new JFrame("1인 1역 정하기");
@@ -60,23 +59,18 @@ public class DetermineRole {
         table = new JTable(model);
 
         // 추가
-        JButton addBtn = new JButton();
-        addBtn.setBounds(100, 100, 93, 53);
-        addBtn.setLayout(null);
-        addBtn.setBorder(roundedBorder);
-        addBtn.setOpaque(false);
-        addBtn.setContentAreaFilled(false);
-        addBtn.setFocusPainted(false);
+        RoundedButton addBtn = new RoundedButton("");
+        addBtn.setBounds(930, 710, 93, 53);
+        addBtn.setLayout(new BorderLayout());
 
         JLabel addLabel = new JLabel("추가");
-        addLabel.setBounds(930, 710, 93, 53);
         addLabel.setOpaque(true);
         addLabel.setBackground(SettingClass.mainColor);
         SettingClass.customFont(addLabel, Font.BOLD, 25);
         addLabel.setForeground(Color.WHITE);
         addLabel.setHorizontalAlignment(SwingConstants.CENTER);
         addLabel.setVerticalAlignment(SwingConstants.CENTER);
-        addLabel.add(addBtn);
+        addBtn.add(addLabel);
 
         addLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -84,26 +78,21 @@ public class DetermineRole {
                 addTableRow();
             }
         });
-        frame.add(addLabel);
+        frame.add(addBtn);
 
         // 삭제
-        JButton delBtn = new JButton();
-        delBtn.setBounds(100, 100, 93, 53);
-        delBtn.setLayout(null);
-        delBtn.setBorder(roundedBorder);
-        delBtn.setOpaque(false);
-        delBtn.setContentAreaFilled(false);
-        delBtn.setFocusPainted(false);
+        RoundedButton delBtn = new RoundedButton("");
+        delBtn.setBounds(1030, 710, 93, 53);
+        delBtn.setLayout(new BorderLayout());
 
         JLabel delLabel = new JLabel("삭제");
-        delLabel.setBounds(1030, 710, 93, 53);
         delLabel.setOpaque(true);
         delLabel.setBackground(SettingClass.mainColor);
         SettingClass.customFont(delLabel, Font.BOLD, 25);
         delLabel.setForeground(Color.WHITE);
         delLabel.setHorizontalAlignment(SwingConstants.CENTER);
         delLabel.setVerticalAlignment(SwingConstants.CENTER);
-        delLabel.add(delBtn);
+        delBtn.add(delLabel);
 
         delLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -115,26 +104,21 @@ public class DetermineRole {
                 }
             }
         });
-        frame.add(delLabel);
+        frame.add(delBtn);
 
         // 저장
-        JButton saveBtn = new JButton();
-        saveBtn.setBounds(100, 100, 93, 53);
-        saveBtn.setLayout(null);
-        saveBtn.setBorder(roundedBorder);
-        saveBtn.setOpaque(false);
-        saveBtn.setContentAreaFilled(false);
-        saveBtn.setFocusPainted(false);
+        RoundedButton saveBtn = new RoundedButton("");
+        saveBtn.setBounds(1130, 710, 93, 53);
+        saveBtn.setLayout(new BorderLayout());
 
         JLabel saveLabel = new JLabel("저장");
-        saveLabel.setBounds(1130, 710, 93, 53);
         saveLabel.setOpaque(true);
         saveLabel.setBackground(SettingClass.mainColor);
         SettingClass.customFont(saveLabel, Font.BOLD, 25);
         saveLabel.setForeground(Color.WHITE);
         saveLabel.setHorizontalAlignment(SwingConstants.CENTER);
         saveLabel.setVerticalAlignment(SwingConstants.CENTER);
-        saveLabel.add(saveBtn);
+        saveBtn.add(saveLabel);
 
         saveLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -142,7 +126,7 @@ public class DetermineRole {
                 setRole();
             }
         });
-        frame.add(saveLabel);
+        frame.add(saveBtn);
 
         getRole();
 

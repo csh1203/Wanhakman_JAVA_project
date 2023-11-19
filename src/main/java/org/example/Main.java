@@ -255,11 +255,11 @@ public class Main extends Frame {
                     int peopleCnt =  SettingClass.getClassPeople();
                     if(peopleCnt == 0){
                         JOptionPane.showMessageDialog(frame, "학생 정보를 입력한 후, 이용해주세요");
-                    }else{
+                    }
+                    else{
                         frame.dispose();
                         new PickASeatMain(0);
                     }
-
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -270,7 +270,11 @@ public class Main extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new ClassPresidentElection();
+                try {
+                    new ClassPresidentElection();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
