@@ -282,7 +282,7 @@ public class DetermineRole {
         // 역할, 하는일, 담당자 폰트 적용
         JTableHeader header = table.getTableHeader();
         SettingClass.customFont(header, Font.BOLD, 20);
-        header.setBackground(Color.decode("#47815E"));
+        header.setBackground(SettingClass.mainColor);
         header.setForeground(Color.WHITE);
 
         frame.add(scrollPane);
