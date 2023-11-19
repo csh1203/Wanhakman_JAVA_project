@@ -1,12 +1,15 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 public class ClassPresidentElectionVoting {
     private JFrame frame;
@@ -15,15 +18,22 @@ public class ClassPresidentElectionVoting {
     private JScrollPane scrollPane;
 
     private int voteCount;
-    private List<String> candidateNames;
+    private String[] result;
     private int i;
     private JLabel title;
     private JLabel result11;
     private JLabel result22;
+    private List<String> candidateNamesList1;
+    private int position;
 
-    public ClassPresidentElectionVoting(int voteCount, List<String> candidateNames) throws SQLException {
+    public ClassPresidentElectionVoting(int voteCount, List<String> candidateNamesList) throws SQLException {
+        this.candidateNamesList1 = candidateNamesList;
+        position = 100;
+
         this.voteCount = voteCount;
         this.i = 1;
+        result = new String[candidateNamesList.size()];
+        Arrays.fill(result, "0");
 
         frame = new JFrame("회장 선거");
         frame.setBounds(100, 100, 1280, 832);
@@ -70,17 +80,17 @@ public class ClassPresidentElectionVoting {
         result11.setVisible(true);
         result22.setVisible(true);
 
-        for (int j = 1; j <= candidateNames.size(); j++) {
+        for (int j = 1; j <= candidateNamesList.size(); j++) {
             CandidatePanel panel = new CandidatePanel(j);
             panels.add(panel);
             panelContainer.add(panel);
         }
 
         // Set up the JScrollPane
-        scrollPane = new JScrollPane(panelContainer);
-        scrollPane.setBounds(442, 165, 396, 390);
-        scrollPane.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
-        frame.add(scrollPane);
+//        scrollPane = new JScrollPane(panelContainer);
+//        scrollPane.setBounds(442, 165, 396, 390);
+//        scrollPane.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
+//        frame.add(scrollPane);
 
         JLabel text = new JLabel("신중하게 투표해주세요!");
         SettingClass.customFont(text, Font.PLAIN, 16);
@@ -94,65 +104,90 @@ public class ClassPresidentElectionVoting {
 
     private class CandidatePanel extends JPanel {
         private JTextField textField;
+        private int panelIndex;
 
         public CandidatePanel(int number) {
+
+            panelIndex = number - 1;
             setLayout(new BorderLayout());
 
-            JButton saveBtn = new JButton(Integer.toString(number) + ".");
+            JButton saveBtn[] = new JButton[candidateNamesList1.size()];
 
-            saveBtn.setOpaque(true);
-            SettingClass.customFont(saveBtn, Font.BOLD, 25);
-            saveBtn.setBackground(Color.WHITE);
-            saveBtn.setForeground(Color.BLACK);
-            saveBtn.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
-            saveBtn.setHorizontalAlignment(SwingConstants.CENTER);
-            saveBtn.setVerticalAlignment(SwingConstants.CENTER);
-            saveBtn.setPreferredSize(new Dimension(70, 70));
+//            saveBtn.setOpaque(true);
+//            SettingClass.customFont(saveBtn, Font.BOLD, 25);
+//            saveBtn.setBackground(Color.WHITE);
+//            saveBtn.setForeground(Color.BLACK);
+//            saveBtn.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
+//            saveBtn.setHorizontalAlignment(SwingConstants.CENTER);
+//            saveBtn.setVerticalAlignment(SwingConstants.CENTER);
+//            saveBtn.setPreferredSize(new Dimension(70, 70));
 
-            textField = new JTextField();
-            textField.setPreferredSize(new Dimension(70, 70));
-            textField.setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
+            JLabel[] label = new JLabel[candidateNamesList1.size()];
 
-            saveBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (i <= voteCount) {
-                        String textFieldContent = textField.getText().trim();
-                        title.setVisible(true);
-                        result11.setVisible(true);
-                        result22.setVisible(true);
+            JPanel box = new JPanel();
+            box.setLayout(new GridLayout(candidateNamesList1.size(), 1));
+            box.setOpaque(true);
+            box.setBounds(176, 125, 400, 450);
+            box.setBorder(new LineBorder(SettingClass.mainColor, 3));
 
-                        title.setText(voteCount + "명 투표자 중 " + i + "번째 투표자 투표 진행중...");
-                        result11.setText(i + " / " + voteCount);
-                        result22.setText((voteCount - i) + " / " + voteCount);
-                        i++;
-                    }
-                    if(i > voteCount) {
-                        SwingUtilities.invokeLater(() -> {
-                            try {
-                                new ClassPresidentElectionResult();
-                            } catch (SQLException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        });
-                        frame.dispose();
-                    }
-                }
-            });
+            for (int i = 0; i < candidateNamesList1.size(); i++) {
+                final int index = i;
+                JPanel panelbox = new JPanel();
+                panelbox.setLayout(new GridLayout(1, 2));
+                label[i] = new JLabel(candidateNamesList1.get(i));
+                label[i].setBounds(120, position, 200, 100);
+                SettingClass.customFont(label[i], Font.PLAIN, 36);
+                label[i].setForeground(SettingClass.mainColor);
+                position += 50;
+                panelbox.add(label[i]);
 
+                saveBtn[i].setOpaque(true);
+                SettingClass.customFont(saveBtn[i], Font.BOLD, 25);
+                saveBtn[i].setBackground(Color.WHITE);
+                saveBtn[i].setForeground(Color.BLACK);
+                saveBtn[i].setBorder(BorderFactory.createLineBorder(SettingClass.mainColor, 2));
+                saveBtn[i].setHorizontalAlignment(SwingConstants.CENTER);
+                saveBtn[i].setVerticalAlignment(SwingConstants.CENTER);
+                saveBtn[i].setPreferredSize(new Dimension(70, 70));
+                saveBtn[i].setText((i + 1) + "");
+                panelbox.add(label[i], saveBtn[i]);
+                box.add(panelbox);
 
-            add(saveBtn, BorderLayout.WEST);
-            add(textField, BorderLayout.CENTER);
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                new ClassPresidentElectionVoting(5, null);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+//                saveBtn[i].addActionListener(new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        if (index <= voteCount) {
+////                        String textFieldContent = textField.getText().trim();
+//                            title.setVisible(true);
+//                            result11.setVisible(true);
+//                            result22.setVisible(true);
+//
+////                            title.setText(voteCount + "명 투표자 중 " + index + "번째 투표자 투표 진행중...");
+////                            result11.setText(index + " / " + voteCount);
+////                            result22.setText((voteCount - index) + " / " + voteCount);
+////
+////                            int currentValue = Integer.parseInt(result[panelIndex]);
+////                            result[panelIndex] = Integer.toString(currentValue + 1);
+////
+////                            index++;
+//                        }
+//                        if (index > voteCount) {
+//                            SwingUtilities.invokeLater(() -> {
+//                                try {
+//                                    new ClassPresidentElectionResult();
+//                                } catch (SQLException ex) {
+//                                    throw new RuntimeException(ex);
+//                                }
+//                            });
+//                            frame.dispose();
+//                        }
+//                    }
+//                });
+////
+////            add(saveBtn, BorderLayout.WEST);
+//            }
+//            frame.add(box);
             }
-        });
+        }
     }
 }
