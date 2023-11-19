@@ -129,9 +129,12 @@ public class ClassPresidentElection {
 
     private void nextPage() {
         if (areAllTextFieldsFilled()) {
-//            System.out.println("입력한 텍스트 필드의 값:");
+            List<String> candidateNamesList = new ArrayList<>();
+            System.out.println("입력한 텍스트 필드의 값:");
             for (CandidatePanel panel : panels) {
-//                System.out.println(panel.getTextFieldValue());
+                String candidateName = panel.getTextFieldValue();
+                System.out.println(candidateName);
+                candidateNamesList.add(candidateName);
             }
             try {
                 new ClassPresidentElectionInput();

@@ -108,7 +108,7 @@ public class SettingDetermindRole extends JPanel {
 
         // Set the preferred size of the scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(110, 50, 800, preferredHeight);
+        scrollPane.setBounds(110, 50, 800, 550);
 
         // 스크롤 안 보이게
 //        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);

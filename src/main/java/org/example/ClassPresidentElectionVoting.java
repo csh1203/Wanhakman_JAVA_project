@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +14,16 @@ public class ClassPresidentElectionVoting {
     private List<CandidatePanel> panels;
     private JScrollPane scrollPane;
 
-    // Add fields to store voteCount and candidateNames
     private int voteCount;
     private List<String> candidateNames;
     private int i;
     private JLabel title;
     private JLabel result11;
     private JLabel result22;
-    private int[] result; // Array to store accumulated values
 
     public ClassPresidentElectionVoting(int voteCount, List<String> candidateNames) throws SQLException {
-        // Initialize the fields
         this.voteCount = voteCount;
-        this.candidateNames = candidateNames;
-        this.result = new int[voteCount + 1]; // +1 to account for 0-based indexing
+        this.i = 1;
 
         frame = new JFrame("회장 선거");
         frame.setBounds(100, 100, 1280, 832);
@@ -41,23 +39,23 @@ public class ClassPresidentElectionVoting {
 
         JLabel result1 = new JLabel("투표 완료 학생");
         SettingClass.customFont(result1, Font.PLAIN, 20);
-        result1.setBounds(465, 584, 400, 60);
+        result1.setBounds(550, 584, 400, 60);
         frame.add(result1);
 
-        result11 = new JLabel("i + \" / \" + voteCount");
-        SettingClass.customFont(result11, Font.PLAIN, 20);
-        result11.setBounds(665, 584, 400, 60);
+        result11 = new JLabel(i + " / " + voteCount);
+        SettingClass.customFont(result11, Font.BOLD, 24);
+        result11.setBounds(700, 584, 400, 60);
         result11.setVisible(false);
         frame.add(result11);
 
         JLabel result2 = new JLabel("투표 미완료 학생");
         SettingClass.customFont(result2, Font.PLAIN, 20);
-        result2.setBounds(465, 624, 400, 60);
+        result2.setBounds(550, 624, 400, 60);
         frame.add(result2);
 
-        result22 = new JLabel("(voteCount - i) + \" / \" + voteCount");
-        SettingClass.customFont(result22, Font.PLAIN, 20);
-        result22.setBounds(665, 624, 400, 60);
+        result22 = new JLabel((voteCount-i) + " / " + voteCount);
+        SettingClass.customFont(result22, Font.BOLD, 24);
+        result22.setBounds(700, 624, 400, 60);
         result22.setVisible(false);
         frame.add(result22);
 
@@ -67,9 +65,12 @@ public class ClassPresidentElectionVoting {
         panelContainer.setBorder(null);
         panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
 
-        // Create and add CandidatePanel instances based on voteCount
-        for (i = 1; i <= voteCount; i++) {
-            CandidatePanel panel = new CandidatePanel(i);
+        title.setVisible(true);
+        result11.setVisible(true);
+        result22.setVisible(true);
+
+        for (int j = 1; j <= candidateNames.size(); j++) {
+            CandidatePanel panel = new CandidatePanel(j);
             panels.add(panel);
             panelContainer.add(panel);
         }
@@ -96,6 +97,7 @@ public class ClassPresidentElectionVoting {
             setLayout(new BorderLayout());
 
             JButton saveBtn = new JButton(Integer.toString(number) + ".");
+
             saveBtn.setOpaque(true);
             saveBtn.setBackground(SettingClass.mainColor);
             SettingClass.customFont(saveBtn, Font.BOLD, 25);
@@ -107,33 +109,19 @@ public class ClassPresidentElectionVoting {
             textField = new JTextField();
             textField.setPreferredSize(new Dimension(70, 70));
 
-            title.setVisible(true);
-            result11.setVisible(true);
-            result22.setVisible(true);
+            saveBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (i <= voteCount) {
+                        String textFieldContent = textField.getText().trim();
+                        title.setVisible(true);
+                        result11.setVisible(true);
+                        result22.setVisible(true);
 
-            saveBtn.addActionListener(e -> {
-                i=1;
-                if (i <= voteCount) {
-                    String textFieldContent = textField.getText().trim();
-
-                    if (!textFieldContent.isEmpty()) {
-                        try {
-                            int vote = Integer.parseInt(textFieldContent);
-                            System.out.println("Result for student " + (i - 1) + ": " + vote);
-
-                            i++;
-                            title.setText(voteCount + "명 투표자 중 " + i + "번 째 투표자 투표 진행중...");
-                            result11.setText(i + " / " + voteCount);
-                            result22.setText((voteCount - i) + " / " + voteCount);
-
-                            if (i > voteCount) {
-                                System.out.println("Voting completed for all students.");
-                            }
-                        } catch (NumberFormatException ex) {
-                            System.err.println("Invalid input. Please enter a valid integer.");
-                        }
-                    } else {
-                        System.err.println("Input cannot be empty. Please enter a valid integer.");
+                        title.setText(voteCount + "명 투표자 중 " + i + "번째 투표자 투표 진행중...");
+                        result11.setText(i + " / " + voteCount);
+                        result22.setText((voteCount - i) + " / " + voteCount);
+                        i++;
                     }
                 }
             });
@@ -147,7 +135,7 @@ public class ClassPresidentElectionVoting {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                new ClassPresidentElectionVoting(5, null); // Provide voteCount and candidateNames as needed
+                new ClassPresidentElectionVoting(5, null);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
